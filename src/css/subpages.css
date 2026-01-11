@@ -1,0 +1,239 @@
+/* Subpage Styles - Editorial Redesign */
+
+/* Hero Section */
+.editorial-hero {
+    position: relative;
+    height: 60vh;
+    /* Reduced from 90vh */
+    min-height: 450px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--spacing-section);
+    overflow: hidden;
+    color: var(--color-black);
+}
+
+.hero-bg-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 55%;
+    /* Slightly smaller width */
+    height: 100%;
+    z-index: 0;
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.hero-bg-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.hero-title-container {
+    position: relative;
+    z-index: 2;
+    max-width: 90%;
+    margin-bottom: 20px;
+}
+
+.hero-big-text {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 10vw, 9rem);
+    /* Reduced max size */
+    line-height: 1.0;
+    /* Adjusted for better readability */
+    text-transform: uppercase;
+    font-weight: 600;
+    /* Matching homepage weight */
+    letter-spacing: -0.02em;
+    color: #111;
+    /* Dark industrial text */
+    mix-blend-mode: multiply;
+    /* Interacts with image if overlapping */
+}
+
+/* Editorial Content Layout */
+.editorial-content {
+    display: flex;
+    flex-wrap: wrap;
+    padding: var(--spacing-section);
+    margin-bottom: var(--spacing-section);
+    position: relative;
+}
+
+/* Sticky Sidebar (Left) */
+.content-sidebar {
+    width: 35%;
+    position: sticky;
+    top: 120px;
+    height: fit-content;
+    padding-right: 60px;
+}
+
+.sidebar-title {
+    font-size: 2.5rem;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    font-family: var(--font-display);
+}
+
+.sidebar-desc {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--color-text-light);
+    margin-bottom: 2rem;
+}
+
+.spec-list {
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid #ddd;
+}
+
+.spec-list li {
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+}
+
+.spec-label {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Scrollable Gallery (Right) */
+.content-gallery {
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    /* Big gaps for editorial feel */
+    padding-top: 100px;
+    /* Offset start */
+}
+
+.gallery-block {
+    position: relative;
+    width: 100%;
+}
+
+.gallery-block.full {
+    width: 100%;
+}
+
+.gallery-block.offset-right {
+    width: 80%;
+    margin-left: auto;
+}
+
+.gallery-block.offset-left {
+    width: 80%;
+    margin-right: auto;
+}
+
+.gallery-block img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+}
+
+.block-caption {
+    margin-top: 15px;
+    font-style: italic;
+    color: #555;
+    font-size: 0.9rem;
+    text-align: right;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+/* Mobile Responsive */
+@media (max-width: 900px) {
+    .editorial-hero {
+        height: 60vh;
+        min-height: 400px;
+        padding: 20px;
+        justify-content: flex-end;
+    }
+
+    .hero-bg-container {
+        width: 100%;
+        height: 100%;
+        clip-path: none;
+        top: 0;
+        left: 0;
+    }
+
+    .hero-bg-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+    }
+
+    .hero-title-container {
+        margin-bottom: 0;
+        width: 100%;
+    }
+
+    .hero-big-text {
+        font-size: 15vw;
+        color: #fff;
+        /* White text on mobile */
+        mix-blend-mode: normal;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        line-height: 0.9;
+    }
+
+    .editorial-content {
+        flex-direction: column;
+        padding: 40px 20px;
+        /* More breathing room */
+    }
+
+    .content-sidebar {
+        width: 100%;
+        position: relative;
+        top: 0;
+        padding-right: 0;
+        margin-bottom: 60px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 40px;
+    }
+
+    .sidebar-title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .sidebar-desc {
+        font-size: 1.1rem;
+        max-width: 100%;
+    }
+
+    .content-gallery {
+        width: 100%;
+        padding-top: 0;
+        gap: 40px;
+    }
+
+    .gallery-block.offset-right,
+    .gallery-block.offset-left {
+        width: 100%;
+        margin: 0;
+    }
+}

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="sk">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>i-studio | Luxusné Podlahy</title>
+    <meta name="description"
+        content="Prémiové drevené a vinylové podlahy. Francúzsky stromček, masívny dub a vodeodolné kompozity.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.6s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header class="main-header">
+            <div class="container header-inner">
+                <div class="logo">
+                    <a href="/" style="display:flex; align-items:center; text-decoration:none; color:inherit;">
+                        <img src="/src/assets/images/logo_icon.png" alt="i" class="logo-icon">
+                        <span class="logo-text">studio</span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="/">Domov</a></li>
+                        <li><a href="/dvere/">Dvere</a></li>
+                        <li><a href="/podlahy/" class="active">Podlahy</a></li>
+                        <li><a href="/skrine/">Skrine</a></li>
+                        <li><a href="/kuchyne/">Kuchyne</a></li>
+                        <li class="mobile-only-link"><a href="#contact">Kontakt</a></li>
+                    </ul>
+                </nav>
+                <div class="header-contact">
+                    <a href="#contact" class="btn-pill-black" style="padding: 10px 24px; font-size: 0.9rem;">Kontakt</a>
+                </div>
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="subpage-hero">
+                <div class="subpage-hero-bg">
+                    <img src="/src/assets/images/podlahy_hero.png" alt="Luxury Flooring" data-speed="0.5">
+                </div>
+                <div class="subpage-hero-content">
+                    <h1 class="subpage-title">Dokonalý Základ</h1>
+                    <p style="font-size: 1.5rem; max-width: 600px; margin: 0 auto; opacity: 0.9;">Podlaha, ktorá
+                        definuje priestor a vnesie doň teplo domova.</p>
+                </div>
+            </section>
+
+            <section class="product-intro-section">
+                <div class="container product-intro-grid">
+                    <div class="intro-title">
+                        <h2 style="font-size: 3rem; margin-bottom: 2rem;">Kráčajte po<br>prémiovej kvalite.</h2>
+                    </div>
+                    <div class="intro-text-block">
+                        <p>Podlaha je najviac namáhanou časťou interiéru. Spájame nekompromisnú odolnosť s estetikou
+                            prírodných materiálov.</p>
+                        <p>Od tradičných masívnych parkiet (francúzsky stromček) až po moderné minerálne kompozity s
+                            nulovou nasiakavosťou. Každý krok u nás je zážitkom.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="product-gallery-section">
+                <div class="container">
+                    <div class="gallery-grid">
+                        <!-- Placeholders -->
+                        <div class="gallery-item">
+                            <img src="/src/assets/images/podlahy_hero.png" alt="Herringbone">
+                            <div class="gallery-overlay">
+                                <h3>Drevené Parkety</h3>
+                            </div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="/src/assets/images/cat_doors.png" alt="Vinyl">
+                            <div class="gallery-overlay">
+                                <h3>Kompozitné Podlahy</h3>
+                            </div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="/src/assets/images/hero.png" alt="Tiles">
+                            <div class="gallery-overlay">
+                                <h3>Veľkoformátová Dlažba</h3>
+                            </div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="/src/assets/images/podlahy_hero.png" alt="Installation">
+                            <div class="gallery-overlay">
+                                <h3>Profesionálna Pokládka</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer id="contact">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h4>Kontaktujte Nás</h4>
+                        <p style="color: #999; max-width: 200px;">
+                            info@i-studio.sk<br>
+                            +421 900 000 000<br>
+                            Bratislava
+                        </p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Menu</h4>
+                        <ul>
+                            <li><a href="/">Domov</a></li>
+                            <li><a href="/dvere/">Dvere</a></li>
+                            <li><a href="/podlahy/">Podlahy</a></li>
+                            <li><a href="/skrine/">Skrine</a></li>
+                            <li><a href="/kuchyne/">Kuchyne</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom"
+                    style="display: flex; justify-content: space-between; border-top: 1px solid #333; padding-top: 20px;">
+                    <span>&copy; 2026 i-studio</span>
+                    <span>Made by Viktor Hilmer</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script type="module" src="/src/js/subpage.js"></script>
+</body>
+
+</html>

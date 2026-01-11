@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="sk">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>i-studio | Dvere</title>
+    <meta name="description"
+        content="Luxusné interiérové dvere na mieru. Skryté zárubne, vysoké lesky a masívne drevo.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.6s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header class="main-header">
+            <div class="container header-inner">
+                <div class="logo">
+                    <a href="/" style="display:flex; align-items:center; text-decoration:none; color:inherit;">
+                        <img src="/src/assets/images/logo_icon.png" alt="i" class="logo-icon">
+                        <span class="logo-text">studio</span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="/">Domov</a></li>
+                        <li><a href="/dvere/" class="active">Dvere</a></li>
+                        <li><a href="/podlahy/">Podlahy</a></li>
+                        <li><a href="/skrine/">Skrine</a></li>
+                        <li><a href="/kuchyne/">Kuchyne</a></li>
+                        <li class="mobile-only-link"><a href="#contact">Kontakt</a></li>
+                    </ul>
+                </nav>
+                <div class="header-contact">
+                    <a href="#contact" class="btn-pill-black" style="padding: 10px 24px; font-size: 0.9rem;">Kontakt</a>
+                </div>
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Editorial Hero -->
+            <section class="editorial-hero">
+                <div class="hero-bg-container">
+                    <img src="/src/assets/images/dvere_hero.png" alt="Luxury Door Detail" data-speed="0.5">
+                </div>
+                <div class="hero-title-container">
+                    <h1 class="hero-big-text">
+                        Dvere<br>na Mieru
+                    </h1>
+                </div>
+            </section>
+
+            <!-- Editorial Layout: Sidebar + Gallery -->
+            <div class="editorial-content container">
+
+                <!-- Sticky Sidebar -->
+                <aside class="content-sidebar">
+                    <h2 class="sidebar-title">Vymedzenie<br>Priestoru</h2>
+                    <p class="sidebar-desc">
+                        Dvere nie sú len funkčným prvkom. Sú hranicou medzi hlukom a tichom, medzi spoločnosťou a
+                        intimitou.
+                        Naše riešenia rešpektujú architektúru a stávajú sa jej neviditeľnou súčasťou.
+                    </p>
+                    <ul class="spec-list">
+                        <li>
+                            <span class="spec-label">Typ</span>
+                            <span>Reverzné / Posuvné</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Výška</span>
+                            <span>Až do 3000 mm</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Materiál</span>
+                            <span>Dýha / Lak / Sklo</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Technológia</span>
+                            <span>Skryté pánty Tectus</span>
+                        </li>
+                    </ul>
+                </aside>
+
+                <!-- Scrolling Visuals -->
+                <div class="content-gallery">
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/dvere_hero.png" alt="Detail Zárubne">
+                        <span class="block-caption">Detail skrytej zárubne so stenou</span>
+                    </div>
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/podlahy_hero.png" alt="Interiérový kontext">
+                        <span class="block-caption">Integrácia v modernom interiéri</span>
+                    </div>
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/skrine_hero.png" alt="Sklenené varianty">
+                        <span class="block-caption">Sklenené priečky pre svetlosť</span>
+                    </div>
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/hero.png" alt="Celkový Pohľad">
+                        <span class="block-caption">Atypická výška až po strop</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+        <footer id="contact">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h4>Kontaktujte Nás</h4>
+                        <p style="color: #999; max-width: 200px;">
+                            info@i-studio.sk<br>
+                            +421 900 000 000<br>
+                            Bratislava
+                        </p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Menu</h4>
+                        <ul>
+                            <li><a href="/">Domov</a></li>
+                            <li><a href="/dvere/">Dvere</a></li>
+                            <li><a href="/podlahy/">Podlahy</a></li>
+                            <li><a href="/skrine/">Skrine</a></li>
+                            <li><a href="/kuchyne/">Kuchyne</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom"
+                    style="display: flex; justify-content: space-between; border-top: 1px solid #333; padding-top: 20px;">
+                    <span>&copy; 2026 i-studio</span>
+                    <span>Made by Viktor Hilmer</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script type="module" src="/src/js/subpage.js"></script>
+</body>
+
+</html>
