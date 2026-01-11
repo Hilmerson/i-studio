@@ -275,18 +275,25 @@ footer#contact {
     transform: rotate(-45deg) translate(6px, -6px);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* Mobile Responsiveness & Tablet Fix */
+@media (max-width: 1100px) {
+
+    /* Increased breakpoint to handle longer menu */
     .header-inner {
         justify-content: center;
-        /* Center everything by default, button is absolute */
         position: relative;
-        /* Context for absolute button */
         min-height: 60px;
-        /* Ensure height */
+        padding-right: 60px;
+        /* Space for hamburger */
     }
 
-    /* Show hamburger menu button on mobile - Absolute Position */
+    /* Hide standard desktop nav */
+    .main-nav,
+    .header-contact {
+        display: none;
+    }
+
+    /* Show hamburger menu button - Absolute Position */
     .mobile-menu-btn {
         display: flex;
         position: absolute;
@@ -294,7 +301,13 @@ footer#contact {
         top: 50%;
         transform: translateY(-50%);
         z-index: 1101;
-        /* Above Menu Overlay */
+    }
+
+    .logo {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
     }
 
     /* Ensure the button lines are always black (or correct contrast) */
@@ -416,13 +429,6 @@ footer#contact {
         text-decoration: underline;
         text-decoration-color: var(--color-brand-yellow);
         text-underline-offset: 5px;
-    }
-
-    /* Center logo perfectly */
-    .logo {
-        margin: 0;
-        position: relative;
-        /* z-index removed so it stays behind overlay (1100) */
     }
 
     .logo-icon {

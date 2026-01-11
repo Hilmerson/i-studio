@@ -67,11 +67,14 @@
 
 /* Sticky Sidebar (Left) */
 .content-sidebar {
-    width: 35%;
+    width: 25%;
+    /* Reduced from 35% */
+    min-width: 250px;
     position: sticky;
     top: 120px;
     height: fit-content;
-    padding-right: 60px;
+    padding-right: 40px;
+    /* Reduced specific padding */
 }
 
 .sidebar-title {
@@ -112,7 +115,8 @@
 
 /* Scrollable Gallery (Right) */
 .content-gallery {
-    width: 65%;
+    width: 75%;
+    /* Increased to utilize remaining space */
     display: flex;
     flex-direction: column;
     gap: 120px;
@@ -159,7 +163,146 @@
 }
 
 /* Mobile Responsive */
-@media (max-width: 900px) {
+/* Contact Page Specifics */
+.contact-page-content {
+    padding: var(--spacing-section);
+    margin-bottom: var(--spacing-section);
+}
+
+.contact-grid {
+    display: flex;
+    gap: 80px;
+}
+
+.contact-info-col {
+    flex: 1;
+    padding-right: 40px;
+}
+
+.contact-form-col {
+    flex: 1;
+}
+
+.contact-heading {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    margin-bottom: 30px;
+    line-height: 1.1;
+}
+
+.contact-intro {
+    font-size: 1.2rem;
+    color: var(--color-text-light);
+    margin-bottom: 50px;
+    line-height: 1.6;
+    max-width: 90%;
+}
+
+.info-block {
+    margin-bottom: 40px;
+}
+
+.info-label {
+    display: block;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.info-value {
+    font-size: 1.2rem;
+    font-style: normal;
+    line-height: 1.5;
+    color: var(--color-text);
+}
+
+.info-value a {
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.3s;
+}
+
+.info-value a:hover {
+    opacity: 0.6;
+}
+
+/* Avant Garde Form */
+.avant-garde-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.form-group {
+    position: relative;
+    border-top: 1px solid #ddd;
+    padding: 30px 0;
+}
+
+.form-group:last-of-type {
+    border-bottom: 1px solid #ddd;
+}
+
+.form-group label {
+    display: block;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #999;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--color-text);
+    padding: 10px 0;
+    outline: none;
+    resize: none;
+    transition: color 0.3s;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #ddd;
+    transition: color 0.3s;
+}
+
+.form-group input:focus::placeholder,
+.form-group textarea:focus::placeholder {
+    color: #eee;
+}
+
+.btn-submit {
+    margin-top: 40px;
+    align-self: flex-start;
+    background: var(--color-text);
+    color: var(--color-white);
+    border: none;
+    padding: 20px 40px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1100px) {
     .editorial-hero {
         height: 60vh;
         min-height: 400px;
@@ -168,7 +311,7 @@
     }
 
     .hero-bg-container {
-        width: 100%;
+        width: 100% !important;
         height: 100%;
         clip-path: none;
         top: 0;
@@ -191,18 +334,16 @@
     }
 
     .hero-big-text {
-        font-size: 15vw;
+        font-size: 3.5rem !important;
         color: #fff;
-        /* White text on mobile */
         mix-blend-mode: normal;
         text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        line-height: 0.9;
+        line-height: 1.1;
     }
 
     .editorial-content {
         flex-direction: column;
         padding: 40px 20px;
-        /* More breathing room */
     }
 
     .content-sidebar {
@@ -235,5 +376,290 @@
     .gallery-block.offset-left {
         width: 100%;
         margin: 0;
+    }
+
+    /* Contact Page Mobile Fixes - Aggressive Overrides */
+    .contact-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 50px !important;
+        width: 100% !important;
+    }
+
+    .contact-info-col {
+        padding-right: 0 !important;
+        width: 100% !important;
+        flex: none !important;
+        /* Disable flex scaling */
+    }
+
+    .contact-form-col {
+        width: 100% !important;
+        flex: none !important;
+    }
+
+    .contact-intro {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .contact-heading {
+        font-size: 2.5rem;
+    }
+
+    .contact-page-content {
+        padding: 60px var(--spacing-container) !important;
+        width: 100% !important;
+    }
+}
+
+/* Portfolio Grid System */
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 80px 40px;
+    margin-bottom: 120px;
+}
+
+.portfolio-item {
+    cursor: pointer;
+    position: relative;
+}
+
+.portfolio-thumb {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.portfolio-thumb img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.portfolio-item:hover .portfolio-thumb img {
+    transform: scale(1.03);
+}
+
+.hover-reveal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.portfolio-item:hover .hover-reveal {
+    opacity: 1;
+}
+
+.view-text {
+    color: #fff;
+    border: 1px solid #fff;
+    padding: 10px 24px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: transparent;
+    transition: background 0.3s, color 0.3s;
+}
+
+.view-text:hover {
+    background: #fff;
+    color: #000;
+}
+
+.portfolio-meta {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.portfolio-meta h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.portfolio-meta span {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+@media (max-width: 768px) {
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+
+    /* Lightbox Mobile Fixes */
+    .lightbox-content {
+        padding: 5px;
+        /* Minimal padding */
+    }
+
+    .lightbox-image-wrapper {
+        max-width: 100%;
+        width: 100%;
+        max-height: 80vh;
+    }
+
+    .nav-btn {
+        padding: 10px;
+        font-size: 1.5rem;
+    }
+}
+
+/* Lightbox Gallery */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 3rem;
+    cursor: pointer;
+    z-index: 1001;
+    line-height: 1;
+}
+
+.lightbox-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.lightbox-image-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    /* Let clicks pass through to close if needed, but image clicks should capture */
+}
+
+.lightbox-image-wrapper img {
+    max-width: 90%;
+    max-height: 80vh;
+    object-fit: contain;
+    pointer-events: auto;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    color: #fff;
+    font-size: 2.5rem;
+    cursor: pointer;
+    padding: 20px;
+    transition: all 0.3s;
+    z-index: 1002;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-btn.prev {
+    left: 20px;
+}
+
+.nav-btn.next {
+    right: 20px;
+}
+
+.lightbox-footer {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    z-index: 1002;
+    pointer-events: none;
+}
+
+.lightbox-footer h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-footer span {
+    font-size: 1rem;
+    color: #ccc;
+}
+
+@media (max-width: 768px) {
+    .lightbox-image-wrapper img {
+        max-width: 100%;
+        max-height: 70vh;
+    }
+
+    .nav-btn {
+        padding: 10px;
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        background: rgba(0, 0, 0, 0.5);
+        /* More visible on mobile */
+    }
+
+    .nav-btn.prev {
+        left: 10px;
+    }
+
+    .nav-btn.next {
+        right: 10px;
     }
 }

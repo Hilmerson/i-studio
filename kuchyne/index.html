@@ -3,11 +3,23 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>i-studio | Kuchyne budúcnosti</title>
+    <title>i-studio | Kuchyne</title>
     <meta name="description"
-        content="Dizajnové kuchyne na mieru. Mramorové pracovné dosky, bezúchytkové systémy a špičkové spotrebiče.">
+        content="Prémiové kuchyne na mieru. Moderný dizajn, špičkové materiály a funkčné riešenia pre váš domov.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.i-studio.sk/kuchyne/" />
+    <meta property="og:title" content="i-studio | Kuchyne" />
+    <meta property="og:description" content="Prémiové kuchyne na mieru. Moderný dizajn a špičkové materiály." />
+    <meta property="og:image" content="https://www.i-studio.sk/assets/kuchyne_hero.png" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.i-studio.sk/kuchyne/" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -34,15 +46,19 @@
                 <nav class="main-nav">
                     <ul>
                         <li><a href="/">Domov</a></li>
+                        <li><a href="/realizacie/">Realizácie</a></li>
                         <li><a href="/dvere/">Dvere</a></li>
                         <li><a href="/podlahy/">Podlahy</a></li>
                         <li><a href="/skrine/">Skrine</a></li>
                         <li><a href="/kuchyne/" class="active">Kuchyne</a></li>
-                        <li class="mobile-only-link"><a href="#contact">Kontakt</a></li>
+                        <li><a href="/nabytok/">Nábytok</a></li>
+                        <li><a href="/obklady/">Obklady</a></li>
+                        <li class="mobile-only-link"><a href="/kontakt/">Kontakt</a></li>
                     </ul>
                 </nav>
                 <div class="header-contact">
-                    <a href="#contact" class="btn-pill-black" style="padding: 10px 24px; font-size: 0.9rem;">Kontakt</a>
+                    <a href="/kontakt/" class="btn-pill-black"
+                        style="padding: 10px 24px; font-size: 0.9rem;">Kontakt</a>
                 </div>
                 <button class="mobile-menu-btn" aria-label="Toggle menu">
                     <span></span>
@@ -53,62 +69,75 @@
         </header>
 
         <main>
-            <section class="subpage-hero">
-                <div class="subpage-hero-bg">
-                    <img src="/src/assets/images/kuchyne_hero.png" alt="Luxury Modern Kitchen" data-speed="0.5">
+            <!-- Editorial Hero -->
+            <section class="editorial-hero">
+                <div class="hero-bg-container">
+                    <img src="/src/assets/images/kuchyne_hero.png" alt="Luxury Kitchen Clean" data-speed="0.5">
                 </div>
-                <div class="subpage-hero-content">
-                    <h1 class="subpage-title">Srdce Domova</h1>
-                    <p style="font-size: 1.5rem; max-width: 600px; margin: 0 auto; opacity: 0.9;">Miesto, kde sa dizajn
-                        stretáva s chuťou života.</p>
-                </div>
-            </section>
-
-            <section class="product-intro-section">
-                <div class="container product-intro-grid">
-                    <div class="intro-title">
-                        <h2 style="font-size: 3rem; margin-bottom: 2rem;">Pre kulinárske<br>zážitky.</h2>
-                    </div>
-                    <div class="intro-text-block">
-                        <p>Kuchyňa musí byť nielen krásna, ale aj dokonale funkčná. Navrhujeme ergonomické priestory,
-                            kde je radosť variť aj hostiť.</p>
-                        <p>Pracovné dosky z technického kameňa či mramoru, bezúchytkové systémy Blum s doživotnou
-                            zárukou a inteligentné spotrebiče, ktoré uľahčujú život.</p>
-                    </div>
+                <div class="hero-title-container">
+                    <h1 class="hero-big-text">
+                        Kuchyne<br>na Mieru
+                    </h1>
                 </div>
             </section>
 
-            <section class="product-gallery-section">
-                <div class="container">
-                    <div class="gallery-grid">
-                        <!-- Placeholders -->
-                        <div class="gallery-item">
-                            <img src="/src/assets/images/kuchyne_hero.png" alt="Island">
-                            <div class="gallery-overlay">
-                                <h3>Mramorové Ostrovčeky</h3>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="/src/assets/images/hero.png" alt="Matte Black">
-                            <div class="gallery-overlay">
-                                <h3>Matné Povrchy</h3>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="/src/assets/images/skrine_hero.png" alt="Storage">
-                            <div class="gallery-overlay">
-                                <h3>Inteligentné Úložné Systémy</h3>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="/src/assets/images/kuchyne_hero.png" alt="Lighting">
-                            <div class="gallery-overlay">
-                                <h3>Atmosférické Osvetlenie</h3>
-                            </div>
-                        </div>
+            <!-- Editorial Layout: Sidebar + Gallery -->
+            <div class="editorial-content container">
+
+                <!-- Sticky Sidebar -->
+                <aside class="content-sidebar">
+                    <h2 class="sidebar-title">Pre Kulinárske<br>Zážitky</h2>
+                    <p class="sidebar-desc">
+                        Kuchyňa musí byť nielen krásna, ale aj dokonale funkčná. Navrhujeme ergonomické priestory, kde
+                        je radosť variť aj hostiť.
+                        Využívame mramorové dosky a inteligentné spotrebiče.
+                    </p>
+                    <ul class="spec-list">
+                        <li>
+                            <span class="spec-label">Doska</span>
+                            <span>Mramor / Kameň</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Kovanie</span>
+                            <span>Blum / Hettich</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Povrch</span>
+                            <span>Nanotechnológia</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Spotrebiče</span>
+                            <span>Plne Integrované</span>
+                        </li>
+                    </ul>
+                </aside>
+
+                <!-- Scrolling Visuals -->
+                <div class="content-gallery">
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/kuchyne_hero.png" alt="Mramorové Ostrovčeky">
+                        <span class="block-caption">Mramorové ostrovčeky ako dominanta</span>
                     </div>
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/hero.png" alt="Matné Povrchy">
+                        <span class="block-caption">Matné povrchy odolné voči odtlačkom</span>
+                    </div>
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/skrine_hero.png" alt="Inteligentné Úložné Systémy">
+                        <span class="block-caption">Inteligentné úložné systémy pre poriadok</span>
+                    </div>
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/kuchyne_hero.png" alt="Atmosférické Osvetlenie">
+                        <span class="block-caption">Atmosférické osvetlenie pre náladu</span>
+                    </div>
+
                 </div>
-            </section>
+
+            </div>
 
         </main>
 
@@ -118,19 +147,23 @@
                     <div class="footer-col">
                         <h4>Kontaktujte Nás</h4>
                         <p style="color: #999; max-width: 200px;">
-                            info@i-studio.sk<br>
-                            +421 900 000 000<br>
-                            Bratislava
+                            office@i-studio.sk<br>
+                            +421 903 730 932<br>
+                            Stupava
                         </p>
                     </div>
                     <div class="footer-col">
                         <h4>Menu</h4>
                         <ul>
                             <li><a href="/">Domov</a></li>
+                            <li><a href="/realizacie/">Realizácie</a></li>
                             <li><a href="/dvere/">Dvere</a></li>
                             <li><a href="/podlahy/">Podlahy</a></li>
                             <li><a href="/skrine/">Skrine</a></li>
                             <li><a href="/kuchyne/">Kuchyne</a></li>
+                            <li><a href="/nabytok/">Nábytok</a></li>
+                            <li><a href="/obklady/">Obklady</a></li>
+                            <li><a href="/kontakt/">Kontakt</a></li>
                         </ul>
                     </div>
                 </div>

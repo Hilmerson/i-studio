@@ -3,11 +3,23 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>i-studio | Luxusné Podlahy</title>
+    <title>i-studio | Podlahy</title>
     <meta name="description"
-        content="Prémiové drevené a vinylové podlahy. Francúzsky stromček, masívny dub a vodeodolné kompozity.">
+        content="Luxusné drevené a vinylové podlahy. Široký výber dekorov a profesionálna pokládka.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.i-studio.sk/podlahy/" />
+    <meta property="og:title" content="i-studio | Podlahy" />
+    <meta property="og:description" content="Luxusné drevené a vinylové podlahy. Široký výber dekorov." />
+    <meta property="og:image" content="https://www.i-studio.sk/assets/podlahy_hero.png" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.i-studio.sk/podlahy/" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -34,15 +46,19 @@
                 <nav class="main-nav">
                     <ul>
                         <li><a href="/">Domov</a></li>
+                        <li><a href="/realizacie/">Realizácie</a></li>
                         <li><a href="/dvere/">Dvere</a></li>
                         <li><a href="/podlahy/" class="active">Podlahy</a></li>
                         <li><a href="/skrine/">Skrine</a></li>
                         <li><a href="/kuchyne/">Kuchyne</a></li>
-                        <li class="mobile-only-link"><a href="#contact">Kontakt</a></li>
+                        <li><a href="/nabytok/">Nábytok</a></li>
+                        <li><a href="/obklady/">Obklady</a></li>
+                        <li class="mobile-only-link"><a href="/kontakt/">Kontakt</a></li>
                     </ul>
                 </nav>
                 <div class="header-contact">
-                    <a href="#contact" class="btn-pill-black" style="padding: 10px 24px; font-size: 0.9rem;">Kontakt</a>
+                    <a href="/kontakt/" class="btn-pill-black"
+                        style="padding: 10px 24px; font-size: 0.9rem;">Kontakt</a>
                 </div>
                 <button class="mobile-menu-btn" aria-label="Toggle menu">
                     <span></span>
@@ -53,62 +69,75 @@
         </header>
 
         <main>
-            <section class="subpage-hero">
-                <div class="subpage-hero-bg">
+            <!-- Editorial Hero -->
+            <section class="editorial-hero">
+                <div class="hero-bg-container">
                     <img src="/src/assets/images/podlahy_hero.png" alt="Luxury Flooring" data-speed="0.5">
                 </div>
-                <div class="subpage-hero-content">
-                    <h1 class="subpage-title">Dokonalý Základ</h1>
-                    <p style="font-size: 1.5rem; max-width: 600px; margin: 0 auto; opacity: 0.9;">Podlaha, ktorá
-                        definuje priestor a vnesie doň teplo domova.</p>
+                <div class="hero-title-container">
+                    <h1 class="hero-big-text">
+                        Podlahy<br>na Mieru
+                    </h1>
                 </div>
             </section>
 
-            <section class="product-intro-section">
-                <div class="container product-intro-grid">
-                    <div class="intro-title">
-                        <h2 style="font-size: 3rem; margin-bottom: 2rem;">Kráčajte po<br>prémiovej kvalite.</h2>
-                    </div>
-                    <div class="intro-text-block">
-                        <p>Podlaha je najviac namáhanou časťou interiéru. Spájame nekompromisnú odolnosť s estetikou
-                            prírodných materiálov.</p>
-                        <p>Od tradičných masívnych parkiet (francúzsky stromček) až po moderné minerálne kompozity s
-                            nulovou nasiakavosťou. Každý krok u nás je zážitkom.</p>
-                    </div>
-                </div>
-            </section>
+            <!-- Editorial Layout: Sidebar + Gallery -->
+            <div class="editorial-content container">
 
-            <section class="product-gallery-section">
-                <div class="container">
-                    <div class="gallery-grid">
-                        <!-- Placeholders -->
-                        <div class="gallery-item">
-                            <img src="/src/assets/images/podlahy_hero.png" alt="Herringbone">
-                            <div class="gallery-overlay">
-                                <h3>Drevené Parkety</h3>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="/src/assets/images/cat_doors.png" alt="Vinyl">
-                            <div class="gallery-overlay">
-                                <h3>Kompozitné Podlahy</h3>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="/src/assets/images/hero.png" alt="Tiles">
-                            <div class="gallery-overlay">
-                                <h3>Veľkoformátová Dlažba</h3>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="/src/assets/images/podlahy_hero.png" alt="Installation">
-                            <div class="gallery-overlay">
-                                <h3>Profesionálna Pokládka</h3>
-                            </div>
-                        </div>
+                <!-- Sticky Sidebar -->
+                <aside class="content-sidebar">
+                    <h2 class="sidebar-title">Kráčajte po<br>Prémiovej Kvalite</h2>
+                    <p class="sidebar-desc">
+                        Podlaha je najviac namáhanou časťou interiéru. Spájame nekompromisnú odolnosť s estetikou
+                        prírodných materiálov
+                        pre teplo domova a jedinečný dizajn.
+                    </p>
+                    <ul class="spec-list">
+                        <li>
+                            <span class="spec-label">Typ</span>
+                            <span>Drevo / Kompozit</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Vzor</span>
+                            <span>Rybia kosť / Parkety</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Odolnosť</span>
+                            <span>Vodeodolné</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Montáž</span>
+                            <span>Click / Lepenie</span>
+                        </li>
+                    </ul>
+                </aside>
+
+                <!-- Scrolling Visuals -->
+                <div class="content-gallery">
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/podlahy_hero.png" alt="Drevené Parkety">
+                        <span class="block-caption">Tradičné drevené parkety a ich vôňa</span>
                     </div>
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/cat_doors.png" alt="Kompozitné Podlahy">
+                        <span class="block-caption">Moderné kompozitné podlahy s nulovou nasiakavosťou</span>
+                    </div>
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/hero.png" alt="Veľkoformátová Dlažba">
+                        <span class="block-caption">Veľkoformátová dlažba pre moderný vzhľad</span>
+                    </div>
+
+                    <div class="gallery-block full">
+                        <img src="/src/assets/images/podlahy_hero.png" alt="Profesionálna Pokládka">
+                        <span class="block-caption">Profesionálna pokládka pre dokonalý výsledok</span>
+                    </div>
+
                 </div>
-            </section>
+
+            </div>
 
         </main>
 
@@ -118,19 +147,23 @@
                     <div class="footer-col">
                         <h4>Kontaktujte Nás</h4>
                         <p style="color: #999; max-width: 200px;">
-                            info@i-studio.sk<br>
-                            +421 900 000 000<br>
-                            Bratislava
+                            office@i-studio.sk<br>
+                            +421 903 730 932<br>
+                            Stupava
                         </p>
                     </div>
                     <div class="footer-col">
                         <h4>Menu</h4>
                         <ul>
                             <li><a href="/">Domov</a></li>
+                            <li><a href="/realizacie/">Realizácie</a></li>
                             <li><a href="/dvere/">Dvere</a></li>
                             <li><a href="/podlahy/">Podlahy</a></li>
                             <li><a href="/skrine/">Skrine</a></li>
                             <li><a href="/kuchyne/">Kuchyne</a></li>
+                            <li><a href="/nabytok/">Nábytok</a></li>
+                            <li><a href="/obklady/">Obklady</a></li>
+                            <li><a href="/kontakt/">Kontakt</a></li>
                         </ul>
                     </div>
                 </div>

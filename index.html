@@ -3,11 +3,57 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>i-studio | Kompletný interiér od jedného dodávateľa</title>
   <meta name="description"
-    content="Exkluzívne interiérové riešenia na kľúč. Kuchyne, dvere, podlahy a nábytok na mieru v prémiovej kvalite.">
+    content="Exkluzívne interiérové riešenia na kľúč. Kuchyne, dvere, podlahy a nábytok na mieru v prémiovej kvalite. Showroom v Bratislave (Stupava).">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.i-studio.sk/" />
+  <meta property="og:title" content="i-studio | Kompletný interiér od jedného dodávateľa" />
+  <meta property="og:description"
+    content="Exkluzívne interiérové riešenia na kľúč. Kuchyne, dvere, podlahy a nábytok na mieru v prémiovej kvalite." />
+  <meta property="og:image" content="https://www.i-studio.sk/assets/hero.png" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.i-studio.sk/" />
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HomeAndConstructionBusiness",
+      "name": "i-studio",
+      "image": "https://www.i-studio.sk/assets/logo.png",
+      "@id": "https://www.i-studio.sk",
+      "url": "https://www.i-studio.sk",
+      "telephone": "+421903730932",
+      "email": "office@i-studio.sk",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Hviezdoslavova 90",
+        "addressLocality": "Stupava",
+        "postalCode": "90031",
+        "addressCountry": "SK"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "09:30",
+        "closes": "17:00"
+      }
+    }
+    </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -32,15 +78,18 @@
         <nav class="main-nav">
           <ul>
             <li><a href="/">Domov</a></li>
+            <li><a href="/realizacie/">Realizácie</a></li>
             <li><a href="/dvere/">Dvere</a></li>
             <li><a href="/podlahy/">Podlahy</a></li>
             <li><a href="/skrine/">Skrine</a></li>
             <li><a href="/kuchyne/">Kuchyne</a></li>
-            <li class="mobile-only-link"><a href="#contact">Kontakt</a></li>
+            <li><a href="/nabytok/">Nábytok</a></li>
+            <li><a href="/obklady/">Obklady</a></li>
+            <li class="mobile-only-link"><a href="/kontakt/">Kontakt</a></li>
           </ul>
         </nav>
         <div class="header-contact">
-          <a href="#contact" class="btn-pill-black" style="padding: 10px 24px; font-size: 0.9rem;">Kontakt</a>
+          <a href="/kontakt/" class="btn-pill-black" style="padding: 10px 24px; font-size: 0.9rem;">Kontakt</a>
         </div>
         <!-- Mobile Menu Button -->
         <button class="mobile-menu-btn" aria-label="Toggle menu">
@@ -74,7 +123,7 @@
 
         <div class="hero-cta-bar">
           <a href="#showroom" class="btn-pill-black">Navštíviť Showroom</a>
-          <a href="#contact" class="btn-pill-outline">Konzultácia Zdarma</a>
+          <a href="/kontakt/" class="btn-pill-outline">Konzultácia Zdarma</a>
         </div>
 
         <div class="hero-visuals">
@@ -176,17 +225,23 @@
           <div class="footer-col">
             <h4>Kontaktujte Nás</h4>
             <p style="color: #999; max-width: 200px;">
-              info@i-studio.sk<br>
-              +421 900 000 000<br>
-              Bratislava
+              office@i-studio.sk<br>
+              +421 903 730 932<br>
+              Stupava
             </p>
           </div>
           <div class="footer-col">
             <h4>Menu</h4>
             <ul>
-              <li><a href="#dvere">Dvere</a></li>
-              <li><a href="#podlahy">Podlahy</a></li>
-              <li><a href="#skrine">Skrine</a></li>
+              <li><a href="/">Domov</a></li>
+              <li><a href="/realizacie/">Realizácie</a></li>
+              <li><a href="/dvere/">Dvere</a></li>
+              <li><a href="/podlahy/">Podlahy</a></li>
+              <li><a href="/skrine/">Skrine</a></li>
+              <li><a href="/kuchyne/">Kuchyne</a></li>
+              <li><a href="/nabytok/">Nábytok</a></li>
+              <li><a href="/obklady/">Obklady</a></li>
+              <li><a href="/kontakt/">Kontakt</a></li>
             </ul>
           </div>
         </div>

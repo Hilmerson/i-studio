@@ -10,6 +10,8 @@ export default defineConfig({
                 podlahy: resolve(__dirname, 'podlahy/index.html'),
                 skrine: resolve(__dirname, 'skrine/index.html'),
                 kuchyne: resolve(__dirname, 'kuchyne/index.html'),
+                nabytok: resolve(__dirname, 'nabytok/index.html'),
+                obklady: resolve(__dirname, 'obklady/index.html'),
             },
         },
     },
