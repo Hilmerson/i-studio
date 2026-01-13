@@ -12,7 +12,11 @@ export default defineConfig({
                 kuchyne: resolve(__dirname, 'kuchyne/index.html'),
                 nabytok: resolve(__dirname, 'nabytok/index.html'),
                 obklady: resolve(__dirname, 'obklady/index.html'),
+                kontakt: resolve(__dirname, 'kontakt/index.html'),
+                realizacie: resolve(__dirname, 'realizacie/index.html'),
+                nested404: resolve(__dirname, '404.html'),
             },
         },
     },
+
 });
