@@ -18,7 +18,7 @@ public_folder: /src/photos
 collections:
   - name: galerie
     label: Galérie
-    description: 'Fotografie realizácií podľa kategórií. Fotky môžete pridávať, mazať aj meniť ich poradie (potiahnutím za ikonu s čiarkami).'
+    description: 'Fotografie realizácií podľa kategórií. Fotky môžete pridávať, mazať aj meniť ich poradie (potiahnutím za ikonu s čiarkami). Po kliknutí na Publikovať sa zmeny na webe prejavia do 2 minút — dovtedy sa môžu nové fotky zobrazovať ako prázdne náhľady, je to v poriadku.'
     files:
       - name: podlahy
         label: Podlahy
