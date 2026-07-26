@@ -1,6 +1,10 @@
 backend:
   name: git-gateway
   branch: main
+  # Po prechode na Websupport (pozri GOLIVE.md) odkomentovať — prihlásenie a git-gateway
+  # pobežia ďalej cez Netlify, aj keď je stránka hosťovaná inde:
+  # identity_url: https://istudioweb.netlify.app/.netlify/identity
+  # gateway_url: https://istudioweb.netlify.app/.netlify/git
   commit_messages:
     create: 'Add {{collection}} — {{slug}}'
     update: 'Update {{collection}} — {{slug}}'

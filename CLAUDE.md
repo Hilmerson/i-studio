@@ -7,13 +7,15 @@ Guidance for Claude Code when working in this repository.
 - **Never add a `Co-Authored-By: Claude ...` line (or any AI co-author/attribution) to commit messages.** Commits are authored solely by the repo owner.
 - Commit messages in English, short imperative subject line.
 - Push to `main` on GitHub (`Hilmerson/i-studio`); Netlify auto-deploys from it.
+- **Batch pushes.** Netlify's free plan is credit-based (300 credits/month) and every production deploy costs 15 credits — that's ~20 deploys/month. Accumulate related changes into one commit/push instead of pushing per-fix. This constraint disappears after go-live (see `GOLIVE.md`), when Netlify builds are stopped and deploys run via GitHub Actions (free for public repos).
 
 ## Project overview
 
 Remaster of **i-studio.sk** — an interior design studio in Stupava, Slovakia (owner's family business). Static Astro 5 site, **Slovak language only**.
 
-- **Test hosting:** Netlify (auto-deploy from GitHub, uses Netlify Forms).
-- **Production hosting:** Websupport (classic PHP/Apache hosting, deployed via FTP; uses `public/api/contact.php` + `.htaccess`).
+- **Test hosting:** Netlify (auto-deploy from GitHub, uses Netlify Forms). Site name: `istudioweb`.
+- **Production hosting:** Websupport (classic PHP/Apache hosting, deployed via FTP; uses `public/api/contact.php` + `.htaccess`). The switch-over procedure is documented step by step in `GOLIVE.md`.
+- The site sets **no cookies and runs no analytics** — the GDPR (`/gdpr`) and cookies (`/cookies`) pages state this explicitly, which is why there is no cookie banner. If analytics is ever added, both pages and a consent banner must be revisited.
 
 ## Commands
 

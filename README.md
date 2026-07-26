@@ -21,7 +21,9 @@ Two ways:
 
 ## Deployment
 
-- **Netlify (testing):** auto-deploys from `main`. The contact form uses Netlify Forms (enable *Form detection* in site settings).
-- **Websupport (production):** automated via GitHub Actions (`.github/workflows/deploy-websupport.yml`) — set the repo variable `WEBSUPPORT_DEPLOY=true` plus the FTP secrets listed in the workflow file, and every push to `main` builds and uploads `dist/` over FTP. Manual FTP upload of `dist/` works too. The contact form is handled by `api/contact.php` (PHP `mail()`); clean URLs and redirects from the old site are covered by the included `.htaccess`.
+- **Netlify (testing):** auto-deploys from `main`. The contact form uses Netlify Forms (enable *Form detection* in site settings). ⚠️ The free plan is credit-based: 300 credits/month and **each deploy costs 15** (~20 deploys/month) — batch pushes, and publish from `/admin` once per editing session, not per photo.
+- **Websupport (production):** automated via GitHub Actions (`.github/workflows/deploy-websupport.yml`) — set the repo variable `WEBSUPPORT_DEPLOY=true` plus the FTP secrets listed in the workflow file, and every push to `main` builds and uploads `dist/` over FTP (free for public repos, no deploy limits). The contact form is handled by `api/contact.php` (PHP `mail()`); clean URLs and redirects from the old site are covered by the included `.htaccess`.
+
+**The complete production switch-over is documented in [GOLIVE.md](GOLIVE.md)** — recipient flip, FTP secrets, verification checklist, and how to stop Netlify builds while keeping the `/admin` login working.
 
 Before go-live, switch the form recipient in `public/api/contact.php` from the test address to `office@i-studio.sk`.
