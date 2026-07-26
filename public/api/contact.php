@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // honeypot – boti vyplnia skryté pole
 if (!empty($_POST['web'] ?? '')) {
-    header('Location: /kontakt?odoslane=1');
+    header('Location: /dakujeme');
     exit;
 }
 
@@ -40,5 +40,5 @@ $headers = [
 
 $ok = mail($to, $subject, $body, implode("\r\n", $headers));
 
-header('Location: /kontakt?odoslane=' . ($ok ? '1' : '0'));
+header('Location: ' . ($ok ? '/dakujeme' : '/kontakt?odoslane=0'));
 exit;

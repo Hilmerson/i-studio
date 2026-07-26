@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+---
+
+<Base title="Ďakujeme za dopyt — i-studio" description="Váš dopyt sme prijali a čoskoro sa vám ozveme.">
+  <section class="section">
+    <div class="container wrap">
+      <svg class="check" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M8 12.5l2.5 2.5L16 9.5" />
+      </svg>
+      <h1>Ďakujeme za váš dopyt</h1>
+      <p class="lead">
+        Správa bola úspešne odoslaná. Ozveme sa vám čo najskôr — zvyčajne do jedného pracovného dňa.
+      </p>
+      <p class="alt">
+        Ponáhľate sa? Zavolajte nám na <a href={`tel:${site.phoneHref}`}>{site.phone}</a>.
+      </p>
+      <a class="btn btn--primary" href="/">Späť na úvod</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .wrap {
+    text-align: center;
+    max-width: 38rem;
+    padding-block: var(--space-5);
+  }
+  .check {
+    color: var(--yellow-deep);
+    margin-inline: auto;
+    margin-bottom: var(--space-3);
+  }
+  h1 { font-size: var(--step-3); margin-bottom: var(--space-2); }
+  .lead { color: var(--ink-soft); }
+  .alt { color: var(--muted); margin-block: var(--space-2) var(--space-4); }
+  .alt a { font-weight: 600; text-decoration-color: var(--yellow); }
+</style>

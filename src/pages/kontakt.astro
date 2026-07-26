@@ -1,6 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import { site, categories } from '../data/site';
+
+// Netlify build (testovacie nasadenie) posiela formulár cez Netlify Forms;
+// na Websupporte (produkcia) ho spracuje /api/contact.php
+const isNetlify = Boolean(process.env.NETLIFY);
+const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
 ---
 
 <Base
@@ -52,7 +57,15 @@ import { site, categories } from '../data/site';
         </div>
       </div>
 
-      <form class="form card" method="post" action="/api/contact.php">
+      <form
+        class="form card"
+        name="dopyt"
+        method="post"
+        action={formAction}
+        data-netlify="true"
+        netlify-honeypot="web"
+      >
+        <input type="hidden" name="form-name" value="dopyt" />
         <h2>Nezáväzný dopyt</h2>
 
         <p class="form__status form__status--ok" data-status-ok hidden>
