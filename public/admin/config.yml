@@ -18,13 +18,11 @@ public_folder: /src/photos
 collections:
   - name: galerie
     label: Galérie
-    description: 'Fotografie realizácií podľa kategórií. Fotky môžete pridávať, mazať aj meniť ich poradie (potiahnutím).'
+    description: 'Fotografie realizácií podľa kategórií. Fotky môžete pridávať, mazať aj meniť ich poradie (potiahnutím za ikonu s čiarkami).'
     files:
       - name: podlahy
         label: Podlahy
         file: src/data/galerie/podlahy.json
-        media_folder: '/src/photos/podlahy'
-        public_folder: '/src/photos/podlahy'
         fields:
           - label: Fotografie
             name: photos
@@ -32,12 +30,14 @@ collections:
             label_singular: fotografiu
             summary: '{{fields.image}}'
             fields:
-              - { label: Fotka, name: image, widget: image }
+              - label: Fotka
+                name: image
+                widget: image
+                media_folder: '/src/photos/podlahy'
+                public_folder: '/src/photos/podlahy'
       - name: dvere
         label: Dvere
         file: src/data/galerie/dvere.json
-        media_folder: '/src/photos/dvere'
-        public_folder: '/src/photos/dvere'
         fields:
           - label: Fotografie
             name: photos
@@ -45,12 +45,14 @@ collections:
             label_singular: fotografiu
             summary: '{{fields.image}}'
             fields:
-              - { label: Fotka, name: image, widget: image }
+              - label: Fotka
+                name: image
+                widget: image
+                media_folder: '/src/photos/dvere'
+                public_folder: '/src/photos/dvere'
       - name: skrine
         label: Skrine
         file: src/data/galerie/skrine.json
-        media_folder: '/src/photos/skrine'
-        public_folder: '/src/photos/skrine'
         fields:
           - label: Fotografie
             name: photos
@@ -58,12 +60,14 @@ collections:
             label_singular: fotografiu
             summary: '{{fields.image}}'
             fields:
-              - { label: Fotka, name: image, widget: image }
+              - label: Fotka
+                name: image
+                widget: image
+                media_folder: '/src/photos/skrine'
+                public_folder: '/src/photos/skrine'
       - name: kuchyne
         label: Kuchyne
         file: src/data/galerie/kuchyne.json
-        media_folder: '/src/photos/kuchyne'
-        public_folder: '/src/photos/kuchyne'
         fields:
           - label: Fotografie
             name: photos
@@ -71,12 +75,14 @@ collections:
             label_singular: fotografiu
             summary: '{{fields.image}}'
             fields:
-              - { label: Fotka, name: image, widget: image }
+              - label: Fotka
+                name: image
+                widget: image
+                media_folder: '/src/photos/kuchyne'
+                public_folder: '/src/photos/kuchyne'
       - name: nabytok
         label: Nábytok
         file: src/data/galerie/nabytok.json
-        media_folder: '/src/photos/nabytok'
-        public_folder: '/src/photos/nabytok'
         fields:
           - label: Fotografie
             name: photos
@@ -84,12 +90,14 @@ collections:
             label_singular: fotografiu
             summary: '{{fields.image}}'
             fields:
-              - { label: Fotka, name: image, widget: image }
+              - label: Fotka
+                name: image
+                widget: image
+                media_folder: '/src/photos/nabytok'
+                public_folder: '/src/photos/nabytok'
       - name: obklady
         label: Obklady
         file: src/data/galerie/obklady.json
-        media_folder: '/src/photos/obklady'
-        public_folder: '/src/photos/obklady'
         fields:
           - label: Fotografie
             name: photos
@@ -97,4 +105,8 @@ collections:
             label_singular: fotografiu
             summary: '{{fields.image}}'
             fields:
-              - { label: Fotka, name: image, widget: image }
+              - label: Fotka
+                name: image
+                widget: image
+                media_folder: '/src/photos/obklady'
+                public_folder: '/src/photos/obklady'
