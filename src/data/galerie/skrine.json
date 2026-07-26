@@ -1,0 +1,34 @@
+{
+  "photos": [
+    {
+      "image": "/src/photos/skrine/img1.jpg"
+    },
+    {
+      "image": "/src/photos/skrine/img2.jpg"
+    },
+    {
+      "image": "/src/photos/skrine/img3.jpg"
+    },
+    {
+      "image": "/src/photos/skrine/img4.jpg"
+    },
+    {
+      "image": "/src/photos/skrine/img5.jpg"
+    },
+    {
+      "image": "/src/photos/skrine/img6.jpg"
+    },
+    {
+      "image": "/src/photos/skrine/img7.jpg"
+    },
+    {
+      "image": "/src/photos/skrine/img8.jpg"
+    },
+    {
+      "image": "/src/photos/skrine/img9.jpg"
+    },
+    {
+      "image": "/src/photos/skrine/img10.jpg"
+    }
+  ]
+}

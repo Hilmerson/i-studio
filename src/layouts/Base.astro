@@ -84,6 +84,13 @@ const structuredData = {
     </style>
 
     <script>
+      // pozvánky/reset hesla z Netlify Identity smerujú na koreň webu — presmeruj do administrácie
+      if (/(invite_token|recovery_token|confirmation_token)=/.test(location.hash)) {
+        location.replace('/admin/' + location.hash);
+      }
+    </script>
+
+    <script>
       // reveal-on-scroll: progressive enhancement, no-op with reduced motion
       const items = document.querySelectorAll('.reveal');
       if ('IntersectionObserver' in window && items.length) {

@@ -1,0 +1,34 @@
+{
+  "photos": [
+    {
+      "image": "/src/photos/obklady/img1.jpg"
+    },
+    {
+      "image": "/src/photos/obklady/img2.jpg"
+    },
+    {
+      "image": "/src/photos/obklady/img3.jpg"
+    },
+    {
+      "image": "/src/photos/obklady/img4.jpg"
+    },
+    {
+      "image": "/src/photos/obklady/img5.jpg"
+    },
+    {
+      "image": "/src/photos/obklady/img6.jpg"
+    },
+    {
+      "image": "/src/photos/obklady/img7.jpg"
+    },
+    {
+      "image": "/src/photos/obklady/img8.jpg"
+    },
+    {
+      "image": "/src/photos/obklady/img9.jpg"
+    },
+    {
+      "image": "/src/photos/obklady/img10.jpg"
+    }
+  ]
+}

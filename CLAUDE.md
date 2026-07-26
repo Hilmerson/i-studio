@@ -24,7 +24,9 @@ Remaster of **i-studio.sk** — an interior design studio in Stupava, Slovakia (
 
 - `src/data/site.ts` — single source of truth: contact info, opening hours, the 6 product categories (slug, copy, brands), process steps. Years of experience is computed from `foundedYear` — never hardcode it.
 - `src/pages/[kategoria].astro` — one dynamic route generates all 6 category pages from `categories` in `site.ts`.
-- `src/components/Gallery.astro` — builds galleries at build time from photo folders via `import.meta.glob('/src/photos/**')`. Adding photos = dropping files into `src/photos/<slug>/` and rebuilding. Includes the lightbox.
+- `src/components/Gallery.astro` — builds galleries at build time. Photo selection and order come from JSON manifests in `src/data/galerie/<slug>.json` (managed via Decap CMS at `/admin`); if a manifest is missing/empty it falls back to globbing `src/photos/<slug>/`. Includes the lightbox.
+- `public/admin/` — Decap CMS (git-gateway backend + Netlify Identity). The owner manages gallery photos there; each save commits to `main`, which triggers Netlify build and (when enabled) the Websupport FTP deploy.
+- `.github/workflows/deploy-websupport.yml` — FTP deploy to Websupport on push to `main`; inert until the repo variable `WEBSUPPORT_DEPLOY=true` and the FTP secrets are set (see comments in the file).
 - `src/photos/hero/` — hero image only; excluded from galleries because no category uses that slug.
 - `src/assets/tiles/` — 470×660 category side-images from the original site, used for homepage tiles (not galleries).
 - `src/assets/i_studio.png` — original logo (header). `i_studio_footer.png` is a generated monochrome variant for the dark footer (regenerate with sharp if the logo changes).

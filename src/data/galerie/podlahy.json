@@ -1,0 +1,34 @@
+{
+  "photos": [
+    {
+      "image": "/src/photos/podlahy/img1.jpg"
+    },
+    {
+      "image": "/src/photos/podlahy/img2.jpg"
+    },
+    {
+      "image": "/src/photos/podlahy/img3.jpg"
+    },
+    {
+      "image": "/src/photos/podlahy/img4.jpg"
+    },
+    {
+      "image": "/src/photos/podlahy/img5.jpg"
+    },
+    {
+      "image": "/src/photos/podlahy/img6.jpg"
+    },
+    {
+      "image": "/src/photos/podlahy/img7.jpg"
+    },
+    {
+      "image": "/src/photos/podlahy/img8.jpg"
+    },
+    {
+      "image": "/src/photos/podlahy/img9.jpg"
+    },
+    {
+      "image": "/src/photos/podlahy/img10.jpg"
+    }
+  ]
+}

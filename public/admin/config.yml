@@ -1,0 +1,100 @@
+backend:
+  name: git-gateway
+  branch: main
+  commit_messages:
+    create: 'Add {{collection}} — {{slug}}'
+    update: 'Update {{collection}} — {{slug}}'
+    delete: 'Delete {{collection}} — {{slug}}'
+    uploadMedia: 'Add photo {{path}}'
+    deleteMedia: 'Remove photo {{path}}'
+
+locale: sk
+site_url: https://www.i-studio.sk
+logo_url: https://www.i-studio.sk/favicon.png
+
+media_folder: src/photos
+public_folder: /src/photos
+
+collections:
+  - name: galerie
+    label: Galérie
+    description: 'Fotografie realizácií podľa kategórií. Fotky môžete pridávať, mazať aj meniť ich poradie (potiahnutím).'
+    files:
+      - name: podlahy
+        label: Podlahy
+        file: src/data/galerie/podlahy.json
+        media_folder: '/src/photos/podlahy'
+        public_folder: '/src/photos/podlahy'
+        fields:
+          - label: Fotografie
+            name: photos
+            widget: list
+            label_singular: fotografiu
+            summary: '{{fields.image}}'
+            fields:
+              - { label: Fotka, name: image, widget: image }
+      - name: dvere
+        label: Dvere
+        file: src/data/galerie/dvere.json
+        media_folder: '/src/photos/dvere'
+        public_folder: '/src/photos/dvere'
+        fields:
+          - label: Fotografie
+            name: photos
+            widget: list
+            label_singular: fotografiu
+            summary: '{{fields.image}}'
+            fields:
+              - { label: Fotka, name: image, widget: image }
+      - name: skrine
+        label: Skrine
+        file: src/data/galerie/skrine.json
+        media_folder: '/src/photos/skrine'
+        public_folder: '/src/photos/skrine'
+        fields:
+          - label: Fotografie
+            name: photos
+            widget: list
+            label_singular: fotografiu
+            summary: '{{fields.image}}'
+            fields:
+              - { label: Fotka, name: image, widget: image }
+      - name: kuchyne
+        label: Kuchyne
+        file: src/data/galerie/kuchyne.json
+        media_folder: '/src/photos/kuchyne'
+        public_folder: '/src/photos/kuchyne'
+        fields:
+          - label: Fotografie
+            name: photos
+            widget: list
+            label_singular: fotografiu
+            summary: '{{fields.image}}'
+            fields:
+              - { label: Fotka, name: image, widget: image }
+      - name: nabytok
+        label: Nábytok
+        file: src/data/galerie/nabytok.json
+        media_folder: '/src/photos/nabytok'
+        public_folder: '/src/photos/nabytok'
+        fields:
+          - label: Fotografie
+            name: photos
+            widget: list
+            label_singular: fotografiu
+            summary: '{{fields.image}}'
+            fields:
+              - { label: Fotka, name: image, widget: image }
+      - name: obklady
+        label: Obklady
+        file: src/data/galerie/obklady.json
+        media_folder: '/src/photos/obklady'
+        public_folder: '/src/photos/obklady'
+        fields:
+          - label: Fotografie
+            name: photos
+            widget: list
+            label_singular: fotografiu
+            summary: '{{fields.image}}'
+            fields:
+              - { label: Fotka, name: image, widget: image }

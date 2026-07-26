@@ -1,0 +1,34 @@
+{
+  "photos": [
+    {
+      "image": "/src/photos/dvere/img1.jpg"
+    },
+    {
+      "image": "/src/photos/dvere/img2.jpg"
+    },
+    {
+      "image": "/src/photos/dvere/img3.jpg"
+    },
+    {
+      "image": "/src/photos/dvere/img4.jpg"
+    },
+    {
+      "image": "/src/photos/dvere/img5.jpg"
+    },
+    {
+      "image": "/src/photos/dvere/img6.jpg"
+    },
+    {
+      "image": "/src/photos/dvere/img7.jpg"
+    },
+    {
+      "image": "/src/photos/dvere/img8.jpg"
+    },
+    {
+      "image": "/src/photos/dvere/img9.jpg"
+    },
+    {
+      "image": "/src/photos/dvere/img10.jpg"
+    }
+  ]
+}

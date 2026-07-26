@@ -1,0 +1,48 @@
+# Automatický deploy na Websupport cez FTP.
+#
+# Aktivácia (jednorazovo v GitHub repo nastaveniach):
+#   1. Settings → Secrets and variables → Actions → Variables:
+#        WEBSUPPORT_DEPLOY = true
+#   2. Settings → Secrets and variables → Actions → Secrets:
+#        WEBSUPPORT_FTP_HOST     (napr. i-studio.sk alebo ftp.websupport.sk)
+#        WEBSUPPORT_FTP_USER
+#        WEBSUPPORT_FTP_PASSWORD
+#        WEBSUPPORT_FTP_DIR      (koreňový adresár webu, napr. /web/)
+#
+# Kým premenná WEBSUPPORT_DEPLOY nie je "true", workflow sa preskočí —
+# Netlify medzitým slúži ako testovací hosting.
+
+name: Deploy to Websupport
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    if: ${{ vars.WEBSUPPORT_DEPLOY == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Upload dist via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.WEBSUPPORT_FTP_HOST }}
+          username: ${{ secrets.WEBSUPPORT_FTP_USER }}
+          password: ${{ secrets.WEBSUPPORT_FTP_PASSWORD }}
+          server-dir: ${{ secrets.WEBSUPPORT_FTP_DIR }}
+          local-dir: dist/
+          dangerous-clean-slate: false

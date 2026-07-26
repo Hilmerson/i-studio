@@ -1,0 +1,34 @@
+{
+  "photos": [
+    {
+      "image": "/src/photos/nabytok/img1.jpg"
+    },
+    {
+      "image": "/src/photos/nabytok/img2.jpg"
+    },
+    {
+      "image": "/src/photos/nabytok/img3.jpg"
+    },
+    {
+      "image": "/src/photos/nabytok/img4.jpg"
+    },
+    {
+      "image": "/src/photos/nabytok/img5.jpg"
+    },
+    {
+      "image": "/src/photos/nabytok/img6.jpg"
+    },
+    {
+      "image": "/src/photos/nabytok/img7.jpg"
+    },
+    {
+      "image": "/src/photos/nabytok/img8.jpg"
+    },
+    {
+      "image": "/src/photos/nabytok/img9.jpg"
+    },
+    {
+      "image": "/src/photos/nabytok/img10.jpg"
+    }
+  ]
+}

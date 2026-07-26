@@ -1,0 +1,34 @@
+{
+  "photos": [
+    {
+      "image": "/src/photos/kuchyne/img1.jpg"
+    },
+    {
+      "image": "/src/photos/kuchyne/img2.jpg"
+    },
+    {
+      "image": "/src/photos/kuchyne/img3.jpg"
+    },
+    {
+      "image": "/src/photos/kuchyne/img4.jpg"
+    },
+    {
+      "image": "/src/photos/kuchyne/img5.jpg"
+    },
+    {
+      "image": "/src/photos/kuchyne/img6.jpg"
+    },
+    {
+      "image": "/src/photos/kuchyne/img7.jpg"
+    },
+    {
+      "image": "/src/photos/kuchyne/img8.jpg"
+    },
+    {
+      "image": "/src/photos/kuchyne/img9.jpg"
+    },
+    {
+      "image": "/src/photos/kuchyne/img10.jpg"
+    }
+  ]
+}

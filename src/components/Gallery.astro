@@ -16,10 +16,23 @@ const all = import.meta.glob<{ default: ImageMetadata }>(
   { eager: true }
 );
 
-let photos = Object.entries(all)
-  .filter(([path]) => path.includes(`/photos/${category}/`))
-  .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
-  .map(([, mod]) => mod.default);
+// poradie a výber fotiek riadi manifest spravovaný cez Decap CMS (/admin)
+const manifests = import.meta.glob<{ photos: { image: string }[] }>('/src/data/galerie/*.json', {
+  eager: true,
+});
+
+const manifest = manifests[`/src/data/galerie/${category}.json`];
+
+let photos: ImageMetadata[];
+if (manifest?.photos?.length) {
+  photos = manifest.photos.map((p) => all[p.image]?.default).filter(Boolean);
+} else {
+  // fallback: bez manifestu zoberie všetko z priečinka
+  photos = Object.entries(all)
+    .filter(([path]) => path.includes(`/photos/${category}/`))
+    .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
+    .map(([, mod]) => mod.default);
+}
 
 if (limit) photos = photos.slice(0, limit);
 
