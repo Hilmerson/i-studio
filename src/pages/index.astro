@@ -5,19 +5,15 @@ import Base from '../layouts/Base.astro';
 import heroPhoto from '../photos/hero/slide1.jpg';
 import { site, categories, processSteps, yearsOfExperience } from '../data/site';
 
-const all = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/photos/**/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}',
-  { eager: true }
-);
+// bočné fotky kategórií prevzaté z pôvodného webu (470×660)
+const tileImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/tiles/*.jpg', {
+  eager: true,
+});
 
-const firstPhotoOf = (slug: string) => {
-  const entry = Object.entries(all)
-    .filter(([path]) => path.includes(`/photos/${slug}/`))
-    .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))[0];
-  return entry?.[1].default;
-};
-
-const tiles = categories.map((c) => ({ ...c, photo: firstPhotoOf(c.slug) }));
+const tiles = categories.map((c) => ({
+  ...c,
+  photo: tileImages[`/src/assets/tiles/${c.slug}.jpg`]?.default,
+}));
 ---
 
 <Base
@@ -235,7 +231,7 @@ const tiles = categories.map((c) => ({ ...c, photo: firstPhotoOf(c.slug) }));
     display: grid;
     grid-template-columns: 1fr 1.3fr;
     gap: var(--space-5);
-    align-items: start;
+    align-items: center;
   }
   .about__title { font-size: var(--step-3); }
   .section-title {
