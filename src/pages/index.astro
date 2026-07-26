@@ -58,12 +58,11 @@ const tiles = categories.map((c) => ({
 
   <!-- ABOUT -->
   <section class="section">
-    <div class="container about">
-      <div class="reveal">
-        <p class="kicker">O nás</p>
-        <h2 class="about__title">Profesionáli v zariaďovaní interiéru</h2>
-      </div>
-      <div class="prose reveal">
+    <div class="container">
+      <p class="kicker">O nás</p>
+      <div class="about">
+        <h2 class="about__title reveal">Profesionáli v zariaďovaní interiéru</h2>
+        <div class="prose reveal">
         <p>
           Zaoberáme sa kompletnými službami v oblasti zariaďovania interiéru — od zamerania až po montáž.
           Poradíme vám s výberom a navrhneme riešenie presne podľa vašich potrieb a predstáv.
@@ -73,6 +72,7 @@ const tiles = categories.map((c) => ({
           obklady a sanita, podlahy, dvere so zárubňami, kuchyne, šatníkové skrine aj nábytok na mieru.
           Stačí si len vybrať.
         </p>
+        </div>
       </div>
     </div>
   </section>
@@ -233,7 +233,10 @@ const tiles = categories.map((c) => ({
     gap: var(--space-5);
     align-items: center;
   }
-  .about__title { font-size: var(--step-3); }
+  .about__title {
+    font-size: var(--step-3);
+    margin: 0;
+  }
   .section-title {
     font-size: var(--step-3);
     margin-bottom: var(--space-4);
