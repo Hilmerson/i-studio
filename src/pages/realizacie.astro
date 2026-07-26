@@ -1,0 +1,113 @@
+---
+import Base from '../layouts/Base.astro';
+import Gallery from '../components/Gallery.astro';
+import { categories } from '../data/site';
+---
+
+<Base
+  title="Realizácie — i-studio Stupava"
+  description="Galéria našich realizácií — kuchyne, skrine, nábytok na mieru, podlahy, dvere a obklady. Interiérové štúdio i-studio Stupava."
+>
+  <section class="page-head">
+    <div class="container">
+      <p class="kicker">Naše práce</p>
+      <h1 class="page-head__title">Realizácie</h1>
+      <p class="page-head__tagline">Interiéry, ktoré sme navrhli, vyrobili a namontovali.</p>
+    </div>
+  </section>
+
+  <nav class="filter" aria-label="Kategórie realizácií">
+    <div class="container filter__inner">
+      {categories.map((c) => <a class="filter__link" href={`#${c.slug}`}>{c.title}</a>)}
+    </div>
+  </nav>
+
+  {
+    categories.map((c) => (
+      <section class="section--tight cat" id={c.slug} aria-labelledby={`t-${c.slug}`}>
+        <div class="container">
+          <div class="cat__head">
+            <h2 id={`t-${c.slug}`}>{c.title}</h2>
+            <a class="cat__more" href={`/${c.slug}`}>
+              Viac o kategórii
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+          <Gallery category={c.slug} title={c.title} />
+        </div>
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .page-head {
+    background: var(--ink);
+    color: var(--paper);
+    padding-block: var(--space-5);
+  }
+  .page-head :global(.kicker) { color: color-mix(in srgb, var(--paper) 70%, transparent); }
+  .page-head__title { font-size: var(--step-4); color: #fff; line-height: 1; }
+  .page-head__tagline {
+    margin-top: var(--space-2);
+    font-size: var(--step-1);
+    color: var(--yellow);
+    font-family: var(--font-display);
+    font-style: italic;
+  }
+  .filter {
+    position: sticky;
+    top: 4.25rem;
+    z-index: 50;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .filter__inner {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    padding-block: 0.6rem;
+  }
+  .filter__link {
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--ink-soft);
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+  }
+  .filter__link:hover {
+    background: var(--yellow);
+    border-color: var(--yellow);
+    color: var(--ink);
+  }
+  .cat { scroll-margin-top: 8rem; }
+  .cat__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  .cat:first-of-type .cat__head { border-top: none; }
+  .cat__head h2 { font-size: var(--step-3); }
+  .cat__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ink-soft);
+  }
+  .cat__more:hover { color: var(--ink); }
+  .cat__more svg { transition: transform 200ms var(--ease); }
+  .cat__more:hover svg { transform: translateX(3px); }
+</style>

@@ -1,0 +1,264 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, categories } from '../data/site';
+---
+
+<Base
+  title="Kontakt — i-studio Stupava"
+  description={`Kontaktujte interiérové štúdio i-studio: ${site.address.street}, ${site.address.city}. Tel. ${site.phone}, ${site.email}.`}
+>
+  <section class="page-head">
+    <div class="container">
+      <p class="kicker">Kontakt</p>
+      <h1 class="page-head__title">Ozvite sa nám</h1>
+      <p class="page-head__tagline">Poradíme, zameriame, pripravíme ponuku — nezáväzne.</p>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="container contact">
+      <div class="contact__info">
+        <div class="card">
+          <h2>Kde nás nájdete</h2>
+          <address>
+            {site.address.street}<br />
+            {site.address.city}<br />
+            {site.address.country}
+          </address>
+        </div>
+        <div class="card">
+          <h2>Spojte sa s nami</h2>
+          <ul>
+            <li>
+              <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
+            </li>
+            <li>
+              <a href={`mailto:${site.email}`}>{site.email}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Otváracie hodiny</h2>
+          <ul class="hours">
+            {
+              site.hours.map((h) => (
+                <li>
+                  <span>{h.days}</span>
+                  <span>{h.time}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <form class="form card" method="post" action="/api/contact.php">
+        <h2>Nezáväzný dopyt</h2>
+
+        <p class="form__status form__status--ok" data-status-ok hidden>
+          Ďakujeme! Váš dopyt sme prijali a čoskoro sa vám ozveme.
+        </p>
+        <p class="form__status form__status--err" data-status-err hidden>
+          Dopyt sa nepodarilo odoslať. Skúste to prosím znova, alebo nám napíšte priamo na
+          <a href={`mailto:${site.email}`}>{site.email}</a>.
+        </p>
+
+        <div class="form__row">
+          <label for="f-meno">Meno a priezvisko <span aria-hidden="true">*</span></label>
+          <input id="f-meno" name="meno" type="text" required autocomplete="name" />
+        </div>
+
+        <div class="form__cols">
+          <div class="form__row">
+            <label for="f-email">E-mail <span aria-hidden="true">*</span></label>
+            <input id="f-email" name="email" type="email" required autocomplete="email" />
+          </div>
+          <div class="form__row">
+            <label for="f-tel">Telefón</label>
+            <input id="f-tel" name="telefon" type="tel" autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="form__row">
+          <label for="f-kategoria">O čo máte záujem?</label>
+          <select id="f-kategoria" name="kategoria">
+            <option value="">— vyberte —</option>
+            {categories.map((c) => <option value={c.title}>{c.title}</option>)}
+            <option value="Kompletný interiér">Kompletný interiér</option>
+            <option value="Iné">Iné</option>
+          </select>
+        </div>
+
+        <div class="form__row">
+          <label for="f-sprava">Správa <span aria-hidden="true">*</span></label>
+          <textarea id="f-sprava" name="sprava" rows="5" required></textarea>
+          <p class="form__hint">Napíšte nám v skratke, čo zariaďujete — ozveme sa vám späť.</p>
+        </div>
+
+        <!-- honeypot -->
+        <div class="form__hp" aria-hidden="true">
+          <label for="f-web">Webová stránka</label>
+          <input id="f-web" name="web" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <button class="btn btn--primary form__submit" type="submit">Odoslať dopyt</button>
+        <p class="form__gdpr">
+          Odoslaním súhlasíte so spracovaním údajov na účel vybavenia dopytu.
+          <a href="/gdpr">Viac o ochrane osobných údajov</a>.
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <section class="map" aria-label="Mapa — kde nás nájdete">
+    <iframe
+      src="https://www.google.com/maps?q=Hviezdoslavova%2090,%20900%2031%20Stupava&output=embed"
+      width="100%"
+      height="420"
+      style="border:0"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="Mapa — i-studio, Hviezdoslavova 90, Stupava"
+    ></iframe>
+  </section>
+</Base>
+
+<style>
+  .page-head {
+    background: var(--ink);
+    color: var(--paper);
+    padding-block: var(--space-5);
+  }
+  .page-head :global(.kicker) { color: color-mix(in srgb, var(--paper) 70%, transparent); }
+  .page-head__title { font-size: var(--step-4); color: #fff; line-height: 1; }
+  .page-head__tagline {
+    margin-top: var(--space-2);
+    font-size: var(--step-1);
+    color: var(--yellow);
+    font-family: var(--font-display);
+    font-style: italic;
+  }
+  .contact {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    align-items: start;
+  }
+  .contact__info {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: var(--space-3);
+  }
+  .card h2 {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: var(--space-2);
+  }
+  .card address { font-style: normal; }
+  .card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+  .card a { color: var(--ink); font-weight: 500; text-decoration-color: var(--yellow); }
+  .hours li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    font-size: 0.95rem;
+  }
+  .hours li span:last-child { color: var(--muted); text-align: right; }
+
+  .form h2 {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: var(--ink);
+    margin-bottom: var(--space-3);
+  }
+  .form__row { margin-bottom: var(--space-2); }
+  .form__cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+  .form label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .form label span { color: var(--yellow-deep); }
+  .form input,
+  .form select,
+  .form textarea {
+    width: 100%;
+    padding: 0.8rem 0.95rem;
+    font: inherit;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: border-color 180ms var(--ease);
+  }
+  .form input:focus,
+  .form select:focus,
+  .form textarea:focus {
+    outline: none;
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--yellow) 30%, transparent);
+  }
+  .form textarea { resize: vertical; }
+  .form__hint {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+  }
+  .form__hp { position: absolute; left: -9999px; }
+  .form__submit { width: 100%; justify-content: center; margin-top: var(--space-2); }
+  .form__gdpr {
+    margin-top: var(--space-2);
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .map { margin-top: var(--space-5); }
+  .map iframe { display: block; filter: grayscale(0.4); }
+  .form__status {
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-2);
+  }
+  .form__status--ok {
+    background: color-mix(in srgb, #2e7d32 12%, transparent);
+    border: 1px solid #2e7d32;
+  }
+  .form__status--err {
+    background: color-mix(in srgb, #c62828 10%, transparent);
+    border: 1px solid #c62828;
+  }
+
+  @media (max-width: 60rem) {
+    .contact { grid-template-columns: 1fr; }
+    .form__cols { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const sent = params.get('odoslane');
+  if (sent === '1') {
+    document.querySelector('[data-status-ok]')?.removeAttribute('hidden');
+    document.querySelector<HTMLFormElement>('.form')?.scrollIntoView({ block: 'center' });
+  } else if (sent === '0') {
+    document.querySelector('[data-status-err]')?.removeAttribute('hidden');
+    document.querySelector<HTMLFormElement>('.form')?.scrollIntoView({ block: 'center' });
+  }
+</script>

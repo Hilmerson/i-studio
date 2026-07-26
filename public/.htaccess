@@ -1,0 +1,29 @@
+# i-studio.sk — Websupport (Apache)
+
+# /kuchyne -> kuchyne.html
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]
+
+# staré adresy z pôvodného webu -> nové
+Redirect 301 /index.html /
+Redirect 301 /contact.html /kontakt
+Redirect 301 /realizacie_galeria_podlahy.html /podlahy
+Redirect 301 /realizacie_galeria_dvere.html /dvere
+Redirect 301 /realizacie_galeria_skrine.html /skrine
+Redirect 301 /realizacie_galeria_kuchyne.html /kuchyne
+Redirect 301 /realizacie_galeria_nabytok.html /nabytok
+Redirect 301 /realizacie_galeria_obklady.html /obklady
+
+# cache statických assetov (Astro hashuje názvy)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+</IfModule>

@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+---
+
+<Base
+  title="Ochrana osobných údajov — i-studio"
+  description="Informácie o spracovaní osobných údajov na stránke i-studio.sk."
+>
+  <section class="section">
+    <div class="container">
+      <p class="kicker">GDPR</p>
+      <h1 class="title">Ochrana osobných údajov</h1>
+      <div class="prose">
+        <p>
+          Prevádzkovateľom stránky i-studio.sk je i-studio, {site.address.street}, {site.address.city}.
+          Osobné údaje odoslané cez kontaktný formulár (meno, e-mail, telefón a obsah správy)
+          spracúvame výlučne na účel vybavenia vášho dopytu a nebudú poskytnuté tretím stranám.
+        </p>
+        <p>
+          Údaje uchovávame len po dobu nevyhnutnú na vybavenie dopytu a súvisiacej komunikácie.
+          Kedykoľvek nás môžete požiadať o ich výmaz na adrese
+          <a href={`mailto:${site.email}`}>{site.email}</a>.
+        </p>
+        <p>
+          Stránka nepoužíva reklamné ani sledovacie súbory cookies.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .title {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-3);
+  }
+</style>
