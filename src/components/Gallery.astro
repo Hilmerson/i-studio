@@ -6,10 +6,13 @@ interface Props {
   category: string;
   /** limit number of photos shown (e.g. homepage teaser) */
   limit?: number;
+  /** initial batch size; the rest reveals via "Zobraziť ďalšie" (0 = all at once) */
+  pageSize?: number;
   title?: string;
 }
 
-const { category, limit, title = 'galéria' } = Astro.props;
+const { category, limit, pageSize = 12, title = 'galéria' } = Astro.props;
+const BATCH = 24;
 
 const all = import.meta.glob<{ default: ImageMetadata }>(
   '/src/photos/**/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}',
@@ -44,25 +47,33 @@ const fullSizes = await Promise.all(
 
 {
   photos.length > 0 ? (
-    <div class="gallery" data-gallery={category}>
-      {photos.map((photo, i) => (
-        <a
-          class="gallery__item"
-          href={fullSizes[i].src}
-          data-lightbox-index={i}
-          aria-label={`Fotografia ${i + 1} — ${title}`}
-        >
-          <Image
-            src={photo}
-            widths={[420, 720]}
-            sizes="(max-width: 40rem) 100vw, (max-width: 64rem) 50vw, 33vw"
-            format="webp"
-            quality={78}
-            alt=""
-            loading="lazy"
-          />
-        </a>
-      ))}
+    <div class="gallery-wrap" data-gallery-wrap data-batch={BATCH}>
+      <div class="gallery" data-gallery={category}>
+        {photos.map((photo, i) => (
+          <a
+            class="gallery__item"
+            href={fullSizes[i].src}
+            data-lightbox-index={i}
+            hidden={pageSize > 0 && i >= pageSize}
+            aria-label={`Fotografia ${i + 1} — ${title}`}
+          >
+            <Image
+              src={photo}
+              widths={[420, 720]}
+              sizes="(max-width: 40rem) 100vw, (max-width: 64rem) 50vw, 33vw"
+              format="webp"
+              quality={78}
+              alt=""
+              loading="lazy"
+            />
+          </a>
+        ))}
+      </div>
+      {pageSize > 0 && photos.length > pageSize && (
+        <button class="gallery__more btn btn--ghost" data-load-more type="button">
+          Zobraziť ďalšie fotografie ({photos.length - pageSize})
+        </button>
+      )}
     </div>
   ) : (
     <p class="gallery__empty">Fotografie čoskoro doplníme.</p>
@@ -101,6 +112,10 @@ const fullSizes = await Promise.all(
   }
   .gallery__item:hover img {
     transform: scale(1.03);
+  }
+  .gallery__more {
+    display: flex;
+    margin: var(--space-3) auto 0;
   }
   .gallery__empty {
     color: var(--muted);
@@ -163,10 +178,28 @@ const fullSizes = await Promise.all(
 </style>
 
 <script>
+  // dávkové zobrazovanie fotiek („Zobraziť ďalšie")
+  document.querySelectorAll<HTMLElement>('[data-gallery-wrap]').forEach((wrap) => {
+    const button = wrap.querySelector<HTMLButtonElement>('[data-load-more]');
+    if (!button) return;
+    const batch = Number(wrap.dataset.batch) || 24;
+    button.addEventListener('click', () => {
+      const hiddenItems = [...wrap.querySelectorAll<HTMLElement>('.gallery__item[hidden]')];
+      hiddenItems.slice(0, batch).forEach((el) => el.removeAttribute('hidden'));
+      const remaining = hiddenItems.length - batch;
+      if (remaining > 0) {
+        button.textContent = `Zobraziť ďalšie fotografie (${remaining})`;
+      } else {
+        button.remove();
+      }
+    });
+  });
+
   document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
-    const dialog = gallery.nextElementSibling?.matches('[data-lightbox-dialog]')
-      ? (gallery.nextElementSibling as HTMLDialogElement)
-      : gallery.parentElement?.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
+    const wrap = gallery.closest('[data-gallery-wrap]') ?? gallery;
+    const dialog = wrap.nextElementSibling?.matches('[data-lightbox-dialog]')
+      ? (wrap.nextElementSibling as HTMLDialogElement)
+      : wrap.parentElement?.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
     if (!dialog) return;
 
     const links = [...gallery.querySelectorAll<HTMLAnchorElement>('a[data-lightbox-index]')];
