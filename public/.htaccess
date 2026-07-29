@@ -2,13 +2,17 @@
 
 # /kuchyne -> kuchyne.html
 RewriteEngine On
+
+# /index.html -> / (len ak to naozaj zadal návštevník — inak by DirectoryIndex spôsobil slučku)
+RewriteCond %{THE_REQUEST} \s/index\.html[\s?] [NC]
+RewriteRule ^index\.html$ / [R=301,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+)$ $1.html [L]
 
 # staré adresy z pôvodného webu -> nové
-Redirect 301 /index.html /
 Redirect 301 /contact.html /kontakt
 Redirect 301 /realizacie_galeria_podlahy.html /podlahy
 Redirect 301 /realizacie_galeria_dvere.html /dvere
