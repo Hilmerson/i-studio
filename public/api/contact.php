@@ -30,14 +30,17 @@ $to      = 'office@i-studio.sk';
 // testovacia adresa: vktrhilmer21@gmail.com
 $subject = '=?UTF-8?B?' . base64_encode('Dopyt z webu i-studio.sk' . ($kategoria !== '' ? " – $kategoria" : '')) . '?=';
 $body    = "Meno: $meno\nE-mail: $email\nTelefón: $telefon\nZáujem: $kategoria\n\nSpráva:\n$sprava\n";
+// Websupport: odosielateľ musí byť existujúca schránka na hostingu,
+// inak sa mail potichu zahodí. Envelope sender (-f) musí sedieť tiež.
+$from    = 'office@i-studio.sk';
 $headers = [
-    'From: web@i-studio.sk',
+    'From: ' . $from,
     'Reply-To: ' . preg_replace('/[\r\n]/', '', $email),
     'Content-Type: text/plain; charset=utf-8',
     'MIME-Version: 1.0',
 ];
 
-$ok = mail($to, $subject, $body, implode("\r\n", $headers));
+$ok = mail($to, $subject, $body, implode("\r\n", $headers), '-f' . $from);
 
 header('Location: ' . ($ok ? '/dakujeme' : '/kontakt?odoslane=0'));
 exit;
