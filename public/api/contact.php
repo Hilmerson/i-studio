@@ -26,9 +26,8 @@ if ($meno === '' || $sprava === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)
     exit('Chýbajúce alebo neplatné údaje. Vráťte sa späť a skúste to znova.');
 }
 
-// TESTOVANIE: pred spustením naostro prepnúť na office@i-studio.sk
-$to      = 'vktrhilmer21@gmail.com';
-// $to   = 'office@i-studio.sk';
+$to      = 'office@i-studio.sk';
+// testovacia adresa: vktrhilmer21@gmail.com
 $subject = '=?UTF-8?B?' . base64_encode('Dopyt z webu i-studio.sk' . ($kategoria !== '' ? " – $kategoria" : '')) . '?=';
 $body    = "Meno: $meno\nE-mail: $email\nTelefón: $telefon\nZáujem: $kategoria\n\nSpráva:\n$sprava\n";
 $headers = [
