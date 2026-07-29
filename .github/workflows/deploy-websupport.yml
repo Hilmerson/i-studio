@@ -48,7 +48,13 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq lftp
+          echo "== diagnostics: TCP + TLS handshake =="
+          timeout 20 bash -c "echo | openssl s_client -starttls ftp -connect $FTP_HOST:21 2>&1 | head -12" || echo "openssl probe failed/timed out"
+          echo "== curl FTPS listing probe =="
+          curl -v --ssl-reqd --insecure --disable-epsv --user "$FTP_USER:$FTP_PASSWORD" "ftp://$FTP_HOST/" --list-only --max-time 40 2>&1 | grep -vE "^(<|>) (PASS|USER)" | tail -25 || echo "curl probe failed"
+          echo "== lftp mirror =="
           lftp -c "
+            debug 3;
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
             set ssl:verify-certificate no;
