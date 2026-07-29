@@ -19,6 +19,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# nikdy nespúšťať dva FTP mirrory naraz
+concurrency:
+  group: deploy-websupport
+  cancel-in-progress: false
+
 jobs:
   deploy:
     if: ${{ vars.WEBSUPPORT_DEPLOY == 'true' }}
@@ -61,5 +66,5 @@ jobs:
             set net:max-retries 2;
             set net:timeout 30;
             open -u \"$FTP_USER\",\"$FTP_PASSWORD\" \"$FTP_HOST\";
-            mirror -R --delete --parallel=4 --no-perms --verbose=1 dist/ \"$FTP_DIR\";
+            mirror -R --delete --parallel=4 --no-perms --ignore-time --verbose=1 dist/ \"$FTP_DIR\";
           "
