@@ -8,6 +8,7 @@ RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+)$ $1.html [L]
 
 # staré adresy z pôvodného webu -> nové
+Redirect 301 /sitemap.xml /sitemap-index.xml
 Redirect 301 /contact.html /kontakt
 Redirect 301 /realizacie_galeria_podlahy.html /podlahy
 Redirect 301 /realizacie_galeria_dvere.html /dvere
