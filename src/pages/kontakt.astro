@@ -38,7 +38,11 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
               <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
             </li>
             <li>
-              <a href={`mailto:${site.email}`}>{site.email}</a>
+              <button class="copy-email" type="button" data-copy={site.email} title="Kliknutím skopírujete adresu">
+                <span class="copy-email__address">{site.email}</span>
+                <svg class="copy-email__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                <span class="copy-email__done" data-copy-done hidden>skopírované ✓</span>
+              </button>
             </li>
           </ul>
         </div>
@@ -180,6 +184,33 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
   .card address { font-style: normal; }
   .card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
   .card a { color: var(--ink); font-weight: 500; text-decoration-color: var(--yellow); }
+  .copy-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .copy-email__address {
+    text-decoration: underline;
+    text-decoration-color: var(--yellow);
+    text-underline-offset: 3px;
+  }
+  .copy-email__icon {
+    color: var(--muted);
+    transition: color 180ms var(--ease);
+  }
+  .copy-email:hover .copy-email__icon { color: var(--ink); }
+  .copy-email__done {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2e7d32;
+  }
   .hours li {
     display: flex;
     justify-content: space-between;
@@ -265,6 +296,20 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
 </style>
 
 <script>
+  // klik na e-mail = kopírovanie do schránky (mailto ako fallback)
+  const copyBtn = document.querySelector<HTMLButtonElement>('.copy-email');
+  copyBtn?.addEventListener('click', async () => {
+    const email = copyBtn.dataset.copy!;
+    try {
+      await navigator.clipboard.writeText(email);
+      const done = copyBtn.querySelector('[data-copy-done]');
+      done?.removeAttribute('hidden');
+      setTimeout(() => done?.setAttribute('hidden', ''), 2500);
+    } catch {
+      location.href = `mailto:${email}`;
+    }
+  });
+
   const params = new URLSearchParams(location.search);
   const sent = params.get('odoslane');
   if (sent === '1') {
