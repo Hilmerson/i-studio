@@ -117,6 +117,11 @@ h1, h2, h3, h4 {
   .reveal { opacity: 1; transform: none; }
 }
 
+/* fotky skryté za tlačidlom „Zobraziť ďalšie" — author CSS inak prebije UA pravidlo pre [hidden] */
+.gallery__item[hidden] {
+  display: none !important;
+}
+
 /* právne stránky (GDPR, cookies) */
 .legal { max-width: 46rem; }
 .legal h1 {
