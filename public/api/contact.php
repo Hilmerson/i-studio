@@ -33,12 +33,10 @@ if ($meno === '' || $sprava === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)
     exit('Chýbajúce alebo neplatné údaje. Vráťte sa späť a skúste to znova.');
 }
 
-// heuristika na spam: správa s odkazom a bez slovenskej diakritiky (typický anglický
-// spam). Nezahadzuje sa potichu — návštevník dostane vysvetlenie a tlačidlom Späť
-// sa vráti k vyplnenému formuláru (ľudia píšuci bez diakritiky oň neprídu).
-$hasLink       = (bool) preg_match('~https?://|www\.~i', $sprava);
-$hasDiacritics = (bool) preg_match('/[áäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ]/u', $sprava);
-if ($hasLink && !$hasDiacritics) {
+// viditeľné odmietnutie podozrivej správy — nikdy nie potichu, aby skutočný
+// návštevník vedel, čo sa stalo, a mohol sa tlačidlom Späť vrátiť k formuláru
+function odmietni(string $dovod, string $rada): void
+{
     http_response_code(422);
     header('Content-Type: text/html; charset=utf-8');
     echo '<!doctype html><html lang="sk"><head><meta charset="utf-8">'
@@ -46,12 +44,34 @@ if ($hasLink && !$hasDiacritics) {
        . '<title>Správu sa nepodarilo odoslať — i-studio</title></head>'
        . '<body style="font-family:system-ui,sans-serif;max-width:34rem;margin:15vh auto;padding:0 1.5rem;line-height:1.6;color:#14130f">'
        . '<h1 style="font-size:1.4rem">Správu sa nepodarilo odoslať</h1>'
-       . '<p>Správy s webovými odkazmi nám žiaľ často posielajú roboti, preto ich formulár neprijíma.</p>'
-       . '<p><strong>Vráťte sa tlačidlom Späť</strong>, odstráňte zo správy odkaz a odošlite ju znova. '
-       . 'Prípadne nám napíšte priamo na <a href="mailto:office@i-studio.sk" style="color:#14130f">office@i-studio.sk</a> — '
-       . 'v e-maile môžu byť odkazy bez obmedzenia.</p>'
+       . '<p>' . $dovod . '</p>'
+       . '<p>' . $rada . ' Prípadne nám napíšte priamo na '
+       . '<a href="mailto:office@i-studio.sk" style="color:#14130f">office@i-studio.sk</a>.</p>'
+       . '<button onclick="history.back()" style="margin-top:1rem;padding:.8rem 1.6rem;font:inherit;font-weight:600;'
+       . 'background:#f6be00;border:none;border-radius:2px;cursor:pointer">&larr; Späť na formulár</button>'
        . '</body></html>';
     exit;
+}
+
+// heuristika 1: odkaz v správe + úplne bez slovenskej diakritiky (typický anglický spam)
+$hasLink       = (bool) preg_match('~https?://|www\.~i', $sprava);
+$hasDiacritics = (bool) preg_match('/[áäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ]/u', $sprava);
+if ($hasLink && !$hasDiacritics) {
+    odmietni(
+        'Správy s webovými odkazmi nám žiaľ často posielajú roboti, preto ich formulár neprijíma.',
+        '<strong>Vráťte sa tlačidlom Späť</strong>, odstráňte zo správy odkaz a odošlite ju znova.'
+    );
+}
+
+// heuristika 2: výrazy, ktoré sa v dopyte na interiér nevyskytujú, ale v spame áno
+$spamKeywords = '/\b(crypto|bitcoin|btc|ethereum|tokens?|forex|investment|investing|casino'
+    . '|viagra|cialis|porno?|xxx|seo|backlinks?|followers|subscribers|telegram|telegra\.ph'
+    . '|lottery|jackpot|gift ?card)\b|t\.me\/|\$\s?\d|\p{Cyrillic}/iu';
+if (preg_match($spamKeywords, $meno . ' ' . $sprava)) {
+    odmietni(
+        'Správa obsahuje výrazy, ktoré sa typicky vyskytujú v spame, preto ju formulár neprijal.',
+        '<strong>Vráťte sa tlačidlom Späť</strong>, preformulujte správu (bez anglických reklamných výrazov) a odošlite ju znova.'
+    );
 }
 
 $to      = 'office@i-studio.sk';
