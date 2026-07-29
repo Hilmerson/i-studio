@@ -117,6 +117,8 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
           <label for="f-web">Webová stránka</label>
           <input id="f-web" name="web" type="text" tabindex="-1" autocomplete="off" />
         </div>
+        <!-- anti-spam: vyplní JavaScript pri načítaní stránky; boti POSTujúci priamo ho nemajú -->
+        <input type="hidden" name="cas" id="f-cas" value="" />
 
         <button class="btn btn--primary form__submit" type="submit">Odoslať dopyt</button>
         <p class="form__gdpr">
@@ -296,6 +298,10 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
 </style>
 
 <script>
+  // anti-spam token — samotná prítomnosť hodnoty dokazuje, že stránka bola načítaná v prehliadači
+  const casField = document.getElementById('f-cas') as HTMLInputElement | null;
+  if (casField) casField.value = String(Date.now());
+
   // klik na e-mail = kopírovanie do schránky (mailto ako fallback)
   const copyBtn = document.querySelector<HTMLButtonElement>('.copy-email');
   copyBtn?.addEventListener('click', async () => {

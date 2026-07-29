@@ -15,6 +15,13 @@ if (!empty($_POST['web'] ?? '')) {
     exit;
 }
 
+// anti-spam token – vypĺňa ho JavaScript pri načítaní stránky;
+// boti POSTujúci priamo na endpoint ho nemajú
+if (empty($_POST['cas'] ?? '')) {
+    header('Location: /dakujeme');
+    exit;
+}
+
 $meno      = trim((string)($_POST['meno'] ?? ''));
 $email     = trim((string)($_POST['email'] ?? ''));
 $telefon   = trim((string)($_POST['telefon'] ?? ''));
@@ -24,6 +31,15 @@ $sprava    = trim((string)($_POST['sprava'] ?? ''));
 if ($meno === '' || $sprava === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     http_response_code(400);
     exit('Chýbajúce alebo neplatné údaje. Vráťte sa späť a skúste to znova.');
+}
+
+// heuristika na spam: správa s odkazom a úplne bez slovenskej diakritiky
+// (typický anglický/ruský spam) sa potichu zahodí
+$hasLink       = (bool) preg_match('~https?://|www\.~i', $sprava);
+$hasDiacritics = (bool) preg_match('/[áäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ]/u', $sprava);
+if ($hasLink && !$hasDiacritics) {
+    header('Location: /dakujeme');
+    exit;
 }
 
 $to      = 'office@i-studio.sk';
