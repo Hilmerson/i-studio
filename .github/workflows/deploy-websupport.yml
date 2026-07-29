@@ -37,13 +37,23 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Upload dist via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.WEBSUPPORT_FTP_HOST }}
-          username: ${{ secrets.WEBSUPPORT_FTP_USER }}
-          password: ${{ secrets.WEBSUPPORT_FTP_PASSWORD }}
-          protocol: ftps
-          server-dir: ${{ secrets.WEBSUPPORT_FTP_DIR }}
-          local-dir: dist/
-          dangerous-clean-slate: false
+      # lftp namiesto FTP-Deploy-Action: Websupport FTPS vyžaduje TLS session reuse,
+      # ktorý knižnica basic-ftp nepodporuje ("Server sent FIN packet unexpectedly")
+      - name: Upload dist via FTPS (lftp)
+        env:
+          FTP_HOST: ${{ secrets.WEBSUPPORT_FTP_HOST }}
+          FTP_USER: ${{ secrets.WEBSUPPORT_FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.WEBSUPPORT_FTP_PASSWORD }}
+          FTP_DIR: ${{ secrets.WEBSUPPORT_FTP_DIR }}
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+          lftp -c "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            set net:max-retries 2;
+            set net:timeout 30;
+            open -u \"$FTP_USER\",\"$FTP_PASSWORD\" \"$FTP_HOST\";
+            mirror -R --delete --parallel=4 --no-perms --verbose=1 dist/ \"$FTP_DIR\";
+          "
