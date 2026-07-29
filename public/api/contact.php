@@ -53,6 +53,14 @@ function odmietni(string $dovod, string $rada): void
     exit;
 }
 
+// neplatné UTF-8 bajty obídu všetky /u regexy — skutočný prehliadač ich nikdy nepošle
+if (@preg_match('//u', $meno . ' ' . $sprava . ' ' . $kategoria . ' ' . $telefon) !== 1) {
+    odmietni(
+        'Správa obsahuje neplatné znaky, preto ju formulár neprijal.',
+        '<strong>Vráťte sa tlačidlom Späť</strong> a skúste správu napísať znova.'
+    );
+}
+
 // heuristika 1: odkaz v správe + úplne bez slovenskej diakritiky (typický anglický spam)
 $hasLink       = (bool) preg_match('~https?://|www\.~i', $sprava);
 $hasDiacritics = (bool) preg_match('/[áäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ]/u', $sprava);
