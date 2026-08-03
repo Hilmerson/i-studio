@@ -350,10 +350,27 @@ const tiles = categories.map((c) => ({
   .process__list {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: var(--space-3) 0 0;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--space-4);
+    position: relative;
+  }
+  /* žltá linka, ktorá sa nakreslí naprieč krokmi pri scrollnutí do sekcie */
+  .process__list::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--yellow);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1400ms var(--ease) 200ms;
+  }
+  .process.is-drawn .process__list::before {
+    transform: scaleX(1);
   }
   .process__num {
     display: block;
@@ -405,13 +422,47 @@ const tiles = categories.map((c) => ({
   }
   @media (max-width: 40rem) {
     .tiles { grid-template-columns: 1fr; }
-    .process__list { grid-template-columns: 1fr; gap: var(--space-3); }
+    .process__list {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+      padding: 0 0 0 var(--space-3);
+    }
+    /* na mobile sa linka kreslí zvislo popri krokoch */
+    .process__list::before {
+      top: 0;
+      bottom: 0;
+      right: auto;
+      width: 3px;
+      height: auto;
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    .process.is-drawn .process__list::before {
+      transform: scaleY(1);
+    }
   }
 </style>
 
 <script>
   // animované počítadlá v čiernom páse — spustia sa, keď pás vojde do viewportu
   document.addEventListener('astro:page-load', () => {
+    // nakreslenie žltej linky v sekcii „Ako to prebieha"
+    const process = document.querySelector('.process');
+    if (process && 'IntersectionObserver' in window) {
+      const pio = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            process.classList.add('is-drawn');
+            pio.disconnect();
+          }
+        },
+        { threshold: 0.25 }
+      );
+      pio.observe(process);
+    } else {
+      process?.classList.add('is-drawn');
+    }
+
     const strip = document.querySelector('.strip');
     const counters = [...document.querySelectorAll<HTMLElement>('.strip [data-count]')];
     if (!strip || !counters.length || !('IntersectionObserver' in window)) return;

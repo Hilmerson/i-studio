@@ -50,6 +50,10 @@ const isActive = (href: string) =>
     background: color-mix(in srgb, var(--paper) 88%, transparent);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
+    transition: transform 280ms var(--ease);
+  }
+  .header.header--hidden {
+    transform: translateY(-100%);
   }
   .header__inner {
     display: flex;
@@ -196,5 +200,25 @@ const isActive = (href: string) =>
       const open = nav?.classList.toggle('is-open');
       toggle.setAttribute('aria-expanded', String(Boolean(open)));
     });
+
+    // hlavička sa pri scrollovaní nadol schová, pri scrollovaní nahor vráti
+    const header = document.querySelector('.header');
+    if (!header) return;
+    // pri client-side navigácii odstráň listener naviazaný na starú hlavičku
+    const prev = (window as any).__headerOnScroll;
+    if (prev) window.removeEventListener('scroll', prev);
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const navOpen = nav?.classList.contains('is-open');
+      if (!navOpen && y > lastY + 2 && y > 140) {
+        header.classList.add('header--hidden');
+      } else if (y < lastY - 2 || y <= 140) {
+        header.classList.remove('header--hidden');
+      }
+      lastY = y;
+    };
+    (window as any).__headerOnScroll = onScroll;
+    window.addEventListener('scroll', onScroll, { passive: true });
   });
 </script>
