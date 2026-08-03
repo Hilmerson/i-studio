@@ -64,6 +64,14 @@ const structuredData = {
     <meta property="og:image:alt" content="i-studio — vaše interiérové štúdio, Stupava" />
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <!-- Umami: anonymné štatistiky bez cookies (data-domains: nepočíta dev ani testovacie nasadenia) -->
+    <script
+      is:inline
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="878d7848-564a-44c4-a953-bac27f3d850a"
+      data-domains="www.i-studio.sk,i-studio.sk"
+    ></script>
     <script is:inline>
       // pozvánky/reset hesla z Netlify Identity smerujú na koreň webu — presmeruj do administrácie
       if (/(invite_token|recovery_token|confirmation_token)=/.test(location.hash)) {
