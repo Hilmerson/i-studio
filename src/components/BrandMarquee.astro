@@ -59,6 +59,10 @@ import { partnerBrands } from '../data/site';
     width: max-content;
     animation: marquee 42s linear infinite;
   }
+  /* pás sa pri prejdení myšou zastaví — logá sa dajú pohodlne "rozsvietiť" */
+  .marquee__viewport:hover .marquee__track {
+    animation-play-state: paused;
+  }
   .marquee__list {
     display: flex;
     align-items: center;
