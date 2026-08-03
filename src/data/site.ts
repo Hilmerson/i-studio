@@ -114,20 +114,21 @@ export const categories: Category[] = [
   },
 ];
 
-/* značky pre marquee pás na domovskej stránke */
+/* značky pre marquee pás na domovskej stránke; logá sú v public/brands/
+   invert: true = biele logo, na svetlom podklade sa musí prevrátiť do tmava */
 export const partnerBrands = [
-  'Quick-Step',
-  'Pol-Skone',
-  'Lip Bled',
-  'Atvyn',
-  'MP-kovania',
-  'Egger',
-  'Kaindl',
-  'Blum',
-  'Indeco',
-  'Bonari',
-  'Siko',
-  'Keramika Soukup',
+  { name: 'Quick-Step', logo: '/brands/quick-step.svg' },
+  { name: 'Pol-Skone', logo: '/brands/pol-skone.svg' },
+  { name: 'Lip Bled', logo: '/brands/lip-bled.png' },
+  { name: 'Atvyn', logo: '/brands/atvyn.svg' },
+  { name: 'MP Kovania', logo: '/brands/mp-kovania.svg', invert: true },
+  { name: 'Egger', logo: '/brands/egger.svg' },
+  { name: 'Kaindl', logo: '/brands/kaindl.svg' },
+  { name: 'Blum', logo: '/brands/blum.svg' },
+  { name: 'Indeco', logo: '/brands/indeco.png', invert: true },
+  { name: 'Bonari', logo: '/brands/bonari.svg' },
+  { name: 'Siko', logo: '/brands/siko.svg' },
+  { name: 'Keramika Soukup', logo: '/brands/keramika-soukup.svg' },
 ];
 
 export const processSteps = [

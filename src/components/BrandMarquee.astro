@@ -6,10 +6,28 @@ import { partnerBrands } from '../data/site';
   <div class="marquee__viewport">
     <div class="marquee__track">
       <ul class="marquee__list">
-        {partnerBrands.map((b) => <li>{b}</li>)}
+        {partnerBrands.map((b) => (
+          <li>
+            <img
+              src={b.logo}
+              alt={b.name}
+              class:list={['marquee__logo', { 'marquee__logo--invert': b.invert }]}
+              height="34"
+            />
+          </li>
+        ))}
       </ul>
       <ul class="marquee__list" aria-hidden="true">
-        {partnerBrands.map((b) => <li>{b}</li>)}
+        {partnerBrands.map((b) => (
+          <li>
+            <img
+              src={b.logo}
+              alt=""
+              class:list={['marquee__logo', { 'marquee__logo--invert': b.invert }]}
+              height="34"
+            />
+          </li>
+        ))}
       </ul>
     </div>
   </div>
@@ -19,7 +37,7 @@ import { partnerBrands } from '../data/site';
   .marquee {
     border-block: 1px solid var(--line);
     background: var(--surface);
-    padding-block: 1.4rem;
+    padding-block: 1.6rem;
   }
   .marquee__viewport {
     overflow: hidden;
@@ -30,7 +48,7 @@ import { partnerBrands } from '../data/site';
   .marquee__track {
     display: flex;
     width: max-content;
-    animation: marquee 38s linear infinite;
+    animation: marquee 42s linear infinite;
   }
   .marquee__list {
     display: flex;
@@ -40,18 +58,30 @@ import { partnerBrands } from '../data/site';
     padding: 0;
   }
   .marquee__list li {
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--muted);
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    margin-right: 4.2rem;
   }
-  .marquee__list li::after {
-    content: '·';
-    color: var(--yellow);
-    font-size: 1.3rem;
-    margin-inline: 1.6rem;
+  .marquee__logo {
+    height: 2.1rem;
+    width: auto;
+    max-width: 11rem;
+    object-fit: contain;
+    /* jednotný „prémiový" vzhľad: sivá škála, farba sa objaví pri prejdení myšou */
+    filter: grayscale(1);
+    opacity: 0.62;
+    transition: filter 250ms var(--ease), opacity 250ms var(--ease);
+  }
+  .marquee__logo:hover {
+    filter: none;
+    opacity: 1;
+  }
+  /* biele logá — na svetlom podklade ich treba prevrátiť do tmava */
+  .marquee__logo--invert {
+    filter: invert(1) grayscale(1);
+  }
+  .marquee__logo--invert:hover {
+    filter: invert(1);
   }
   @keyframes marquee {
     to { transform: translateX(-50%); }
