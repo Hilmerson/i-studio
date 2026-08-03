@@ -119,8 +119,10 @@ export const categories: Category[] = [
 export const partnerBrands = [
   { name: 'Quick-Step', logo: '/brands/quick-step.svg' },
   { name: 'Pol-Skone', logo: '/brands/pol-skone.svg' },
-  { name: 'Lip Bled', logo: '/brands/lip-bled.png' },
-  { name: 'Atvyn', logo: '/brands/atvyn.svg' },
+  /* nízke rozlíšenie (výrez zo sprite) — zobrazuje sa menšie, nech nie je rozmazané */
+  { name: 'Lip Bled', logo: '/brands/lip-bled.png', size: 'sm' },
+  /* kruhový emblém s drobným textom — potrebuje viac výšky, aby bol čitateľný */
+  { name: 'Atvyn', logo: '/brands/atvyn.svg', size: 'lg' },
   { name: 'MP Kovania', logo: '/brands/mp-kovania.svg', invert: true },
   { name: 'Egger', logo: '/brands/egger.svg' },
   { name: 'Kaindl', logo: '/brands/kaindl.svg' },

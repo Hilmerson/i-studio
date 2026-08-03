@@ -11,7 +11,11 @@ import { partnerBrands } from '../data/site';
             <img
               src={b.logo}
               alt={b.name}
-              class:list={['marquee__logo', { 'marquee__logo--invert': b.invert }]}
+              class:list={[
+                'marquee__logo',
+                { 'marquee__logo--invert': b.invert },
+                b.size && `marquee__logo--${b.size}`,
+              ]}
               height="34"
             />
           </li>
@@ -23,7 +27,12 @@ import { partnerBrands } from '../data/site';
             <img
               src={b.logo}
               alt=""
-              class:list={['marquee__logo', { 'marquee__logo--invert': b.invert }]}
+              class:list={[
+                'marquee__logo',
+                { 'marquee__logo--invert': b.invert },
+                b.size && `marquee__logo--${b.size}`,
+              ]}
+              loading="lazy"
               height="34"
             />
           </li>
@@ -82,6 +91,14 @@ import { partnerBrands } from '../data/site';
   }
   .marquee__logo--invert:hover {
     filter: invert(1);
+  }
+  /* nízke rozlíšenie — menšie zobrazenie zostáva ostré */
+  .marquee__logo--sm {
+    height: 1.35rem;
+  }
+  /* kruhový emblém s drobným textom */
+  .marquee__logo--lg {
+    height: 2.9rem;
   }
   @keyframes marquee {
     to { transform: translateX(-50%); }
