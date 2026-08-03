@@ -1,0 +1,62 @@
+---
+import { partnerBrands } from '../data/site';
+---
+
+<section class="marquee" aria-label="Značky, s ktorými pracujeme">
+  <div class="marquee__viewport">
+    <div class="marquee__track">
+      <ul class="marquee__list">
+        {partnerBrands.map((b) => <li>{b}</li>)}
+      </ul>
+      <ul class="marquee__list" aria-hidden="true">
+        {partnerBrands.map((b) => <li>{b}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .marquee {
+    border-block: 1px solid var(--line);
+    background: var(--surface);
+    padding-block: 1.4rem;
+  }
+  .marquee__viewport {
+    overflow: hidden;
+    /* jemné vyblednutie na okrajoch */
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 38s linear infinite;
+  }
+  .marquee__list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .marquee__list li {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .marquee__list li::after {
+    content: '·';
+    color: var(--yellow);
+    font-size: 1.3rem;
+    margin-inline: 1.6rem;
+  }
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track { animation: none; }
+  }
+</style>

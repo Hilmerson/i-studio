@@ -68,6 +68,7 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
         action={formAction}
         data-netlify="true"
         netlify-honeypot="web"
+        data-astro-reload
       >
         <input type="hidden" name="form-name" value="dopyt" />
         <h2>Nezáväzný dopyt</h2>
@@ -298,31 +299,33 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
 </style>
 
 <script>
-  // anti-spam token — samotná prítomnosť hodnoty dokazuje, že stránka bola načítaná v prehliadači
-  const casField = document.getElementById('f-cas') as HTMLInputElement | null;
-  if (casField) casField.value = String(Date.now());
+  document.addEventListener('astro:page-load', () => {
+    // anti-spam token — samotná prítomnosť hodnoty dokazuje, že stránka bola načítaná v prehliadači
+    const casField = document.getElementById('f-cas') as HTMLInputElement | null;
+    if (casField) casField.value = String(Date.now());
 
-  // klik na e-mail = kopírovanie do schránky (mailto ako fallback)
-  const copyBtn = document.querySelector<HTMLButtonElement>('.copy-email');
-  copyBtn?.addEventListener('click', async () => {
-    const email = copyBtn.dataset.copy!;
-    try {
-      await navigator.clipboard.writeText(email);
-      const done = copyBtn.querySelector('[data-copy-done]');
-      done?.removeAttribute('hidden');
-      setTimeout(() => done?.setAttribute('hidden', ''), 2500);
-    } catch {
-      location.href = `mailto:${email}`;
+    // klik na e-mail = kopírovanie do schránky (mailto ako fallback)
+    const copyBtn = document.querySelector<HTMLButtonElement>('.copy-email');
+    copyBtn?.addEventListener('click', async () => {
+      const email = copyBtn.dataset.copy!;
+      try {
+        await navigator.clipboard.writeText(email);
+        const done = copyBtn.querySelector('[data-copy-done]');
+        done?.removeAttribute('hidden');
+        setTimeout(() => done?.setAttribute('hidden', ''), 2500);
+      } catch {
+        location.href = `mailto:${email}`;
+      }
+    });
+
+    const params = new URLSearchParams(location.search);
+    const sent = params.get('odoslane');
+    if (sent === '1') {
+      document.querySelector('[data-status-ok]')?.removeAttribute('hidden');
+      document.querySelector<HTMLFormElement>('.form')?.scrollIntoView({ block: 'center' });
+    } else if (sent === '0') {
+      document.querySelector('[data-status-err]')?.removeAttribute('hidden');
+      document.querySelector<HTMLFormElement>('.form')?.scrollIntoView({ block: 'center' });
     }
   });
-
-  const params = new URLSearchParams(location.search);
-  const sent = params.get('odoslane');
-  if (sent === '1') {
-    document.querySelector('[data-status-ok]')?.removeAttribute('hidden');
-    document.querySelector<HTMLFormElement>('.form')?.scrollIntoView({ block: 'center' });
-  } else if (sent === '0') {
-    document.querySelector('[data-status-err]')?.removeAttribute('hidden');
-    document.querySelector<HTMLFormElement>('.form')?.scrollIntoView({ block: 'center' });
-  }
 </script>

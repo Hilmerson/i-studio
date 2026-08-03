@@ -189,10 +189,12 @@ const isActive = (href: string) =>
 </style>
 
 <script>
-  const toggle = document.querySelector('.nav-toggle');
-  const nav = document.querySelector('.nav');
-  toggle?.addEventListener('click', () => {
-    const open = nav?.classList.toggle('is-open');
-    toggle.setAttribute('aria-expanded', String(Boolean(open)));
+  document.addEventListener('astro:page-load', () => {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    toggle?.addEventListener('click', () => {
+      const open = nav?.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(Boolean(open)));
+    });
   });
 </script>

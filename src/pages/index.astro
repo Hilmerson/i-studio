@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
+import BrandMarquee from '../components/BrandMarquee.astro';
 import heroPhoto from '../photos/hero/slide1.jpg';
 import { site, categories, processSteps, yearsOfExperience } from '../data/site';
 
@@ -36,7 +37,10 @@ const tiles = categories.map((c) => ({
     </div>
     <div class="container hero__content">
       <p class="hero__kicker">Interiérové štúdio · Stupava</p>
-      <h1 class="hero__title">Celý interiér.<br /><em>Jeden dodávateľ.</em></h1>
+      <h1 class="hero__title">
+        <span class="hero__line"><span>Celý interiér.</span></span>
+        <span class="hero__line"><span><em>Jeden dodávateľ.</em></span></span>
+      </h1>
       <p class="hero__lead">
         Od podláh a dverí až po kuchyne a nábytok na mieru — zameriame, navrhneme, vyrobíme a namontujeme.
       </p>
@@ -50,9 +54,9 @@ const tiles = categories.map((c) => ({
   <!-- VALUE STRIP -->
   <section class="strip" aria-label="Prečo i-studio">
     <div class="container strip__inner">
-      <p class="strip__stat"><strong>{yearsOfExperience}</strong> rokov skúseností</p>
-      <p class="strip__stat"><strong>1</strong> dodávateľ na celý interiér</p>
-      <p class="strip__stat"><strong>100 %</strong> výroba a montáž na mieru</p>
+      <p class="strip__stat"><strong data-count={yearsOfExperience}>{yearsOfExperience}</strong> rokov skúseností</p>
+      <p class="strip__stat"><strong data-count="1">1</strong> dodávateľ na celý interiér</p>
+      <p class="strip__stat"><strong data-count="100" data-suffix=" %">100 %</strong> výroba a montáž na mieru</p>
     </div>
   </section>
 
@@ -127,6 +131,9 @@ const tiles = categories.map((c) => ({
     </div>
   </section>
 
+  <!-- BRAND MARQUEE -->
+  <BrandMarquee />
+
   <!-- CTA BAND -->
   <section class="cta-band">
     <div class="container cta-band__inner">
@@ -159,6 +166,13 @@ const tiles = categories.map((c) => ({
     object-fit: cover;
     z-index: -2;
   }
+  /* pomalý Ken Burns zoom hero fotky */
+  .hero__media img {
+    animation: hero-zoom 18s ease-out forwards;
+  }
+  @keyframes hero-zoom {
+    to { transform: scale(1.07); }
+  }
   .hero::after {
     content: '';
     position: absolute;
@@ -177,12 +191,25 @@ const tiles = categories.map((c) => ({
     color: var(--yellow);
     margin-bottom: var(--space-2);
     text-shadow: 0 1px 3px rgb(12 11 8 / 0.85), 0 0 18px rgb(12 11 8 / 0.55);
+    animation: hero-fade 600ms var(--ease) both;
   }
   .hero__title {
     font-size: var(--step-4);
     font-weight: 600;
     color: #fff;
     max-width: 14ch;
+  }
+  /* nadpis sa vynára po riadkoch spoza masky */
+  .hero__line {
+    display: block;
+    overflow: hidden;
+  }
+  .hero__line > span {
+    display: block;
+    animation: hero-rise 750ms var(--ease) both;
+  }
+  .hero__line:nth-child(2) > span {
+    animation-delay: 140ms;
   }
   .hero__title em {
     font-style: italic;
@@ -194,12 +221,22 @@ const tiles = categories.map((c) => ({
     font-size: var(--step-1);
     line-height: 1.5;
     color: color-mix(in srgb, #fff 88%, transparent);
+    animation: hero-fade 600ms var(--ease) 480ms both;
   }
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
     margin-top: var(--space-4);
+    animation: hero-fade 600ms var(--ease) 640ms both;
+  }
+  @keyframes hero-rise {
+    from { transform: translateY(110%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes hero-fade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* strip */
@@ -371,3 +408,34 @@ const tiles = categories.map((c) => ({
     .process__list { grid-template-columns: 1fr; gap: var(--space-3); }
   }
 </style>
+
+<script>
+  // animované počítadlá v čiernom páse — spustia sa, keď pás vojde do viewportu
+  document.addEventListener('astro:page-load', () => {
+    const strip = document.querySelector('.strip');
+    const counters = [...document.querySelectorAll<HTMLElement>('.strip [data-count]')];
+    if (!strip || !counters.length || !('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        const start = performance.now();
+        const DUR = 1300;
+        const tick = (now: number) => {
+          const t = Math.min((now - start) / DUR, 1);
+          const eased = 1 - Math.pow(1 - t, 3);
+          for (const el of counters) {
+            const target = Number(el.dataset.count);
+            el.textContent = Math.round(target * eased) + (el.dataset.suffix ?? '');
+          }
+          if (t < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(strip);
+  });
+</script>

@@ -114,6 +114,22 @@ export const categories: Category[] = [
   },
 ];
 
+/* značky pre marquee pás na domovskej stránke */
+export const partnerBrands = [
+  'Quick-Step',
+  'Pol-Skone',
+  'Lip Bled',
+  'Atvyn',
+  'MP-kovania',
+  'Egger',
+  'Kaindl',
+  'Blum',
+  'Indeco',
+  'Bonari',
+  'Siko',
+  'Keramika Soukup',
+];
+
 export const processSteps = [
   {
     title: 'Konzultácia a zameranie',

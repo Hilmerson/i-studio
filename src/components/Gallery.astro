@@ -55,6 +55,7 @@ const fullSizes = await Promise.all(
             href={fullSizes[i].src}
             data-lightbox-index={i}
             hidden={pageSize > 0 && i >= pageSize}
+            style={`animation-delay: ${(i % 12) * 45}ms`}
             aria-label={`Fotografia ${i + 1} — ${title}`}
           >
             <Image
@@ -91,6 +92,7 @@ const fullSizes = await Promise.all(
   <button class="lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="Ďalšia fotografia">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
   </button>
+  <p class="lightbox__count" data-lightbox-count aria-live="polite"></p>
 </dialog>
 
 <style>
@@ -105,6 +107,14 @@ const fullSizes = await Promise.all(
     overflow: hidden;
     border-radius: var(--radius);
     background: var(--line);
+    /* kaskádový nástup — prehrá sa aj pri odkrytí ďalšej dávky (display:none -> block) */
+    animation: gallery-in 480ms var(--ease) backwards;
+  }
+  @keyframes gallery-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
   }
   .gallery__item[hidden] {
     display: none;
@@ -140,8 +150,36 @@ const fullSizes = await Promise.all(
     max-height: 100dvh;
     overflow: visible;
   }
+  .lightbox[open] {
+    animation: lightbox-in 260ms var(--ease);
+  }
   .lightbox::backdrop {
     background: rgb(10 10 8 / 0.92);
+    animation: lightbox-backdrop 260ms var(--ease);
+  }
+  @keyframes lightbox-in {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+  }
+  @keyframes lightbox-backdrop {
+    from { opacity: 0; }
+  }
+  .lightbox__count {
+    position: fixed;
+    left: 50%;
+    bottom: 1.1rem;
+    translate: -50% 0;
+    margin: 0;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.12);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
   }
   .lightbox__img {
     max-width: min(92vw, 70rem);
@@ -181,56 +219,78 @@ const fullSizes = await Promise.all(
 </style>
 
 <script>
-  // dávkové zobrazovanie fotiek („Zobraziť ďalšie")
-  document.querySelectorAll<HTMLElement>('[data-gallery-wrap]').forEach((wrap) => {
-    const button = wrap.querySelector<HTMLButtonElement>('[data-load-more]');
-    if (!button) return;
-    const batch = Number(wrap.dataset.batch) || 24;
-    button.addEventListener('click', () => {
-      const hiddenItems = [...wrap.querySelectorAll<HTMLElement>('.gallery__item[hidden]')];
-      hiddenItems.slice(0, batch).forEach((el) => el.removeAttribute('hidden'));
-      const remaining = hiddenItems.length - batch;
-      if (remaining > 0) {
-        button.textContent = `Zobraziť ďalšie fotografie (${remaining})`;
-      } else {
-        button.remove();
-      }
-    });
-  });
-
-  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
-    const wrap = gallery.closest('[data-gallery-wrap]') ?? gallery;
-    const dialog = wrap.nextElementSibling?.matches('[data-lightbox-dialog]')
-      ? (wrap.nextElementSibling as HTMLDialogElement)
-      : wrap.parentElement?.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
-    if (!dialog) return;
-
-    const links = [...gallery.querySelectorAll<HTMLAnchorElement>('a[data-lightbox-index]')];
-    const img = dialog.querySelector<HTMLImageElement>('.lightbox__img')!;
-    let index = 0;
-
-    const show = (i: number) => {
-      index = (i + links.length) % links.length;
-      img.src = links[index].href;
-    };
-
-    links.forEach((link, i) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        show(i);
-        dialog.showModal();
+  document.addEventListener('astro:page-load', () => {
+    // dávkové zobrazovanie fotiek („Zobraziť ďalšie")
+    document.querySelectorAll<HTMLElement>('[data-gallery-wrap]').forEach((wrap) => {
+      const button = wrap.querySelector<HTMLButtonElement>('[data-load-more]');
+      if (!button) return;
+      const batch = Number(wrap.dataset.batch) || 24;
+      button.addEventListener('click', () => {
+        const hiddenItems = [...wrap.querySelectorAll<HTMLElement>('.gallery__item[hidden]')];
+        hiddenItems.slice(0, batch).forEach((el) => el.removeAttribute('hidden'));
+        const remaining = hiddenItems.length - batch;
+        if (remaining > 0) {
+          button.textContent = `Zobraziť ďalšie fotografie (${remaining})`;
+        } else {
+          button.remove();
+        }
       });
     });
 
-    dialog.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
-    dialog.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => show(index - 1));
-    dialog.querySelector('[data-lightbox-next]')?.addEventListener('click', () => show(index + 1));
-    dialog.addEventListener('click', (e) => {
-      if (e.target === dialog) dialog.close();
-    });
-    dialog.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') show(index - 1);
-      if (e.key === 'ArrowRight') show(index + 1);
+    document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+      const wrap = gallery.closest('[data-gallery-wrap]') ?? gallery;
+      const dialog = wrap.nextElementSibling?.matches('[data-lightbox-dialog]')
+        ? (wrap.nextElementSibling as HTMLDialogElement)
+        : wrap.parentElement?.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
+      if (!dialog) return;
+
+      const links = [...gallery.querySelectorAll<HTMLAnchorElement>('a[data-lightbox-index]')];
+      const img = dialog.querySelector<HTMLImageElement>('.lightbox__img')!;
+      const count = dialog.querySelector<HTMLElement>('[data-lightbox-count]');
+      let index = 0;
+
+      const preload = (i: number) => {
+        const el = new Image();
+        el.src = links[(i + links.length) % links.length].href;
+      };
+
+      const show = (i: number) => {
+        index = (i + links.length) % links.length;
+        img.src = links[index].href;
+        if (count) count.textContent = `${index + 1} / ${links.length}`;
+        // susedné fotky nech sú pri listovaní okamžité
+        preload(index + 1);
+        preload(index - 1);
+      };
+
+      links.forEach((link, i) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          show(i);
+          dialog.showModal();
+        });
+      });
+
+      dialog.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
+      dialog.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => show(index - 1));
+      dialog.querySelector('[data-lightbox-next]')?.addEventListener('click', () => show(index + 1));
+      dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+      dialog.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') show(index - 1);
+        if (e.key === 'ArrowRight') show(index + 1);
+      });
+
+      // swipe na mobile
+      let touchX = 0;
+      dialog.addEventListener('touchstart', (e) => {
+        touchX = e.changedTouches[0].clientX;
+      }, { passive: true });
+      dialog.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 45) show(dx < 0 ? index + 1 : index - 1);
+      }, { passive: true });
     });
   });
 </script>
