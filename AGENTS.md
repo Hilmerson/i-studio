@@ -15,7 +15,7 @@ Remaster of **i-studio.sk** — an interior design studio in Stupava, Slovakia (
 
 - **Test hosting:** Netlify (auto-deploy from GitHub, uses Netlify Forms). Site name: `istudioweb`.
 - **Production hosting:** Websupport (classic PHP/Apache hosting, deployed via FTP; uses `public/api/contact.php` + `.htaccess`). The switch-over procedure is documented step by step in `GOLIVE.md`.
-- The site sets **no cookies and runs no analytics** — the GDPR (`/gdpr`) and cookies (`/cookies`) pages state this explicitly, which is why there is no cookie banner. If analytics is ever added, both pages and a consent banner must be revisited.
+- The site sets **no cookies** — analytics is cookieless Umami (script in `Base.astro`, guarded by `data-domains` so dev/test deploys aren't counted). No consent banner needed; the GDPR (`/gdpr`) and cookies (`/cookies`) pages describe this setup. Adding any cookie-setting tool (e.g. GA4) would require a banner and legal-page updates.
 
 ## Commands
 
@@ -40,7 +40,7 @@ The form in `src/pages/kontakt.astro` works on both hosts:
 
 - On **Netlify builds** (`process.env.NETLIFY` set), it submits via Netlify Forms with `action="/dakujeme"`.
 - Otherwise it posts to `public/api/contact.php` (PHP `mail()`, honeypot field `web`, redirects to `/dakujeme` on success).
-- **Recipient:** `contact.php` currently sends to the test address `vktrhilmer21@gmail.com`; switch to `office@i-studio.sk` before production go-live (marked with a comment in the file).
+- **Recipient:** `office@i-studio.sk` (must be an existing Websupport mailbox with matching `-f` envelope sender, or the mail is silently discarded). Includes anti-spam layers: honeypot, JS token (`cas`), invalid-UTF-8 guard, link+no-diacritics heuristic, and a keyword blocklist — rejections are visible pages with a Back button, never silent for humans.
 
 ## Conventions
 
