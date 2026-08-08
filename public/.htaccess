@@ -16,6 +16,10 @@ Redirect 301 /realizacie_galeria_skrine.html /skrine
 Redirect 301 /realizacie_galeria_kuchyne.html /kuchyne
 Redirect 301 /realizacie_galeria_nabytok.html /nabytok
 Redirect 301 /realizacie_galeria_obklady.html /obklady
+Redirect 301 /arte_galeria.html /dvere
+Redirect 301 /atvyn_galeria.html /dvere
+Redirect 301 /atvyn_galeria_dekory.html /dvere
+Redirect 301 /atvyn_galeria_skla.html /dvere
 
 # cache statických assetov (Astro hashuje názvy)
 <IfModule mod_expires.c>
