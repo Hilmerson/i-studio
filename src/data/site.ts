@@ -19,6 +19,15 @@ export const site = {
     facebook: 'https://www.facebook.com/istudio.sk',
     instagram: 'https://www.instagram.com/istudio.sk/',
   },
+  /* identifikačné údaje spoločnosti — povinné na webe podľa § 3a Obchodného zákonníka */
+  legal: {
+    name: 'i-studio, s.r.o.',
+    seat: 'Záhradná 1, 900 31 Stupava',
+    ico: '36 736 856',
+    dic: '2022322533',
+    icDph: 'SK2022322533',
+    register: 'zapísaná v Obchodnom registri Okresného súdu Bratislava I, oddiel Sro, vložka č. 44517/B',
+  },
   /* firma funguje od ~2006 → počítané dynamicky nech to opäť nezamrzne */
   foundedYear: 2006,
 };

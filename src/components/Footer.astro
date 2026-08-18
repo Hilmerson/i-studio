@@ -52,7 +52,11 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="container footer__bottom">
-    <p>© {year} i-studio, s.r.o. Všetky práva vyhradené.</p>
+    <p>© {year} {site.legal.name} Všetky práva vyhradené.</p>
+    <p class="footer__legal">
+      {site.legal.name} · {site.legal.seat} · IČO: {site.legal.ico} · DIČ: {site.legal.dic} ·
+      IČ DPH: {site.legal.icDph} · {site.legal.register}
+    </p>
   </div>
 </footer>
 
@@ -121,14 +125,18 @@ const year = new Date().getFullYear();
   }
   .footer__col a:hover { color: var(--yellow); }
   .footer__bottom {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--space-2);
+    display: grid;
+    gap: 0.5rem;
     padding-block: var(--space-3);
     border-top: 1px solid color-mix(in srgb, var(--paper) 12%, transparent);
     font-size: 0.85rem;
     color: color-mix(in srgb, var(--paper) 55%, transparent);
+  }
+  .footer__legal {
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--paper) 42%, transparent);
+    text-wrap: pretty;
   }
   @media (max-width: 60rem) {
     .footer__grid { grid-template-columns: 1fr 1fr; }
