@@ -110,11 +110,11 @@ h1, h2, h3, h4 {
 .prose { color: var(--ink-soft); max-width: 65ch; }
 .prose strong { color: var(--ink); }
 
-/* reveal-on-scroll (progressive enhancement) */
-.reveal { opacity: 0; transform: translateY(24px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
-.reveal.is-visible { opacity: 1; transform: none; }
+/* reveal-on-scroll — skryté len keď beží JS (html.js), inak je obsah viditeľný hneď */
+.js .reveal { opacity: 0; transform: translateY(24px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+.js .reveal.is-visible { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; }
+  .js .reveal { opacity: 1; transform: none; }
 }
 
 /* fotky skryté za tlačidlom „Zobraziť ďalšie" — author CSS inak prebije UA pravidlo pre [hidden] */

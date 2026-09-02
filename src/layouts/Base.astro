@@ -13,7 +13,9 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+// build.format 'file' dáva pathname s príponou (/kuchyne.html) — kanonická adresa je bez nej
+const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/^\/index$/, '/');
+const canonical = new URL(cleanPath, Astro.site);
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -30,18 +32,16 @@ const structuredData = {
   address: {
     '@type': 'PostalAddress',
     streetAddress: site.address.street,
-    addressLocality: 'Stupava',
-    postalCode: '900 31',
+    addressLocality: site.address.locality,
+    postalCode: site.address.postalCode,
     addressCountry: 'SK',
   },
-  openingHoursSpecification: [
-    {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-      opens: '09:30',
-      closes: '17:00',
-    },
-  ],
+  openingHoursSpecification: site.openingHoursSpec.map((h) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: h.days,
+    opens: h.opens,
+    closes: h.closes,
+  })),
   sameAs: [site.social.facebook, site.social.instagram],
 };
 ---
@@ -81,6 +81,13 @@ const structuredData = {
       if (/(invite_token|recovery_token|confirmation_token)=/.test(location.hash)) {
         location.replace('/admin/' + location.hash);
       }
+      // reveal animácie sa zapnú len keď JS naozaj beží; ak sa hlavný modul nenačíta
+      // (blokovaný skript, 404 po nasadení), obsah sa po chvíli ukáže aj tak
+      document.documentElement.classList.add('js');
+      document.addEventListener('astro:page-load', function () { window.__pageLoaded = true; }, { once: true });
+      setTimeout(function () {
+        if (!window.__pageLoaded) document.documentElement.classList.remove('js');
+      }, 3000);
     </script>
     <ClientRouter />
   </head>

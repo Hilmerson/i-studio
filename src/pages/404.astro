@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, categories } from '../data/site';
+---
+
+<Base title="Stránka sa nenašla — i-studio" description="Požadovaná stránka na i-studio.sk neexistuje.">
+  <section class="section">
+    <div class="container wrap">
+      <p class="kicker">Chyba 404</p>
+      <h1>Túto stránku sme nenašli</h1>
+      <p class="lead">
+        Adresa je nesprávna alebo stránka už neexistuje. Pokračujte na úvod, alebo si vyberte z ponuky.
+      </p>
+      <a class="btn btn--primary" href="/">Späť na úvod</a>
+      <ul class="links">
+        {categories.map((c) => <li><a href={`/${c.slug}`}>{c.title}</a></li>)}
+        <li><a href="/realizacie">Realizácie</a></li>
+        <li><a href="/kontakt">Kontakt</a></li>
+      </ul>
+      <p class="alt">
+        Potrebujete poradiť? Zavolajte nám na <a href={`tel:${site.phoneHref}`}>{site.phone}</a>.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .wrap {
+    max-width: 40rem;
+    padding-block: var(--space-5);
+  }
+  h1 { font-size: var(--step-3); margin-bottom: var(--space-2); }
+  .lead { color: var(--ink-soft); margin-bottom: var(--space-4); }
+  .links {
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.4rem;
+  }
+  .links a {
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration-color: var(--yellow);
+    text-underline-offset: 3px;
+  }
+  .alt { color: var(--muted); margin-top: var(--space-4); }
+  .alt a { font-weight: 600; color: var(--ink); text-decoration-color: var(--yellow); }
+</style>

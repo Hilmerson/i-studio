@@ -9,17 +9,26 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit('Method Not Allowed');
 }
 
-// honeypot – boti vyplnia skryté pole
+// Každé odmietnutie je viditeľné aj pre človeka (žiadne falošné „ďakujeme") a
+// zaloguje sa, aby sa dali odchytené správy skontrolovať v logu hostingu.
+
+// honeypot – boti vyplnia skryté pole; vyplní ho ale aj autofill prehliadača
 if (!empty($_POST['web'] ?? '')) {
-    header('Location: /dakujeme');
-    exit;
+    error_log('i-studio form: honeypot filled from ' . ($_SERVER['REMOTE_ADDR'] ?? '?'));
+    odmietni(
+        'Formulár vyplnilo automatické dopĺňanie prehliadača aj do skrytého poľa, ktoré slúži na odhalenie robotov.',
+        '<strong>Vráťte sa tlačidlom Späť</strong>, vymažte pole „Webová stránka" (ak ho vidíte) a odošlite správu znova.'
+    );
 }
 
 // anti-spam token – vypĺňa ho JavaScript pri načítaní stránky;
 // boti POSTujúci priamo na endpoint ho nemajú
 if (empty($_POST['cas'] ?? '')) {
-    header('Location: /dakujeme');
-    exit;
+    error_log('i-studio form: missing JS token from ' . ($_SERVER['REMOTE_ADDR'] ?? '?'));
+    odmietni(
+        'Formulár sa nepodarilo overiť — pravdepodobne máte vypnutý JavaScript alebo sa stránka nenačítala celá.',
+        '<strong>Vráťte sa tlačidlom Späť</strong>, obnovte stránku a skúste správu odoslať znova.'
+    );
 }
 
 $meno      = trim((string)($_POST['meno'] ?? ''));

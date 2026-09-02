@@ -7,13 +7,21 @@ export const site = {
   phoneHref: '+421903730932',
   address: {
     street: 'Hviezdoslavova 90',
+    postalCode: '900 31',
+    locality: 'Stupava',
     city: '900 31 Stupava',
     country: 'Slovensko',
   },
+  /* zobrazenie na stránke Kontakt */
   hours: [
     { days: 'Pondelok – Piatok', time: '09:30 – 12:00, 13:30 – 17:00' },
     { days: 'Sobota', time: 'po telefonickej dohode' },
     { days: 'Nedeľa', time: 'zatvorené' },
+  ],
+  /* to isté pre štruktúrované dáta (Google) — obedňajšia prestávka = dva intervaly */
+  openingHoursSpec: [
+    { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:30', closes: '12:00' },
+    { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '13:30', closes: '17:00' },
   ],
   social: {
     facebook: 'https://www.facebook.com/istudio.sk',

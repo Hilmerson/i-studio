@@ -15,22 +15,32 @@ const { category, limit, pageSize = 12, title = 'galéria' } = Astro.props;
 const BATCH = 24;
 
 const all = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/photos/**/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}',
+  '/src/photos/**/*.{jpg,jpeg,png,webp,avif,gif,tif,tiff,JPG,JPEG,PNG,WEBP,AVIF,GIF,TIF,TIFF}',
   { eager: true }
 );
 
 // poradie a výber fotiek riadi manifest spravovaný cez Decap CMS (/admin)
-const manifests = import.meta.glob<{ photos: { image: string }[] }>('/src/data/galerie/*.json', {
+const manifests = import.meta.glob<{ photos?: { image: string }[] }>('/src/data/galerie/*.json', {
   eager: true,
 });
 
 const manifest = manifests[`/src/data/galerie/${category}.json`];
 
 let photos: ImageMetadata[];
-if (manifest?.photos?.length) {
-  photos = manifest.photos.map((p) => all[p.image]?.default).filter(Boolean);
+if (manifest) {
+  // manifest existuje → je autoritatívny (aj prázdny znamená „žiadne fotky")
+  photos = [];
+  for (const entry of manifest.photos ?? []) {
+    const img = all[entry.image]?.default;
+    if (img) {
+      photos.push(img);
+    } else {
+      // súbor chýba alebo má nepodporovaný formát (napr. .heic z iPhonu) — nech to nie je potichu
+      console.warn(`[galéria ${category}] fotka z manifestu sa nenašla alebo má nepodporovaný formát: ${entry.image}`);
+    }
+  }
 } else {
-  // fallback: bez manifestu zoberie všetko z priečinka
+  // bez manifestu (nová kategória) zoberie všetko z priečinka
   photos = Object.entries(all)
     .filter(([path]) => path.includes(`/photos/${category}/`))
     .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))

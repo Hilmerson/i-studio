@@ -1,11 +1,24 @@
 # i-studio.sk — Websupport (Apache)
 
-# /kuchyne -> kuchyne.html
 RewriteEngine On
+
+# jediná kanonická adresa: https + www (backend vidí HTTPS=on aj za proxy — overené)
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} !^www\.i-studio\.sk$ [NC]
+RewriteRule ^ https://www.i-studio.sk%{REQUEST_URI} [R=301,L]
+
+# /kuchyne/ -> /kuchyne (skutočné adresáre ako /admin/ ostávajú)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# /kuchyne -> kuchyne.html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+)$ $1.html [L]
+
+# vlastná 404 stránka (generuje ju Astro zo src/pages/404.astro)
+ErrorDocument 404 /404.html
 
 # staré adresy z pôvodného webu -> nové
 Redirect 301 /sitemap.xml /sitemap-index.xml

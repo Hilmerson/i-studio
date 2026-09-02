@@ -1,16 +1,15 @@
-# Automatický deploy na Websupport cez FTP.
+# Automatický deploy na Websupport cez FTPS.
 #
 # Aktivácia (jednorazovo v GitHub repo nastaveniach):
 #   1. Settings → Secrets and variables → Actions → Variables:
 #        WEBSUPPORT_DEPLOY = true
 #   2. Settings → Secrets and variables → Actions → Secrets:
-#        WEBSUPPORT_FTP_HOST     (napr. i-studio.sk alebo ftp.websupport.sk)
+#        WEBSUPPORT_FTP_HOST     (napr. i-studio.sk)
 #        WEBSUPPORT_FTP_USER
 #        WEBSUPPORT_FTP_PASSWORD
-#        WEBSUPPORT_FTP_DIR      (koreňový adresár webu, napr. /web/)
+#        WEBSUPPORT_FTP_DIR      (koreňový adresár webu z pohľadu FTP účtu, napr. ./ alebo /web/)
 #
-# Kým premenná WEBSUPPORT_DEPLOY nie je "true", workflow sa preskočí —
-# Netlify medzitým slúži ako testovací hosting.
+# Kým premenná WEBSUPPORT_DEPLOY nie je "true", workflow sa preskočí.
 
 name: Deploy to Websupport
 
@@ -28,7 +27,24 @@ jobs:
   deploy:
     if: ${{ vars.WEBSUPPORT_DEPLOY == 'true' }}
     runs-on: ubuntu-latest
+    env:
+      FTP_HOST: ${{ secrets.WEBSUPPORT_FTP_HOST }}
+      FTP_USER: ${{ secrets.WEBSUPPORT_FTP_USER }}
+      FTP_DIR: ${{ secrets.WEBSUPPORT_FTP_DIR }}
+      # lftp číta heslo z LFTP_PASSWORD (open --env-password) — nikdy sa nevkladá do príkazu,
+      # takže úvodzovky či spätné lomky v hesle nič nerozbijú
+      LFTP_PASSWORD: ${{ secrets.WEBSUPPORT_FTP_PASSWORD }}
     steps:
+      # prázdny secret by inak potichu namieril "mirror --delete" na koreň FTP účtu
+      - name: Check deploy secrets
+        run: |
+          for v in FTP_HOST FTP_USER FTP_DIR LFTP_PASSWORD; do
+            if [ -z "${!v}" ]; then
+              echo "::error::Secret for $v is empty — refusing to deploy"
+              exit 1
+            fi
+          done
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
@@ -42,29 +58,29 @@ jobs:
       - name: Build site
         run: npm run build
 
-      # lftp namiesto FTP-Deploy-Action: Websupport FTPS vyžaduje TLS session reuse,
-      # ktorý knižnica basic-ftp nepodporuje ("Server sent FIN packet unexpectedly")
+      - name: Install lftp
+        run: sudo apt-get install -y -qq lftp
+
+      # FTP-Deploy-Action tu nefunguje (Websupport vyžaduje TLS session reuse, knižnica
+      # basic-ftp ho nepodporuje), preto lftp.
+      #
+      # Dva prechody:
+      #  1. všetko okrem fotiek a hashovaných assetov — porovnanie podľa času aj veľkosti,
+      #     takže zmenený HTML/PHP/.htaccess sa nahrá vždy (aj keď má rovnakú veľkosť)
+      #  2. src/photos a _astro — súbory sa nemenia pod rovnakým názvom (hash v názve,
+      #     resp. originály fotiek), stačí porovnať veľkosť; inak by sa 250 MB nahrávalo
+      #     pri každom deployi, lebo checkout dáva všetkým súborom nový čas
       - name: Upload dist via FTPS (lftp)
-        env:
-          FTP_HOST: ${{ secrets.WEBSUPPORT_FTP_HOST }}
-          FTP_USER: ${{ secrets.WEBSUPPORT_FTP_USER }}
-          FTP_PASSWORD: ${{ secrets.WEBSUPPORT_FTP_PASSWORD }}
-          FTP_DIR: ${{ secrets.WEBSUPPORT_FTP_DIR }}
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq lftp
-          echo "== diagnostics: TCP + TLS handshake =="
-          timeout 20 bash -c "echo | openssl s_client -starttls ftp -connect $FTP_HOST:21 2>&1 | head -12" || echo "openssl probe failed/timed out"
-          echo "== curl FTPS listing probe =="
-          curl -v --ssl-reqd --insecure --disable-epsv --user "$FTP_USER:$FTP_PASSWORD" "ftp://$FTP_HOST/" --list-only --max-time 40 2>&1 | grep -vE "^(<|>) (PASS|USER)" | tail -25 || echo "curl probe failed"
-          echo "== lftp mirror =="
           lftp -c "
-            debug 3;
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
-            set ssl:verify-certificate no;
+            set ssl:verify-certificate yes;
+            set ssl:check-hostname no;
             set net:max-retries 2;
             set net:timeout 30;
-            open -u \"$FTP_USER\",\"$FTP_PASSWORD\" \"$FTP_HOST\";
-            mirror -R --delete --parallel=4 --no-perms --ignore-time --verbose=1 dist/ \"$FTP_DIR\";
+            open -u \"$FTP_USER\" --env-password \"$FTP_HOST\";
+            mirror -R --delete --parallel=4 --no-perms --verbose=1 -x '^src/' -x '^_astro/' dist/ \"$FTP_DIR\";
+            mirror -R --delete --parallel=4 --no-perms --ignore-time --verbose=1 dist/src/ \"$FTP_DIR/src/\";
+            mirror -R --delete --parallel=4 --no-perms --ignore-time --verbose=1 dist/_astro/ \"$FTP_DIR/_astro/\";
           "
