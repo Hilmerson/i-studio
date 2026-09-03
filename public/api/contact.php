@@ -10,7 +10,7 @@ header('Referrer-Policy: same-origin');
 const MAX_SUBOROV       = 5;
 const MAX_SUBOR_BAJTOV  = 10 * 1024 * 1024; // 10 MB na jeden súbor
 const MAX_SPOLU_BAJTOV  = 20 * 1024 * 1024; // 20 MB spolu (prehliadač fotky pred odoslaním zmenší)
-const MAX_SPRAV_ZA_HOD  = 6;                // limit z jednej IP adresy
+const MAX_SPRAV_ZA_HOD  = 10;               // odoslaných správ z jednej IP za hodinu
 const PRIJEMCA          = 'office@i-studio.sk';   // testovacia adresa: vktrhilmer21@gmail.com
 const ODOSIELATEL       = 'office@i-studio.sk';   // musí byť existujúca schránka na Websupporte (+ -f envelope)
 
@@ -129,8 +129,10 @@ if (empty($_POST['cas'] ?? '')) {
     );
 }
 
-// jednoduchý limit počtu správ z jednej IP (súbor v temp adresári; ak sa nedá zapísať, limit sa preskočí)
-$rlSubor = sys_get_temp_dir() . '/istudio-dopyt-' . hash('sha256', ip() . '|' . ODOSIELATEL) . '.json';
+// jednoduchý limit počtu ODOSLANÝCH správ z jednej IP (súbor v temp adresári; ak sa nedá zapísať,
+// limit sa preskočí). Počítajú sa len správy, ktoré naozaj odišli — odmietnuté pokusy (napr. chýbajúce
+// meno) kvótu nespotrebúvajú, aby si človek opravou chyby nezablokoval formulár.
+$rlSubor = sys_get_temp_dir() . '/istudio-dopyt-v2-' . hash('sha256', ip() . '|' . ODOSIELATEL) . '.json';
 $teraz   = time();
 $casy    = [];
 if (is_file($rlSubor)) {
@@ -145,8 +147,6 @@ if (count($casy) >= MAX_SPRAV_ZA_HOD) {
         429
     );
 }
-$casy[] = $teraz;
-@file_put_contents($rlSubor, json_encode($casy), LOCK_EX);
 
 // ---- polia sprievodcu ----
 $KATEGORIE = ['Podlahy', 'Dvere', 'Skrine', 'Kuchyňa', 'Nábytok', 'Obklady a sanita'];
@@ -356,7 +356,10 @@ if ($prilohy === []) {
 }
 
 $ok = mail(PRIJEMCA, $predmet, $sprava_mail, implode("\r\n", $hlavicky), '-f' . ODOSIELATEL);
-if (!$ok) {
+if ($ok) {
+    $casy[] = $teraz;
+    @file_put_contents($rlSubor, json_encode($casy), LOCK_EX);
+} else {
     error_log('i-studio form: mail() failed from ' . ip());
 }
 
