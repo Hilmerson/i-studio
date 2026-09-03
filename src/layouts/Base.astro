@@ -117,6 +117,12 @@ const structuredData = {
     </style>
 
     <script>
+      // ClientRouter pri client-side navigácii prepíše atribúty <html> tými z novej (statickej) stránky,
+      // takže trieda „js" z úvodného inline skriptu zmizne — vrátiť ju ešte pred vykreslením
+      document.addEventListener('astro:after-swap', () => {
+        document.documentElement.classList.add('js');
+      });
+
       // reveal-on-scroll: progressive enhancement, no-op with reduced motion
       // (astro:page-load beží pri prvom načítaní aj po každej client-side navigácii)
       document.addEventListener('astro:page-load', () => {
