@@ -33,6 +33,9 @@ Redirect 301 /arte_galeria.html /dvere
 Redirect 301 /atvyn_galeria.html /dvere
 Redirect 301 /atvyn_galeria_dekory.html /dvere
 Redirect 301 /atvyn_galeria_skla.html /dvere
+Redirect 301 /default.htm /
+Redirect 301 /ramy_galeria.html /realizacie
+Redirect 301 /materialy_galeria_dekory.html /realizacie
 
 # HTML sa vždy overí na serveri (inak si prehliadač po nasadení drží starú stránku);
 # statické assety majú hash v názve, tie sa môžu kešovať rok
