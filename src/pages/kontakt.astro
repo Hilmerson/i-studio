@@ -422,6 +422,7 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
   }
 
   /* ---- sprievodca ---- */
+  .form { min-width: 0; }
   .form__head { margin-bottom: var(--space-3); }
   .form h2 {
     font-family: var(--font-display);
@@ -635,6 +636,8 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
     margin: 0.6rem 0 0;
     padding: 0;
     display: grid;
+    /* minmax(0, …): dlhý názov súboru (iPhone: file_0000…) inak roztiahne mriežku aj celú stránku */
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.4rem;
   }
   .files:empty { display: none; }
@@ -703,7 +706,7 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
   .map iframe { display: block; filter: grayscale(0.4); }
 
   @media (max-width: 60rem) {
-    .contact { grid-template-columns: 1fr; }
+    .contact { grid-template-columns: minmax(0, 1fr); }
     .contact__info { position: static; }
     .summary { display: none !important; }
   }
