@@ -73,11 +73,18 @@ function mimePodlaObsahu(string $cesta): string
 function text(string $kluc, int $max, bool $viacriadkove = false): string
 {
     $hodnota = (string)($_POST[$kluc] ?? '');
-    $hodnota = $viacriadkove
+    $ciste   = $viacriadkove
         ? preg_replace('/[^\PC\n\t]/u', '', $hodnota)
         : preg_replace('/\pC/u', '', $hodnota);
-    $hodnota = trim((string)$hodnota);
-    return mb_substr($hodnota, 0, $max);
+    // neplatné UTF-8 bajty → preg_replace vráti null; skutočný prehliadač ich nikdy nepošle,
+    // ale nech to nie je potichu prázdne pole, ale viditeľné odmietnutie
+    if ($ciste === null) {
+        odmietni(
+            'Správa obsahuje neplatné znaky, preto ju formulár neprijal.',
+            '<strong>Vráťte sa tlačidlom Späť</strong> a skúste text napísať znova.'
+        );
+    }
+    return mb_substr(trim($ciste), 0, $max);
 }
 
 // hodnota z pevného zoznamu (rádiá / select) — čokoľvek iné sa zahodí
