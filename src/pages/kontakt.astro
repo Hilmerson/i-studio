@@ -1,11 +1,26 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site, categories } from '../data/site';
+import { site } from '../data/site';
 
 // Netlify build (testovacie nasadenie) posiela formulár cez Netlify Forms;
 // na Websupporte (produkcia) ho spracuje /api/contact.php
 const isNetlify = Boolean(process.env.NETLIFY);
 const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
+
+// Hodnoty musia sedieť so zoznamami v public/api/contact.php — čokoľvek iné server zahodí.
+const oblasti = [
+  { value: 'Podlahy', hint: 'drevené, laminát, vinyl', icon: 'M3 5h18v14H3zM3 10h18M3 15h18M9 5v5M15 10v5M9 15v4' },
+  { value: 'Dvere', hint: 'interiérové, so zárubňou', icon: 'M6 21V3h12v18M6 21h12M14 12h1' },
+  { value: 'Skrine', hint: 'vstavané, šatníky', icon: 'M4 3h16v18H4zM12 3v18M9 11v2M15 11v2' },
+  { value: 'Kuchyňa', hint: 'na mieru, so spotrebičmi', icon: 'M3 11h18v9H3zM3 11V5h7v6M8 15h1M14 15h1M6 5V3M14 8h4' },
+  { value: 'Nábytok', hint: 'obývačka, spálňa, kancelária', icon: 'M3 12h18v7H3zM5 12V8h14v4M5 19v2M19 19v2' },
+  { value: 'Obklady a sanita', hint: 'kúpeľňa, WC', icon: 'M3 3h18v18H3zM3 9h18M3 15h18M9 3v6M15 9v6M9 15v6' },
+];
+const typy = ['Byt', 'Rodinný dom', 'Chata / chalupa', 'Kancelária / prevádzka'];
+const stavy = ['Novostavba', 'Rekonštrukcia', 'Obývaný, len dozariadiť'];
+const terminy = ['Čo najskôr', 'Do 3 mesiacov', 'Neskôr, zatiaľ zisťujem'];
+const rozpocty = ['do 3 000 €', '3 000 – 8 000 €', '8 000 – 15 000 €', 'nad 15 000 €'];
+const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
 ---
 
 <Base
@@ -22,20 +37,228 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
 
   <section class="section--tight">
     <div class="container contact">
-      <div class="contact__info">
-        <div class="card">
-          <h2>Kde nás nájdete</h2>
-          <address>
-            {site.address.street}<br />
-            {site.address.city}<br />
-            {site.address.country}
-          </address>
+      <form
+        class="form card"
+        name="dopyt"
+        method="post"
+        action={formAction}
+        enctype="multipart/form-data"
+        data-netlify="true"
+        netlify-honeypot="web"
+        data-astro-reload
+        data-wizard
+        novalidate
+      >
+        <input type="hidden" name="form-name" value="dopyt" />
+
+        <div class="form__head">
+          <h2>Nezáväzný dopyt</h2>
+          <p class="form__lead">Štyri krátke kroky. Povinné sú len meno a e-mail v poslednom.</p>
+        </div>
+
+        <p class="form__status form__status--err" data-status-err hidden>
+          Dopyt sa nepodarilo odoslať. Skúste to prosím znova, alebo nám napíšte priamo na
+          <a href={`mailto:${site.email}`}>{site.email}</a>.
+        </p>
+
+        <ol class="steps" data-steps aria-label="Postup">
+          {kroky.map((k, i) => (
+            <li class:list={{ 'is-active': i === 0 }}>
+              <span class="steps__num">Krok {i + 1}</span>
+              <span class="steps__name">{k}</span>
+            </li>
+          ))}
+        </ol>
+
+        <!-- KROK 1 -->
+        <fieldset class="step is-active" data-step="1">
+          <legend class="step__title">Čo zariaďujete?</legend>
+          <p class="step__hint">Vyberte všetko, čo prichádza do úvahy — aj keď si ešte nie ste istí.</p>
+          <div class="tiles" data-summary="co">
+            {oblasti.map((o) => (
+              <label class="tile">
+                <input type="checkbox" name="co[]" value={o.value} />
+                <span class="tile__body">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d={o.icon} /></svg>
+                  <strong>{o.value}</strong>
+                  <small>{o.hint}</small>
+                </span>
+              </label>
+            ))}
+          </div>
+          <div class="step__nav">
+            <span></span>
+            <button class="btn btn--primary" type="button" data-next>Pokračovať</button>
+          </div>
+        </fieldset>
+
+        <!-- KROK 2 -->
+        <fieldset class="step" data-step="2">
+          <legend class="step__title">Aký je to priestor?</legend>
+          <p class="step__hint">Pomôže nám odhadnúť rozsah a pripraviť sa na stretnutie.</p>
+
+          <div class="group" role="group" aria-labelledby="l-typ" data-summary="typ">
+            <p class="group__label" id="l-typ">Typ priestoru</p>
+            <div class="pills">
+              {typy.map((t) => (
+                <label class="pill"><input type="radio" name="typ" value={t} /><span>{t}</span></label>
+              ))}
+            </div>
+          </div>
+          <div class="group" role="group" aria-labelledby="l-stav" data-summary="stav">
+            <p class="group__label" id="l-stav">V akom je stave</p>
+            <div class="pills">
+              {stavy.map((t) => (
+                <label class="pill"><input type="radio" name="stav" value={t} /><span>{t}</span></label>
+              ))}
+            </div>
+          </div>
+          <div class="group" role="group" aria-labelledby="l-termin" data-summary="termin">
+            <p class="group__label" id="l-termin">Kedy by ste chceli začať</p>
+            <div class="pills">
+              {terminy.map((t) => (
+                <label class="pill"><input type="radio" name="termin" value={t} /><span>{t}</span></label>
+              ))}
+            </div>
+          </div>
+          <div class="form__row">
+            <label for="f-obec">Obec / mesto <span class="opt">(nepovinné)</span></label>
+            <input id="f-obec" name="obec" type="text" maxlength="80" placeholder="napr. Stupava" autocomplete="address-level2" data-summary="obec" />
+          </div>
+
+          <div class="step__nav">
+            <button class="btn-link" type="button" data-prev>← Späť</button>
+            <button class="btn btn--primary" type="button" data-next>Pokračovať</button>
+          </div>
+        </fieldset>
+
+        <!-- KROK 3 -->
+        <fieldset class="step" data-step="3">
+          <legend class="step__title">Povedzte nám viac</legend>
+          <p class="step__hint">Čokoľvek, čo vám napadne. Fotka alebo pôdorys ušetrí jednu návštevu.</p>
+
+          <div class="form__row">
+            <label for="f-sprava">Správa <span class="opt">(nepovinné)</span></label>
+            <textarea
+              id="f-sprava"
+              name="sprava"
+              rows="5"
+              maxlength="5000"
+              placeholder="napr. Rekonštruujeme kuchyňu v paneláku, cca 12 m², chceme svetlé dvierka a kamennú pracovnú dosku…"
+            ></textarea>
+          </div>
+
+          <div class="form__row">
+            <span class="form__label" id="l-subory">Fotky alebo pôdorys <span class="opt">(nepovinné)</span></span>
+            <label class="drop" data-drop for="f-subory">
+              <input
+                id="f-subory"
+                class="drop__input"
+                type="file"
+                name="subory[]"
+                multiple
+                accept="image/jpeg,image/png,image/webp,application/pdf"
+                aria-labelledby="l-subory"
+              />
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+              <strong>Priložiť fotky alebo pôdorys</strong>
+              <small data-drop-hint>JPG, PNG alebo PDF · najviac 5 súborov, 10 MB na súbor</small>
+            </label>
+            <ul class="files" data-files aria-live="polite"></ul>
+            <p class="form__err" data-files-err hidden></p>
+          </div>
+
+          <div class="form__cols">
+            <div class="form__row">
+              <label for="f-plocha">Približná plocha <span class="opt">(m², nepovinné)</span></label>
+              <input id="f-plocha" name="plocha" type="text" inputmode="numeric" maxlength="20" placeholder="napr. 14" />
+            </div>
+            <div class="form__row">
+              <label for="f-rozpocet">Rozpočet <span class="opt">(nepovinné)</span></label>
+              <select id="f-rozpocet" name="rozpocet">
+                <option value="">— radšej nepoviem —</option>
+                {rozpocty.map((r) => <option value={r}>{r}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div class="step__nav">
+            <button class="btn-link" type="button" data-prev>← Späť</button>
+            <button class="btn btn--primary" type="button" data-next>Pokračovať</button>
+          </div>
+        </fieldset>
+
+        <!-- KROK 4 -->
+        <fieldset class="step" data-step="4">
+          <legend class="step__title">Kam sa máme ozvať?</legend>
+          <p class="step__hint">Ozveme sa do jedného pracovného dňa — telefonicky alebo e-mailom, ako uprednostníte.</p>
+
+          <div class="form__row">
+            <label for="f-meno">Meno a priezvisko <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-meno" name="meno" type="text" required maxlength="120" autocomplete="name" data-summary="meno" />
+          </div>
+          <div class="form__cols">
+            <div class="form__row">
+              <label for="f-email">E-mail <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-email" name="email" type="email" required maxlength="254" autocomplete="email" />
+            </div>
+            <div class="form__row">
+              <label for="f-tel">Telefón</label>
+              <input id="f-tel" name="telefon" type="tel" maxlength="40" autocomplete="tel" />
+            </div>
+          </div>
+          <div class="group" role="group" aria-labelledby="l-kanal">
+            <p class="group__label" id="l-kanal">Ako vás máme kontaktovať</p>
+            <div class="pills">
+              <label class="pill"><input type="radio" name="kanal" value="Zavolajte mi" checked /><span>Zavolajte mi</span></label>
+              <label class="pill"><input type="radio" name="kanal" value="Radšej e-mailom" /><span>Radšej e-mailom</span></label>
+            </div>
+          </div>
+
+          <!-- honeypot -->
+          <div class="form__hp" aria-hidden="true">
+            <label for="f-web">Webová stránka</label>
+            <input id="f-web" name="web" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <!-- anti-spam: vyplní JavaScript pri načítaní stránky; boti POSTujúci priamo ho nemajú -->
+          <input type="hidden" name="cas" id="f-cas" value="" />
+
+          <div class="step__nav">
+            <button class="btn-link" type="button" data-prev>← Späť</button>
+            <button class="btn btn--primary" type="submit" data-submit>Odoslať dopyt</button>
+          </div>
+          <p class="form__gdpr">
+            Odoslaním súhlasíte so spracovaním údajov na účel vybavenia dopytu.
+            <a href="/gdpr">Viac o ochrane osobných údajov</a>.
+          </p>
+        </fieldset>
+      </form>
+
+      <aside class="contact__info">
+        <div class="card summary" data-summary-card>
+          <h2>Váš dopyt</h2>
+          <ul>
+            <li class="is-empty"><span>Zariaďujete</span><span data-out="co">—</span></li>
+            <li class="is-empty"><span>Priestor</span><span data-out="typ">—</span></li>
+            <li class="is-empty"><span>Stav</span><span data-out="stav">—</span></li>
+            <li class="is-empty"><span>Termín</span><span data-out="termin">—</span></li>
+            <li class="is-empty"><span>Obec</span><span data-out="obec">—</span></li>
+            <li class="is-empty"><span>Prílohy</span><span data-out="subory">—</span></li>
+          </ul>
         </div>
         <div class="card">
-          <h2>Spojte sa s nami</h2>
+          <h2>Čo bude nasledovať</h2>
+          <ol class="next">
+            <li>Ozveme sa a dohodneme termín</li>
+            <li>Prídeme zamerať priestor</li>
+            <li>Dostanete návrh a cenovú ponuku</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h2>Radšej zavoláte?</h2>
           <ul>
             <li>
-              <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
+              <a class="phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
             </li>
             <li>
               <button class="copy-email" type="button" data-copy={site.email} title="Kliknutím skopírujete adresu">
@@ -45,88 +268,24 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
               </button>
             </li>
           </ul>
-        </div>
-        <div class="card">
-          <h2>Otváracie hodiny</h2>
           <ul class="hours">
-            {
-              site.hours.map((h) => (
-                <li>
-                  <span>{h.days}</span>
-                  <span>{h.time}</span>
-                </li>
-              ))
-            }
+            {site.hours.map((h) => (
+              <li>
+                <span>{h.days}</span>
+                <span>{h.time}</span>
+              </li>
+            ))}
           </ul>
         </div>
-      </div>
-
-      <form
-        class="form card"
-        name="dopyt"
-        method="post"
-        action={formAction}
-        data-netlify="true"
-        netlify-honeypot="web"
-        data-astro-reload
-      >
-        <input type="hidden" name="form-name" value="dopyt" />
-        <h2>Nezáväzný dopyt</h2>
-
-        <p class="form__status form__status--ok" data-status-ok hidden>
-          Ďakujeme! Váš dopyt sme prijali a čoskoro sa vám ozveme.
-        </p>
-        <p class="form__status form__status--err" data-status-err hidden>
-          Dopyt sa nepodarilo odoslať. Skúste to prosím znova, alebo nám napíšte priamo na
-          <a href={`mailto:${site.email}`}>{site.email}</a>.
-        </p>
-
-        <div class="form__row">
-          <label for="f-meno">Meno a priezvisko <span aria-hidden="true">*</span></label>
-          <input id="f-meno" name="meno" type="text" required autocomplete="name" />
+        <div class="card">
+          <h2>Kde nás nájdete</h2>
+          <address>
+            {site.address.street}<br />
+            {site.address.city}<br />
+            {site.address.country}
+          </address>
         </div>
-
-        <div class="form__cols">
-          <div class="form__row">
-            <label for="f-email">E-mail <span aria-hidden="true">*</span></label>
-            <input id="f-email" name="email" type="email" required autocomplete="email" />
-          </div>
-          <div class="form__row">
-            <label for="f-tel">Telefón</label>
-            <input id="f-tel" name="telefon" type="tel" autocomplete="tel" />
-          </div>
-        </div>
-
-        <div class="form__row">
-          <label for="f-kategoria">O čo máte záujem?</label>
-          <select id="f-kategoria" name="kategoria">
-            <option value="">— vyberte —</option>
-            {categories.map((c) => <option value={c.title}>{c.title}</option>)}
-            <option value="Kompletný interiér">Kompletný interiér</option>
-            <option value="Iné">Iné</option>
-          </select>
-        </div>
-
-        <div class="form__row">
-          <label for="f-sprava">Správa <span aria-hidden="true">*</span></label>
-          <textarea id="f-sprava" name="sprava" rows="5" required></textarea>
-          <p class="form__hint">Napíšte nám v skratke, čo zariaďujete — ozveme sa vám späť.</p>
-        </div>
-
-        <!-- honeypot -->
-        <div class="form__hp" aria-hidden="true">
-          <label for="f-web">Webová stránka</label>
-          <input id="f-web" name="web" type="text" tabindex="-1" autocomplete="off" />
-        </div>
-        <!-- anti-spam: vyplní JavaScript pri načítaní stránky; boti POSTujúci priamo ho nemajú -->
-        <input type="hidden" name="cas" id="f-cas" value="" />
-
-        <button class="btn btn--primary form__submit" type="submit">Odoslať dopyt</button>
-        <p class="form__gdpr">
-          Odoslaním súhlasíte so spracovaním údajov na účel vybavenia dopytu.
-          <a href="/gdpr">Viac o ochrane osobných údajov</a>.
-        </p>
-      </form>
+      </aside>
     </div>
   </section>
 
@@ -158,9 +317,10 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
     font-family: var(--font-display);
     font-style: italic;
   }
+
   .contact {
     display: grid;
-    grid-template-columns: 1fr 1.4fr;
+    grid-template-columns: minmax(0, 1.6fr) minmax(16rem, 1fr);
     gap: var(--space-3);
     padding-top: var(--space-5);
     align-items: start;
@@ -168,6 +328,8 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
   .contact__info {
     display: grid;
     gap: var(--space-2);
+    position: sticky;
+    top: var(--space-3);
   }
   .card {
     background: var(--surface);
@@ -187,6 +349,12 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
   .card address { font-style: normal; }
   .card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
   .card a { color: var(--ink); font-weight: 500; text-decoration-color: var(--yellow); }
+  .phone {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    text-decoration: none !important;
+  }
   .copy-email {
     display: inline-flex;
     align-items: center;
@@ -204,46 +372,216 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
     text-decoration-color: var(--yellow);
     text-underline-offset: 3px;
   }
-  .copy-email__icon {
-    color: var(--muted);
-    transition: color 180ms var(--ease);
-  }
+  .copy-email__icon { color: var(--muted); transition: color 180ms var(--ease); }
   .copy-email:hover .copy-email__icon { color: var(--ink); }
-  .copy-email__done {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #2e7d32;
+  .copy-email__done { font-size: 0.85rem; font-weight: 600; color: #2e7d32; }
+  .hours {
+    margin-top: var(--space-2) !important;
+    padding-top: var(--space-2) !important;
+    border-top: 1px dashed var(--line);
   }
   .hours li {
     display: flex;
     justify-content: space-between;
     gap: var(--space-2);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
   .hours li span:last-child { color: var(--muted); text-align: right; }
 
+  /* živý súhrn — má zmysel len keď beží sprievodca (JS); bez JS je celý formulár aj tak na jednej obrazovke */
+  .summary { display: none; }
+  :global(html.js) .summary { display: block; }
+  .summary li {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.8rem;
+    font-size: 0.9rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px dashed var(--line);
+  }
+  .summary li span:first-child { color: var(--muted); flex: none; }
+  .summary li span:last-child { font-weight: 600; text-align: right; }
+  .summary li.is-empty span:last-child { color: #b8b4aa; font-weight: 400; }
+  .next {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+    counter-reset: n;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+  .next li::before {
+    counter-increment: n;
+    content: counter(n);
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--yellow-deep);
+    margin-right: 0.5rem;
+  }
+
+  /* ---- sprievodca ---- */
+  .form__head { margin-bottom: var(--space-3); }
   .form h2 {
     font-family: var(--font-display);
     font-size: var(--step-2);
     letter-spacing: -0.01em;
     text-transform: none;
     color: var(--ink);
-    margin-bottom: var(--space-3);
+    margin-bottom: 0.3rem;
   }
+  .form__lead { color: var(--muted); font-size: 0.95rem; }
+
+  .steps {
+    list-style: none;
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+  .steps li {
+    padding-top: 0.6rem;
+    border-top: 3px solid var(--line);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    transition: border-color 300ms var(--ease), color 300ms var(--ease);
+  }
+  .steps__num {
+    display: block;
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #a19d94;
+  }
+  .steps li.is-done { border-color: var(--ink); color: var(--ink); }
+  .steps li.is-active { border-color: var(--yellow); color: var(--ink); }
+  /* bez JS sa zobrazia všetky kroky pod sebou — ukazovateľ krokov a navigácia nemajú význam */
+  :global(html:not(.js)) .steps,
+  :global(html:not(.js)) [data-next],
+  :global(html:not(.js)) [data-prev] { display: none; }
+
+  .step {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  :global(html.js) .step { display: none; }
+  :global(html.js) .step.is-active { display: block; animation: step-in 320ms var(--ease); }
+  :global(html:not(.js)) .step + .step {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  @keyframes step-in {
+    from { opacity: 0; transform: translateY(8px); }
+  }
+  .step__title {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 560;
+    letter-spacing: -0.01em;
+    padding: 0;
+    margin-bottom: 0.2rem;
+  }
+  .step__hint { color: var(--muted); margin-bottom: var(--space-3); font-size: 0.95rem; }
+  .step__nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--line);
+  }
+  .btn-link {
+    border: 0;
+    background: none;
+    padding: 0.5rem 0;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 160ms var(--ease);
+  }
+  .btn-link:hover { color: var(--ink); }
+
+  /* dlaždice (krok 1) — všetky rovnako vysoké */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 0.7rem;
+  }
+  .tile { position: relative; cursor: pointer; display: block; }
+  .tile input { position: absolute; inset: 0; opacity: 0; margin: 0; }
+  .tile__body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem 0.9rem 0.9rem;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper);
+    transition: border-color 180ms var(--ease), background 180ms var(--ease), box-shadow 180ms var(--ease);
+  }
+  .tile svg { width: 26px; height: 26px; fill: none; stroke: var(--ink); stroke-width: 1.6; margin-bottom: 0.55rem; }
+  .tile strong { font-weight: 600; }
+  .tile small { color: var(--muted); font-size: 0.78rem; line-height: 1.4; }
+  .tile:hover .tile__body { border-color: #b8b4aa; }
+  .tile input:focus-visible + .tile__body { outline: 3px solid var(--yellow); outline-offset: 2px; }
+  .tile input:checked + .tile__body {
+    border-color: var(--ink);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+  .tile input:checked + .tile__body::after {
+    content: '';
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: var(--yellow) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2314130f' stroke-width='3'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center / 65% no-repeat;
+  }
+
+  /* pilulky (jedna voľba) */
+  .group { margin-bottom: var(--space-2); }
+  .group__label, .form__label, .form label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+  }
+  .opt { color: var(--muted); font-weight: 400; }
+  .req { color: var(--yellow-deep); }
+  .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .pill { position: relative; cursor: pointer; margin: 0 !important; }
+  .pill input { position: absolute; inset: 0; opacity: 0; margin: 0; }
+  .pill span {
+    display: inline-block;
+    padding: 0.5rem 0.95rem;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--paper);
+    font-weight: 500;
+    font-size: 0.88rem;
+    transition: background 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease);
+  }
+  .pill:hover span { border-color: #b8b4aa; }
+  .pill input:focus-visible + span { outline: 3px solid var(--yellow); outline-offset: 2px; }
+  .pill input:checked + span { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
   .form__row { margin-bottom: var(--space-2); }
   .form__cols {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-2);
   }
-  .form label {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-  }
-  .form label span { color: var(--yellow-deep); }
-  .form input,
+  .form input:not([type='checkbox'], [type='radio'], [type='file']),
   .form select,
   .form textarea {
     width: 100%;
@@ -262,39 +600,125 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
     border-color: var(--yellow);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--yellow) 30%, transparent);
   }
+  .form input:user-invalid { border-color: #c62828; }
   .form textarea { resize: vertical; }
-  .form__hint {
-    font-size: 0.85rem;
+
+  /* prílohy */
+  .drop {
+    display: block;
+    text-align: center;
+    padding: 1.3rem 1rem;
+    border: 1.5px dashed #b8b4aa;
+    border-radius: var(--radius);
+    background: var(--paper);
     color: var(--muted);
-    margin-top: 0.4rem;
+    cursor: pointer;
+    transition: border-color 160ms var(--ease), background 160ms var(--ease);
+    margin-bottom: 0 !important;
+    font-weight: 400 !important;
   }
+  .drop:hover, .drop.is-over { border-color: var(--ink); background: var(--surface); }
+  .drop:focus-within { outline: 3px solid var(--yellow); outline-offset: 2px; }
+  .drop svg { margin: 0 auto 0.4rem; color: var(--ink); }
+  .drop strong { display: block; color: var(--ink); font-weight: 600; }
+  .drop small { display: block; font-size: 0.8rem; margin-top: 0.25rem; }
+  .drop__input {
+    position: absolute;
+    width: 1px; height: 1px;
+    opacity: 0;
+    overflow: hidden;
+  }
+  /* bez JS nech je vstup na súbory normálne viditeľný */
+  :global(html:not(.js)) .drop__input { position: static; width: auto; height: auto; opacity: 1; margin-top: 0.6rem; }
+  .files {
+    list-style: none;
+    margin: 0.6rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .files:empty { display: none; }
+  /* položky zoznamu vytvára JavaScript — nemajú Astro scope atribút, preto :global */
+  .files :global(li) {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.45rem 0.6rem 0.45rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-size: 0.88rem;
+  }
+  .files :global(img) {
+    width: 2.6rem;
+    height: 2.6rem;
+    object-fit: cover;
+    border-radius: 2px;
+    flex: none;
+  }
+  .files :global(.files__pdf) {
+    width: 2.6rem;
+    height: 2.6rem;
+    display: grid;
+    place-items: center;
+    background: var(--paper);
+    border-radius: 2px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    flex: none;
+  }
+  .files :global(.files__name) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .files :global(.files__size) { color: var(--muted); flex: none; font-variant-numeric: tabular-nums; }
+  .files :global(.files__rm) {
+    border: 0;
+    background: none;
+    padding: 0.2rem;
+    color: var(--muted);
+    line-height: 1;
+    flex: none;
+  }
+  .files :global(.files__rm:hover) { color: #c62828; }
+  .form__err {
+    margin-top: 0.5rem;
+    font-size: 0.88rem;
+    color: #c62828;
+  }
+
   .form__hp { position: absolute; left: -9999px; }
-  .form__submit { width: 100%; justify-content: center; margin-top: var(--space-2); }
   .form__gdpr {
     margin-top: var(--space-2);
     font-size: 0.82rem;
     color: var(--muted);
   }
-  .map { margin-top: var(--space-5); }
-  .map iframe { display: block; filter: grayscale(0.4); }
   .form__status {
     padding: 0.9rem 1.1rem;
     border-radius: var(--radius);
     font-size: 0.95rem;
     margin-bottom: var(--space-2);
-  }
-  .form__status--ok {
-    background: color-mix(in srgb, #2e7d32 12%, transparent);
-    border: 1px solid #2e7d32;
-  }
-  .form__status--err {
     background: color-mix(in srgb, #c62828 10%, transparent);
     border: 1px solid #c62828;
   }
+  .map { margin-top: var(--space-5); }
+  .map iframe { display: block; filter: grayscale(0.4); }
 
   @media (max-width: 60rem) {
     .contact { grid-template-columns: 1fr; }
+    .contact__info { position: static; }
+    .summary { display: none !important; }
+  }
+  @media (max-width: 40rem) {
     .form__cols { grid-template-columns: 1fr; gap: 0; }
+    /* na mobile má názov len aktívny krok a dostane väčšinu šírky, aby sa nelámal */
+    .steps { display: flex; gap: 0.3rem; }
+    .steps li { flex: 0 0 3.4rem; }
+    .steps li.is-active { flex: 1; }
+    .steps__name { display: none; }
+    .steps li.is-active .steps__name { display: block; }
+    .steps__num { font-size: 0.6rem; }
+    .tiles { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+    .step__nav { flex-wrap: wrap; }
+    .step__nav .btn { width: 100%; justify-content: center; }
   }
 </style>
 
@@ -318,14 +742,203 @@ const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
       }
     });
 
-    const params = new URLSearchParams(location.search);
-    const sent = params.get('odoslane');
-    if (sent === '1') {
-      document.querySelector('[data-status-ok]')?.removeAttribute('hidden');
-      document.querySelector<HTMLFormElement>('.form')?.scrollIntoView({ block: 'center' });
-    } else if (sent === '0') {
+    const form = document.querySelector<HTMLFormElement>('[data-wizard]');
+    if (!form) return;
+
+    if (new URLSearchParams(location.search).get('odoslane') === '0') {
       document.querySelector('[data-status-err]')?.removeAttribute('hidden');
-      document.querySelector<HTMLFormElement>('.form')?.scrollIntoView({ block: 'center' });
+      form.scrollIntoView({ block: 'start' });
     }
+
+    // ---- kroky ----
+    const steps = [...form.querySelectorAll<HTMLFieldSetElement>('[data-step]')];
+    const marks = [...form.querySelectorAll<HTMLLIElement>('[data-steps] li')];
+    let current = 1;
+
+    const go = (n: number) => {
+      current = Math.min(Math.max(n, 1), steps.length);
+      steps.forEach((s) => s.classList.toggle('is-active', Number(s.dataset.step) === current));
+      marks.forEach((m, i) => {
+        m.classList.toggle('is-done', i + 1 < current);
+        m.classList.toggle('is-active', i + 1 === current);
+      });
+      const top = form.getBoundingClientRect().top + window.scrollY - 24;
+      if (window.scrollY > top) window.scrollTo({ top, behavior: 'smooth' });
+      steps[current - 1].querySelector<HTMLElement>('input, textarea, select, button')?.focus({ preventScroll: true });
+    };
+
+    form.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t.closest('[data-next]')) go(current + 1);
+      if (t.closest('[data-prev]')) go(current - 1);
+    });
+
+    // Enter v textovom poli = ďalší krok (nie odoslanie nehotového formulára)
+    form.addEventListener('keydown', (e) => {
+      const t = e.target as HTMLElement;
+      if (e.key === 'Enter' && t.matches('input:not([type="file"])') && current < steps.length) {
+        e.preventDefault();
+        go(current + 1);
+      }
+    });
+
+    // ---- živý súhrn ----
+    const setOut = (key: string, value: string) => {
+      const out = form.parentElement?.querySelector<HTMLElement>(`[data-out="${key}"]`);
+      if (!out) return;
+      out.textContent = value || '—';
+      out.parentElement?.classList.toggle('is-empty', !value);
+    };
+    const refreshGroup = (box: HTMLElement) => {
+      const key = box.dataset.summary!;
+      if (box.matches('input')) return setOut(key, (box as HTMLInputElement).value.trim());
+      const picked = [...box.querySelectorAll<HTMLInputElement>('input:checked')].map((i) => i.value);
+      setOut(key, picked.join(', '));
+    };
+    form.addEventListener('change', (e) => {
+      const box = (e.target as HTMLElement).closest<HTMLElement>('[data-summary]');
+      if (box) refreshGroup(box);
+    });
+    form.addEventListener('input', (e) => {
+      const t = e.target as HTMLElement;
+      if (t.matches('input[data-summary]')) refreshGroup(t);
+    });
+    // po návrate tlačidlom Späť prehliadač obnoví hodnoty — súhrn nech im zodpovedá
+    form.querySelectorAll<HTMLElement>('[data-summary]').forEach(refreshGroup);
+
+    // ---- prílohy ----
+    const MAX_FILES = 5;
+    const MAX_FILE = 10 * 1024 * 1024;
+    const MAX_TOTAL = 20 * 1024 * 1024;
+    const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+    const input = form.querySelector<HTMLInputElement>('#f-subory');
+    const drop = form.querySelector<HTMLElement>('[data-drop]');
+    const list = form.querySelector<HTMLUListElement>('[data-files]');
+    const err = form.querySelector<HTMLElement>('[data-files-err]');
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]');
+    let files: File[] = [];
+    let busy = 0;
+
+    const fmt = (b: number) => (b >= 1024 * 1024 ? `${(b / 1024 / 1024).toFixed(1)} MB` : `${Math.round(b / 1024)} kB`);
+    const showErr = (msg: string) => {
+      if (!err) return;
+      err.textContent = msg;
+      err.hidden = !msg;
+    };
+
+    // fotky z mobilu majú 3–8 MB — pred odoslaním ich prehliadač zmenší na 2000 px JPEG (~0,5 MB),
+    // takže 5 fotiek prejde aj cez prísne limity hostingu a odošle sa rýchlo aj na mobilných dátach
+    const shrink = async (file: File): Promise<File> => {
+      if (!file.type.startsWith('image/') || file.size < 900 * 1024) return file;
+      try {
+        const bmp = await createImageBitmap(file);
+        const scale = Math.min(1, 2000 / Math.max(bmp.width, bmp.height));
+        const w = Math.round(bmp.width * scale);
+        const h = Math.round(bmp.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d')!.drawImage(bmp, 0, 0, w, h);
+        bmp.close();
+        const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, 'image/jpeg', 0.82));
+        if (!blob || blob.size >= file.size) return file;
+        return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+      } catch {
+        return file;
+      }
+    };
+
+    const sync = () => {
+      if (!input || !list) return;
+      const dt = new DataTransfer();
+      files.forEach((f) => dt.items.add(f));
+      input.files = dt.files;
+
+      list.textContent = '';
+      files.forEach((f, i) => {
+        const li = document.createElement('li');
+        if (f.type === 'application/pdf') {
+          const pdf = document.createElement('span');
+          pdf.className = 'files__pdf';
+          pdf.textContent = 'PDF';
+          li.append(pdf);
+        } else {
+          const img = document.createElement('img');
+          img.alt = '';
+          img.src = URL.createObjectURL(f);
+          img.onload = () => URL.revokeObjectURL(img.src);
+          li.append(img);
+        }
+        const name = document.createElement('span');
+        name.className = 'files__name';
+        name.textContent = f.name;
+        const size = document.createElement('span');
+        size.className = 'files__size';
+        size.textContent = fmt(f.size);
+        const rm = document.createElement('button');
+        rm.type = 'button';
+        rm.className = 'files__rm';
+        rm.setAttribute('aria-label', `Odstrániť ${f.name}`);
+        rm.textContent = '✕';
+        rm.addEventListener('click', () => {
+          files.splice(i, 1);
+          showErr('');
+          sync();
+        });
+        li.append(name, size, rm);
+        list.append(li);
+      });
+      setOut('subory', files.length ? `${files.length} ${files.length === 1 ? 'súbor' : files.length < 5 ? 'súbory' : 'súborov'}` : '');
+    };
+
+    const add = async (incoming: FileList | File[]) => {
+      showErr('');
+      const problems: string[] = [];
+      busy++;
+      if (submit) submit.disabled = true;
+      for (const raw of [...incoming]) {
+        if (files.length >= MAX_FILES) { problems.push(`Najviac ${MAX_FILES} súborov.`); break; }
+        if (!ALLOWED.includes(raw.type)) { problems.push(`${raw.name}: povolené sú len JPG, PNG, WebP a PDF.`); continue; }
+        if (raw.size > MAX_FILE * 3) { problems.push(`${raw.name}: súbor je príliš veľký.`); continue; }
+        const f = await shrink(raw);
+        if (f.size > MAX_FILE) { problems.push(`${f.name}: súbor má viac než 10 MB.`); continue; }
+        const total = files.reduce((s, x) => s + x.size, 0) + f.size;
+        if (total > MAX_TOTAL) { problems.push(`Prílohy spolu presahujú 20 MB.`); continue; }
+        files.push(f);
+      }
+      busy--;
+      if (submit && busy === 0) submit.disabled = false;
+      sync();
+      if (problems.length) showErr(problems.join(' '));
+    };
+
+    input?.addEventListener('change', () => {
+      if (input.files?.length) add(input.files);
+    });
+    drop?.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('is-over'); });
+    drop?.addEventListener('dragleave', () => drop.classList.remove('is-over'));
+    drop?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      drop.classList.remove('is-over');
+      if (e.dataTransfer?.files.length) add(e.dataTransfer.files);
+    });
+
+    // ---- odoslanie ----
+    form.addEventListener('submit', (e) => {
+      if (busy > 0) { e.preventDefault(); return; }
+      // s novalidate si overenie robíme sami, aby chyba v skrytom kroku neostala neviditeľná
+      const invalid = [...form.querySelectorAll<HTMLInputElement>('input[required], input[type="email"]')].find((i) => !i.checkValidity());
+      if (invalid) {
+        e.preventDefault();
+        const step = invalid.closest<HTMLFieldSetElement>('[data-step]');
+        if (step) go(Number(step.dataset.step));
+        invalid.reportValidity();
+        return;
+      }
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = files.length ? 'Odosielam prílohy…' : 'Odosielam…';
+      }
+    });
   });
 </script>

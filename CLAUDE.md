@@ -36,11 +36,13 @@ Remaster of **i-studio.sk** — an interior design studio in Stupava, Slovakia (
 
 ## Contact form (dual-host)
 
-The form in `src/pages/kontakt.astro` works on both hosts:
+The form in `src/pages/kontakt.astro` is a 4-step guided wizard (what / space & timing / details + attachments / contact) that degrades to one long form without JS (`html.js` gates the step UI). It works on both hosts:
 
 - On **Netlify builds** (`process.env.NETLIFY` set), it submits via Netlify Forms with `action="/dakujeme"`.
-- Otherwise it posts to `public/api/contact.php` (PHP `mail()`, honeypot field `web`, redirects to `/dakujeme` on success).
-- **Recipient:** `office@i-studio.sk` (must be an existing Websupport mailbox with matching `-f` envelope sender, or the mail is silently discarded). Includes anti-spam layers: honeypot, JS token (`cas`), invalid-UTF-8 guard, link+no-diacritics heuristic, and a keyword blocklist — rejections are visible pages with a Back button, never silent for humans.
+- Otherwise it posts (multipart) to `public/api/contact.php` (PHP `mail()`, redirects to `/dakujeme` on success).
+- **Option values** (categories, space type, state, timing, budget, contact channel) are whitelisted in `contact.php` — the lists in `kontakt.astro` and the PHP must stay in sync or the server silently drops the value.
+- **Attachments:** max 5 files, 10 MB each, 20 MB total; JPEG/PNG/WebP/PDF only, type checked from content (finfo/magic bytes + `getimagesize`), attachment names are generated. Files are emailed as MIME attachments and never stored on the host. The browser downsizes photos to 2000 px JPEG before upload; a request over `post_max_size` gets a visible 413 page.
+- **Recipient:** `office@i-studio.sk` (must be an existing Websupport mailbox with matching `-f` envelope sender, or the mail is silently discarded). Anti-spam layers: honeypot `web`, JS token `cas`, per-IP rate limit (6/hour, temp-dir file), invalid-UTF-8 guard, link+no-diacritics heuristic, keyword blocklist — every rejection is a visible page with a Back button, never silent for humans.
 
 ## Conventions
 
