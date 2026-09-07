@@ -207,25 +207,34 @@ if (@preg_match('//u', $volnyText . $email) !== 1) {
     );
 }
 
-// heuristika 1: odkaz v správe + úplne bez slovenskej diakritiky (typický anglický spam)
-$hasLink       = (bool) preg_match('~https?://|www\.~i', $sprava);
-$hasDiacritics = (bool) preg_match('/[áäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ]/u', $sprava);
-if ($hasLink && !$hasDiacritics) {
+// cyrilika sa v dopyte na interiér v Stupave nevyskytuje — jediná jazyková heuristika, ktorá odmieta
+if (preg_match('/\p{Cyrillic}/u', $volnyText)) {
     odmietni(
-        'Správy s webovými odkazmi nám žiaľ často posielajú roboti, preto ich formulár neprijíma.',
-        '<strong>Vráťte sa tlačidlom Späť</strong>, odstráňte zo správy odkaz a odošlite ju znova.'
+        'Správa obsahuje znaky cyriliky, ktoré formulár neprijíma.',
+        '<strong>Vráťte sa tlačidlom Späť</strong> a napíšte správu v latinke.'
     );
 }
 
-// heuristika 2: výrazy, ktoré sa v dopyte na interiér nevyskytujú, ale v spame áno
+// Ostatné podozrivé znaky správu NEODMIETNU — doručí sa s označením „[možný spam]" v predmete,
+// aby sa nestratil skutočný dopyt (Slováci často píšu bez diakritiky, odkaz na inšpiráciu je bežný).
+$podozrenia = [];
+
+// odkaz v správe + úplne bez slovenskej diakritiky (typický anglický spam)
+$hasLink       = (bool) preg_match('~https?://|www\.~i', $sprava);
+$hasDiacritics = (bool) preg_match('/[áäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ]/u', $sprava);
+if ($hasLink && !$hasDiacritics) {
+    $podozrenia[] = 'odkaz v správe bez diakritiky';
+}
+
+// výrazy, ktoré sa v dopyte na interiér nevyskytujú, ale v spame áno
 $spamKeywords = '/\b(crypto|bitcoin|btc|ethereum|tokens?|forex|investment|investing|casino'
     . '|viagra|cialis|porno?|xxx|seo|backlinks?|followers|subscribers|telegram|telegra\.ph'
-    . '|lottery|jackpot|gift ?card)\b|t\.me\/|\$\s?\d|\p{Cyrillic}/iu';
-if (preg_match($spamKeywords, $volnyText)) {
-    odmietni(
-        'Správa obsahuje výrazy, ktoré sa typicky vyskytujú v spame, preto ju formulár neprijal.',
-        '<strong>Vráťte sa tlačidlom Späť</strong>, preformulujte správu (bez anglických reklamných výrazov) a odošlite ju znova.'
-    );
+    . '|lottery|jackpot|gift ?card)\b|t\.me\/|\$\s?\d/iu';
+if (preg_match($spamKeywords, $volnyText, $zhoda)) {
+    $podozrenia[] = 'spamový výraz „' . $zhoda[0] . '"';
+}
+if ($podozrenia !== []) {
+    error_log('i-studio form: flagged as possible spam (' . implode('; ', $podozrenia) . ') from ' . ip());
 }
 
 // ---- prílohy ----
@@ -330,9 +339,13 @@ if ($prilohy !== []) {
         $riadky[] = '  ' . $p['nazov'] . '  (pôvodne: ' . $p['povodny'] . ', ' . round(strlen($p['obsah']) / 1024) . ' kB)';
     }
 }
+if ($podozrenia !== []) {
+    array_unshift($riadky, '!! MOŽNÝ SPAM: ' . implode('; ', $podozrenia), '');
+}
 $telo = implode("\n", $riadky) . "\n";
 
-$predmetText = 'Dopyt z webu i-studio.sk' . ($co !== [] ? ' – ' . implode(', ', $co) : '');
+$predmetText = ($podozrenia !== [] ? '[možný spam] ' : '')
+    . 'Dopyt z webu i-studio.sk' . ($co !== [] ? ' – ' . implode(', ', $co) : '');
 $predmet     = '=?UTF-8?B?' . base64_encode($predmetText) . '?=';
 
 $hlavicky = [
