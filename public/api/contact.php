@@ -132,20 +132,29 @@ if (empty($_POST['cas'] ?? '')) {
 // jednoduchý limit počtu ODOSLANÝCH správ z jednej IP (súbor v temp adresári; ak sa nedá zapísať,
 // limit sa preskočí). Počítajú sa len správy, ktoré naozaj odišli — odmietnuté pokusy (napr. chýbajúce
 // meno) kvótu nespotrebúvajú, aby si človek opravou chyby nezablokoval formulár.
+// Súbor ostáva zamknutý (flock) od prečítania až po zápis po odoslaní — dve súbežné požiadavky
+// z tej istej IP sa tak spracujú za sebou a nemôžu obe vidieť rovnaký stav počítadla.
 $rlSubor = sys_get_temp_dir() . '/istudio-dopyt-v2-' . hash('sha256', ip() . '|' . ODOSIELATEL) . '.json';
 $teraz   = time();
 $casy    = [];
-if (is_file($rlSubor)) {
-    $casy = json_decode((string)@file_get_contents($rlSubor), true);
-    $casy = is_array($casy) ? array_values(array_filter($casy, fn($t) => is_int($t) && $t > $teraz - 3600)) : [];
+$rl      = @fopen($rlSubor, 'c+');
+if ($rl !== false && !flock($rl, LOCK_EX)) {
+    fclose($rl);
+    $rl = false;
 }
-if (count($casy) >= MAX_SPRAV_ZA_HOD) {
-    error_log('i-studio form: rate limit hit from ' . ip());
-    odmietni(
-        'Z vašej adresy prišlo za poslednú hodinu priveľa správ, preto formulár ďalšiu neprijal.',
-        'Skúste to prosím o chvíľu, alebo nám zavolajte na +421 903 730 932.',
-        429
-    );
+if ($rl !== false) {
+    $casy = json_decode((string)stream_get_contents($rl), true);
+    $casy = is_array($casy) ? array_values(array_filter($casy, fn($t) => is_int($t) && $t > $teraz - 3600)) : [];
+    if (count($casy) >= MAX_SPRAV_ZA_HOD) {
+        flock($rl, LOCK_UN);
+        fclose($rl);
+        error_log('i-studio form: rate limit hit from ' . ip());
+        odmietni(
+            'Z vašej adresy prišlo za poslednú hodinu priveľa správ, preto formulár ďalšiu neprijal.',
+            'Skúste to prosím o chvíľu, alebo nám zavolajte na +421 903 730 932.',
+            429
+        );
+    }
 }
 
 // ---- polia sprievodcu ----
@@ -356,10 +365,18 @@ if ($prilohy === []) {
 }
 
 $ok = mail(PRIJEMCA, $predmet, $sprava_mail, implode("\r\n", $hlavicky), '-f' . ODOSIELATEL);
-if ($ok) {
+if ($ok && $rl !== false) {
     $casy[] = $teraz;
-    @file_put_contents($rlSubor, json_encode($casy), LOCK_EX);
-} else {
+    ftruncate($rl, 0);
+    rewind($rl);
+    fwrite($rl, json_encode($casy));
+    fflush($rl);
+}
+if ($rl !== false) {
+    flock($rl, LOCK_UN);
+    fclose($rl);
+}
+if (!$ok) {
     error_log('i-studio form: mail() failed from ' . ip());
 }
 

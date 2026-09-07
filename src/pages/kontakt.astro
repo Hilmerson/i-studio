@@ -927,6 +927,16 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
     });
 
     // ---- odoslanie ----
+    const submitLabel = submit?.textContent ?? '';
+    // po návrate tlačidlom Späť z chybovej stránky môže prehliadač obnoviť stránku z bfcache
+    // aj s vypnutým tlačidlom — vrátiť ho do použiteľného stavu
+    window.addEventListener('pageshow', (e) => {
+      if (!e.persisted || !submit) return;
+      busy = 0;
+      submit.disabled = false;
+      submit.textContent = submitLabel;
+    });
+
     form.addEventListener('submit', (e) => {
       if (busy > 0) { e.preventDefault(); return; }
       // s novalidate si overenie robíme sami, aby chyba v skrytom kroku neostala neviditeľná

@@ -64,23 +64,36 @@ jobs:
       # FTP-Deploy-Action tu nefunguje (Websupport vyžaduje TLS session reuse, knižnica
       # basic-ftp ho nepodporuje), preto lftp.
       #
-      # Dva prechody:
-      #  1. všetko okrem fotiek a hashovaných assetov — porovnanie podľa času aj veľkosti,
-      #     takže zmenený HTML/PHP/.htaccess sa nahrá vždy (aj keď má rovnakú veľkosť)
-      #  2. src/photos a _astro — súbory sa nemenia pod rovnakým názvom (hash v názve,
-      #     resp. originály fotiek), stačí porovnať veľkosť; inak by sa 250 MB nahrávalo
-      #     pri každom deployi, lebo checkout dáva všetkým súborom nový čas
+      # Poradie je dôležité, aby web počas nahrávania nikdy neodkazoval na súbory, ktoré ešte
+      # neexistujú:
+      #  1. _astro (hashované CSS/JS/obrázky) — len pridať nové, staré zatiaľ nechať
+      #  2. src/photos (originály pre administráciu)
+      #  3. HTML/PHP/.htaccess — až keď sú ich assety na serveri; porovnanie podľa času aj
+      #     veľkosti, takže zmenený súbor sa nahrá vždy (aj keď má rovnakú veľkosť)
+      #  4. upratanie _astro — zmazať assety, na ktoré už žiadna stránka neodkazuje
+      # Pri _astro a src stačí porovnať veľkosť (--ignore-time): názvy sú hashované, resp.
+      # originály fotiek; inak by sa 250 MB nahrávalo pri každom deployi, lebo checkout
+      # dáva všetkým súborom nový čas.
+      #
+      # Certifikát FTP servera je vystavený na *.r6.websupport.sk — hostname sa dá overiť len
+      # keď je WEBSUPPORT_FTP_HOST tento názov (ftp.r6.websupport.sk), nie i-studio.sk.
       - name: Upload dist via FTPS (lftp)
         run: |
+          case "$FTP_HOST" in
+            *.websupport.sk) CHECK_HOSTNAME=yes ;;
+            *) CHECK_HOSTNAME=no
+               echo "::warning::WEBSUPPORT_FTP_HOST is '$FTP_HOST' — certificate hostname not verified. Set it to ftp.r6.websupport.sk to enable full TLS verification." ;;
+          esac
           lftp -c "
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
             set ssl:verify-certificate yes;
-            set ssl:check-hostname no;
+            set ssl:check-hostname $CHECK_HOSTNAME;
             set net:max-retries 2;
             set net:timeout 30;
             open -u \"$FTP_USER\" --env-password \"$FTP_HOST\";
-            mirror -R --delete --parallel=4 --no-perms --verbose=1 -x '^src/' -x '^_astro/' dist/ \"$FTP_DIR\";
+            mirror -R --parallel=4 --no-perms --ignore-time --verbose=1 dist/_astro/ \"$FTP_DIR/_astro/\";
             mirror -R --delete --parallel=4 --no-perms --ignore-time --verbose=1 dist/src/ \"$FTP_DIR/src/\";
+            mirror -R --delete --parallel=4 --no-perms --verbose=1 -x '^src/' -x '^_astro/' dist/ \"$FTP_DIR\";
             mirror -R --delete --parallel=4 --no-perms --ignore-time --verbose=1 dist/_astro/ \"$FTP_DIR/_astro/\";
           "
