@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import logo from '../assets/i_studio_footer.png';
+import logo from '../assets/i_studio.png';
 import { site, categories, yearsOfExperience } from '../data/site';
 const year = new Date().getFullYear();
 ---
@@ -81,12 +81,12 @@ const year = new Date().getFullYear();
     padding: 0.85rem 1.4rem 0.85rem 0;
     isolation: isolate;
   }
-  /* žltý blok za logom — siaha až za ľavý okraj obrazovky */
+  /* biely blok za originálnym logom — siaha až za ľavý okraj obrazovky */
   .footer__logo::before {
     content: '';
     position: absolute;
     inset: 0 0 0 -100vw;
-    background: var(--yellow);
+    background: var(--paper);
     border-radius: 0 var(--radius) var(--radius) 0;
     z-index: -1;
   }
@@ -97,7 +97,6 @@ const year = new Date().getFullYear();
   .footer__logo img {
     height: 2.25rem;
     width: auto;
-    filter: invert(1); /* biele monochromatické logo → čierne na žltej */
   }
   /* animácia len s JS: blok je schovaný vľavo, logo pod maskou; pri scrollnutí sa blok prisunie a logo vysunie */
   :global(html.js) .footer__logo.reveal { opacity: 1; transform: none; }

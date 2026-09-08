@@ -357,22 +357,23 @@ const tiles = categories.map((c) => ({
     list-style: none;
     margin: var(--space-3) 0 0;
     padding: 0;
-    border-top: 1px solid var(--line);
+    position: relative;
   }
   .process__step {
     position: relative;
     display: grid;
     grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1.5fr);
     gap: var(--space-3);
-    align-items: baseline;
+    align-items: start;
     padding: var(--space-3) 0;
-    border-bottom: 1px solid var(--line);
   }
-  .process__step::after {
+  /* jediný typ deliacej čiary: žltá, nakreslí sa zľava — nad každým riadkom a pod posledným */
+  .process__step::before,
+  .process__list::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: -1px;
+    top: 0;
     width: 100%;
     height: 2px;
     background: var(--yellow);
@@ -380,16 +381,21 @@ const tiles = categories.map((c) => ({
     transform-origin: left;
     transition: transform 900ms var(--ease);
   }
-  .process.is-drawn .process__step::after { transform: scaleX(1); }
-  .process.is-drawn .process__step:nth-child(2)::after { transition-delay: 180ms; }
-  .process.is-drawn .process__step:nth-child(3)::after { transition-delay: 360ms; }
-  .process.is-drawn .process__step:nth-child(4)::after { transition-delay: 540ms; }
+  .process__list::after { top: auto; bottom: 0; }
+  .process.is-drawn .process__step::before,
+  .process.is-drawn .process__list::after { transform: scaleX(1); }
+  .process.is-drawn .process__step:nth-child(2)::before { transition-delay: 160ms; }
+  .process.is-drawn .process__step:nth-child(3)::before { transition-delay: 320ms; }
+  .process.is-drawn .process__step:nth-child(4)::before { transition-delay: 480ms; }
+  .process.is-drawn .process__list::after { transition-delay: 640ms; }
+  /* číslo, názov aj text majú rovnakú výšku riadku -> horné hrany písma sedia na jednej linke */
   .process__num {
     font-family: var(--font-display);
     font-size: var(--step-1);
     font-weight: 600;
     color: var(--yellow-deep);
-    line-height: 1;
+    line-height: 1.1;
+    padding-top: 0.2rem;
   }
   .process__step h3 {
     font-size: var(--step-2);
@@ -401,8 +407,11 @@ const tiles = categories.map((c) => ({
   .process__step:hover h3 { transform: translateX(0.5rem); }
   .process__step p {
     font-size: 1rem;
+    line-height: 1.6;
     color: var(--muted);
     max-width: 44ch;
+    /* zarovnanie hornej hrany prvého riadku textu s hornou hranou názvu */
+    padding-top: 0.05rem;
   }
 
   /* cta band */
