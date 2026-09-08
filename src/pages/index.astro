@@ -89,17 +89,19 @@ const tiles = categories.map((c) => ({
       <div class="tiles">
         {
           tiles.map((t, i) => (
-            <a class="tile reveal" href={`/${t.slug}`} style={`transition-delay: ${(i % 3) * 60}ms`}>
+            <a class="tile reveal" href={`/${t.slug}`} style={`transition-delay: ${(i % 3) * 120}ms`}>
               {t.photo && (
-                <Image
-                  src={t.photo}
-                  widths={[420, 720]}
-                  sizes="(max-width: 40rem) 100vw, (max-width: 64rem) 50vw, 33vw"
-                  format="webp"
-                  quality={75}
-                  alt=""
-                  loading="lazy"
-                />
+                <span class="tile__media media-reveal">
+                  <Image
+                    src={t.photo}
+                    widths={[420, 720]}
+                    sizes="(max-width: 40rem) 100vw, (max-width: 64rem) 50vw, 33vw"
+                    format="webp"
+                    quality={75}
+                    alt=""
+                    loading="lazy"
+                  />
+                </span>
               )}
               <span class="tile__label">
                 <span class="tile__name">{t.title}</span>
@@ -297,13 +299,17 @@ const tiles = categories.map((c) => ({
     isolation: isolate;
     background: var(--ink);
   }
+  .tile__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
   .tile img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: -1;
     transition: transform 500ms var(--ease), opacity 500ms var(--ease);
     opacity: 0.92;
   }

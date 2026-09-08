@@ -61,22 +61,24 @@ const fullSizes = await Promise.all(
       <div class="gallery" data-gallery={category}>
         {photos.map((photo, i) => (
           <a
-            class="gallery__item"
+            class="gallery__item reveal"
             href={fullSizes[i].src}
             data-lightbox-index={i}
             hidden={pageSize > 0 && i >= pageSize}
-            style={`animation-delay: ${(i % 12) * 45}ms`}
+            style={`transition-delay: ${(i % 12) * 70}ms`}
             aria-label={`Fotografia ${i + 1} — ${title}`}
           >
-            <Image
-              src={photo}
-              widths={[420, 720]}
-              sizes="(max-width: 40rem) 100vw, (max-width: 64rem) 50vw, 33vw"
-              format="webp"
-              quality={78}
-              alt=""
-              loading="lazy"
-            />
+            <span class="gallery__media media-reveal">
+              <Image
+                src={photo}
+                widths={[420, 720]}
+                sizes="(max-width: 40rem) 100vw, (max-width: 64rem) 50vw, 33vw"
+                format="webp"
+                quality={78}
+                alt=""
+                loading="lazy"
+              />
+            </span>
           </a>
         ))}
       </div>
@@ -119,17 +121,15 @@ const fullSizes = await Promise.all(
     overflow: hidden;
     border-radius: var(--radius);
     background: var(--line);
-    /* kaskádový nástup — prehrá sa aj pri odkrytí ďalšej dávky (display:none -> block) */
-    animation: gallery-in 480ms var(--ease) backwards;
-  }
-  @keyframes gallery-in {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
+    /* nábeh fotky rieši .reveal + .media-reveal (global.css) — spustí ho IntersectionObserver,
+       takže sa prehrá aj pri odkrytí ďalšej dávky (display:none -> block) */
   }
   .gallery__item[hidden] {
     display: none;
+  }
+  .gallery__media {
+    display: block;
+    height: 100%;
   }
   .gallery__item img {
     width: 100%;
