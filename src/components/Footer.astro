@@ -8,8 +8,11 @@ const year = new Date().getFullYear();
 <footer class="footer">
   <div class="container footer__grid">
     <div class="footer__brand">
-      <p class="footer__logo">
-        <Image src={logo} alt="i-studio" height={72} densities={[1, 2]} loading="lazy" />
+      <!-- žltý blok sa prisunie zľava spoza okraja obrazovky a logo sa z neho vysunie -->
+      <p class="footer__logo reveal">
+        <span class="footer__logo-mask">
+          <Image src={logo} alt="i-studio" height={72} densities={[1, 2]} loading="lazy" />
+        </span>
       </p>
       <p class="footer__tag">Vaše interiérové štúdio.<br />Už {yearsOfExperience} rokov zariaďujeme kompletné interiéry pod jednou strechou.</p>
       <div class="footer__social">
@@ -72,9 +75,45 @@ const year = new Date().getFullYear();
     gap: var(--space-4);
     padding-block: var(--space-5);
   }
+  .footer__logo {
+    position: relative;
+    display: inline-block;
+    padding: 0.85rem 1.4rem 0.85rem 0;
+    isolation: isolate;
+  }
+  /* žltý blok za logom — siaha až za ľavý okraj obrazovky */
+  .footer__logo::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 0 -100vw;
+    background: var(--yellow);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    z-index: -1;
+  }
+  .footer__logo-mask {
+    display: block;
+    overflow: hidden;
+  }
   .footer__logo img {
     height: 2.25rem;
     width: auto;
+    filter: invert(1); /* biele monochromatické logo → čierne na žltej */
+  }
+  /* animácia len s JS: blok je schovaný vľavo, logo pod maskou; pri scrollnutí sa blok prisunie a logo vysunie */
+  :global(html.js) .footer__logo.reveal { opacity: 1; transform: none; }
+  :global(html.js) .footer__logo::before {
+    transform: translateX(calc(-100% - 2rem));
+    transition: transform 1100ms var(--ease-cinema) 100ms;
+  }
+  :global(html.js) .footer__logo img {
+    transform: translateY(115%);
+    transition: transform 800ms var(--ease-cinema) 450ms;
+  }
+  :global(html.js) .footer__logo.is-visible::before { transform: none; }
+  :global(html.js) .footer__logo.is-visible img { transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .footer__logo::before,
+    :global(html.js) .footer__logo img { transform: none; }
   }
   .footer__tag {
     margin-top: var(--space-2);

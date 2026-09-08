@@ -351,49 +351,58 @@ const tiles = categories.map((c) => ({
     color: color-mix(in srgb, #fff 80%, transparent);
   }
 
-  /* process */
+  /* process — veľké riadky cez celú šírku, každý si pri scrollnutí nakreslí žltú linku */
   .process { background: var(--surface); border-block: 1px solid var(--line); }
   .process__list {
     list-style: none;
-    margin: 0;
-    padding: var(--space-3) 0 0;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-4);
-    position: relative;
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
   }
-  /* žltá linka, ktorá sa nakreslí naprieč krokmi pri scrollnutí do sekcie */
-  .process__list::before {
+  .process__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: var(--space-3);
+    align-items: baseline;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .process__step::after {
     content: '';
     position: absolute;
-    top: 0;
     left: 0;
-    right: 0;
-    height: 3px;
+    bottom: -1px;
+    width: 100%;
+    height: 2px;
     background: var(--yellow);
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 1400ms var(--ease) 200ms;
+    transition: transform 900ms var(--ease);
   }
-  .process.is-drawn .process__list::before {
-    transform: scaleX(1);
-  }
+  .process.is-drawn .process__step::after { transform: scaleX(1); }
+  .process.is-drawn .process__step:nth-child(2)::after { transition-delay: 180ms; }
+  .process.is-drawn .process__step:nth-child(3)::after { transition-delay: 360ms; }
+  .process.is-drawn .process__step:nth-child(4)::after { transition-delay: 540ms; }
   .process__num {
-    display: block;
     font-family: var(--font-display);
-    font-size: 2.6rem;
+    font-size: var(--step-1);
     font-weight: 600;
-    color: var(--yellow);
+    color: var(--yellow-deep);
     line-height: 1;
-    margin-bottom: var(--space-2);
   }
   .process__step h3 {
-    font-size: 1.15rem;
-    margin-bottom: 0.5rem;
+    font-size: var(--step-2);
+    font-weight: 560;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    transition: transform 320ms var(--ease);
   }
+  .process__step:hover h3 { transform: translateX(0.5rem); }
   .process__step p {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: var(--muted);
+    max-width: 44ch;
   }
 
   /* cta band */
@@ -423,29 +432,18 @@ const tiles = categories.map((c) => ({
 
   @media (max-width: 64rem) {
     .tiles { grid-template-columns: repeat(2, 1fr); }
-    .process__list { grid-template-columns: repeat(2, 1fr); }
     .about { grid-template-columns: 1fr; gap: var(--space-3); }
   }
   @media (max-width: 40rem) {
     .tiles { grid-template-columns: 1fr; }
-    .process__list {
-      grid-template-columns: 1fr;
-      gap: var(--space-3);
-      padding: 0 0 0 var(--space-3);
+    /* na mobile: číslo vľavo, názov a text pod sebou */
+    .process__step {
+      grid-template-columns: 3rem minmax(0, 1fr);
+      gap: 0.4rem var(--space-2);
+      padding: var(--space-2) 0;
     }
-    /* na mobile sa linka kreslí zvislo popri krokoch */
-    .process__list::before {
-      top: 0;
-      bottom: 0;
-      right: auto;
-      width: 3px;
-      height: auto;
-      transform: scaleY(0);
-      transform-origin: top;
-    }
-    .process.is-drawn .process__list::before {
-      transform: scaleY(1);
-    }
+    .process__step p { grid-column: 2; }
+    .process__step:hover h3 { transform: none; }
   }
 </style>
 
