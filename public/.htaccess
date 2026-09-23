@@ -36,6 +36,36 @@ Redirect 301 /atvyn_galeria_skla.html /dvere
 Redirect 301 /default.htm /
 Redirect 301 /ramy_galeria.html /realizacie
 Redirect 301 /materialy_galeria_dekory.html /realizacie
+Redirect 301 /materialy_galeria_skla.html /realizacie
+
+# pôvodný web (2021): laminátové podlahy a ich kolekcie
+Redirect 301 /laminate.html /podlahy
+RedirectMatch 301 ^/(classic|creo|eligna|eligna-wide|elite|exquisa|impressive|impressive-ultra|largo|majestic|perspective-v2-wide|perspective-v4|perspective-v4-wide)_galeria\.html$ /podlahy
+Redirect 301 /about.html /
+Redirect 301 /home-fullpage.html /
+
+# ešte starší web (.htm)
+Redirect 301 /uvod.htm /
+Redirect 301 /kontakt.htm /kontakt
+Redirect 301 /kalkulacie.htm /kontakt
+Redirect 301 /kuchyne.htm /kuchyne
+Redirect 301 /podlahy.htm /podlahy
+Redirect 301 /berryfloor.htm /podlahy
+Redirect 301 /kronotex.htm /podlahy
+Redirect 301 /skrine_vzorkyb.htm /skrine
+Redirect 301 /predsiene_g.htm /skrine
+Redirect 301 /kancelarie_g.htm /nabytok
+Redirect 301 /schweiger.htm /realizacie
+Redirect 301 /tablo.htm /realizacie
+
+# zvyšky šablóny a rámcov starého webu — nikdy nemali obsah, nech ich Google zahodí (410)
+RedirectMatch gone ^/(post-gallery|post-image|post-right-sidebar|post-video)\.html$
+RedirectMatch gone ^/(bokl|bokp|boky|spod|top|vrch)\.htm$
+RedirectMatch gone ^/dark(/.*)?$
+ErrorDocument 410 /404.html
+
+# akákoľvek ďalšia stará galéria, ktorú tu nemáme vymenovanú
+RedirectMatch 301 ^/[^/]+_galeria[^/]*\.html$ /realizacie
 
 # HTML sa vždy overí na serveri (inak si prehliadač po nasadení drží starú stránku);
 # statické assety majú hash v názve, tie sa môžu kešovať rok
