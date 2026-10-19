@@ -1,20 +1,31 @@
 ---
 import Base from '../layouts/Base.astro';
 import Gallery from '../components/Gallery.astro';
+import PageHead from '../components/PageHead.astro';
+import WorkCards from '../components/WorkCards.astro';
+import CtaBand from '../components/CtaBand.astro';
 import { categories } from '../data/site';
+import { projekty } from '../lib/projekty';
 ---
 
 <Base
   title="Realizácie — i-studio Stupava"
   description="Galéria našich realizácií — kuchyne, skrine, nábytok na mieru, podlahy, dvere a obklady. Interiérové štúdio i-studio Stupava."
+  breadcrumbs={[{ name: 'Realizácie', path: '/realizacie' }]}
 >
-  <section class="page-head">
-    <div class="container">
-      <p class="kicker">Naše práce</p>
-      <h1 class="page-head__title">Realizácie</h1>
-      <p class="page-head__tagline">Interiéry, ktoré sme navrhli, vyrobili a namontovali.</p>
-    </div>
-  </section>
+  <PageHead kicker="Naše práce" title="Realizácie" tagline="Interiéry, ktoré sme navrhli, vyrobili a namontovali." />
+
+  {
+    projekty.length > 0 && (
+      <section class="section--tight projects" aria-labelledby="projekty-title">
+        <div class="container">
+          <h2 id="projekty-title" class="projects__title">Projekty</h2>
+          <p class="projects__lead">Vybrané zákazky od zamerania po montáž — viac fotiek a podrobnosti v každom projekte.</p>
+          <WorkCards projekty={projekty} limit={projekty.length} />
+        </div>
+      </section>
+    )
+  }
 
   <nav class="filter" aria-label="Kategórie realizácií">
     <div class="container filter__inner">
@@ -38,23 +49,19 @@ import { categories } from '../data/site';
       </section>
     ))
   }
+
+  <CtaBand
+    title="Chcete podobné riešenie aj u vás?"
+    emphasis="Pošlite nám pôdorys alebo fotky."
+    text="Kuchyňa, celá miestnosť alebo kompletný interiér — preberieme vaše predstavy a pripravíme návrh s cenovou ponukou."
+    event="cta-realizacie"
+  />
 </Base>
 
 <style>
-  .page-head {
-    background: var(--ink);
-    color: var(--paper);
-    padding-block: var(--space-5);
-  }
-  .page-head :global(.kicker) { color: color-mix(in srgb, var(--paper) 70%, transparent); }
-  .page-head__title { font-size: var(--step-4); color: #fff; line-height: 1; }
-  .page-head__tagline {
-    margin-top: var(--space-2);
-    font-size: var(--step-1);
-    color: var(--yellow);
-    font-family: var(--font-display);
-    font-style: italic;
-  }
+  .projects { padding-top: var(--space-5); }
+  .projects__title { font-size: var(--step-3); }
+  .projects__lead { color: var(--muted); margin: 0.4rem 0 var(--space-4); }
   .filter {
     position: sticky;
     top: 4.25rem;

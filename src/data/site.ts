@@ -23,6 +23,10 @@ export const site = {
     { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:30', closes: '12:00' },
     { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '13:30', closes: '17:00' },
   ],
+  /* kde zariaďujeme — zobrazuje sa na stránke Kompletné interiéry a v štruktúrovaných dátach.
+     OVERIŤ S MAJITEĽOM, ak sa oblasť zmení. */
+  serviceArea: ['Stupava', 'Bratislava', 'Malacky'],
+  serviceAreaText: 'Stupave, Bratislave, Malackách a okolí',
   social: {
     facebook: 'https://www.facebook.com/istudio.sk',
     instagram: 'https://www.instagram.com/istudio.sk/',
@@ -31,6 +35,8 @@ export const site = {
   legal: {
     name: 'i-studio, s.r.o.',
     seat: 'Záhradná 1, 900 31 Stupava',
+    /* sídlo (zapísané v OR) — iné ako adresa štúdia, kam chodia zákazníci */
+    seatAddress: { street: 'Záhradná 1', postalCode: '900 31', locality: 'Stupava' },
     ico: '36 736 856',
     dic: '2022322533',
     icDph: 'SK2022322533',
@@ -46,15 +52,21 @@ export interface Category {
   slug: string;
   title: string;
   navLabel: string;
+  /* titulok stránky pre Google — čo ľudia hľadajú, nie len názov kategórie */
+  seoTitle: string;
   tagline: string;
   intro: string[];
   brands?: string[];
+  /* hodnota dlaždice v dopytovom formulári (musí sedieť so zoznamom v public/api/contact.php) */
+  formValue: string;
   metaDescription: string;
 }
 
 export const categories: Category[] = [
   {
     slug: 'podlahy',
+    seoTitle: 'Podlahy Quick-Step s pokládkou',
+    formValue: 'Podlahy',
     title: 'Podlahy',
     navLabel: 'Podlahy',
     tagline: 'Základ, na ktorom stojí celý interiér.',
@@ -68,6 +80,8 @@ export const categories: Category[] = [
   },
   {
     slug: 'dvere',
+    seoTitle: 'Interiérové dvere a zárubne',
+    formValue: 'Dvere',
     title: 'Dvere',
     navLabel: 'Dvere',
     tagline: 'Detail, ktorý zmení celý priestor.',
@@ -81,6 +95,8 @@ export const categories: Category[] = [
   },
   {
     slug: 'skrine',
+    seoTitle: 'Vstavané skrine na mieru',
+    formValue: 'Skrine',
     title: 'Skrine',
     navLabel: 'Skrine',
     tagline: 'Úložný priestor presne na mieru.',
@@ -94,6 +110,8 @@ export const categories: Category[] = [
   },
   {
     slug: 'kuchyne',
+    seoTitle: 'Kuchyne na mieru',
+    formValue: 'Kuchyňa',
     title: 'Kuchyne',
     navLabel: 'Kuchyne',
     tagline: 'Srdce domácnosti, ušité na mieru.',
@@ -106,6 +124,8 @@ export const categories: Category[] = [
   },
   {
     slug: 'nabytok',
+    seoTitle: 'Nábytok na mieru',
+    formValue: 'Nábytok',
     title: 'Nábytok',
     navLabel: 'Nábytok',
     tagline: 'Dielensky vyrábaný nábytok na mieru.',
@@ -118,6 +138,8 @@ export const categories: Category[] = [
   },
   {
     slug: 'obklady',
+    seoTitle: 'Obklady, dlažby a kúpeľne',
+    formValue: 'Obklady a sanita',
     title: 'Obklady',
     navLabel: 'Obklady',
     tagline: 'Kúpeľne a keramika s kompletným servisom.',
@@ -168,3 +190,13 @@ export const processSteps = [
     text: 'Kompletnú montáž zabezpečia naši ľudia. Odovzdáme vám hotový interiér pripravený na bývanie.',
   },
 ];
+
+/* typ projektu v dopytovom formulári. `key` sa používa v odkazoch (/kontakt?projekt=kompletny),
+   `value` sa posiela na server a musí presne sedieť so zoznamom $PROJEKTY v public/api/contact.php */
+export const inquiryProjects = [
+  { key: 'kompletny', value: 'Kompletný interiér bytu alebo domu', hint: 'viac miestností, od podláh po nábytok', featured: true },
+  { key: 'miestnost', value: 'Zariadenie celej miestnosti', hint: 'obývačka, spálňa, detská izba, predsieň…', featured: true },
+  { key: 'kuchyna', value: 'Kuchyňa na mieru', hint: 'návrh, výroba a montáž kuchyne' },
+  { key: 'viac', value: 'Viacero prvkov interiéru', hint: 'napr. skrine a dvere, podlahy a kuchyňa' },
+  { key: 'produkt', value: 'Samostatný produkt', hint: 'jedna skriňa, dvere, podlaha…' },
+] as const;

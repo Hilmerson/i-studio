@@ -10,40 +10,81 @@ import { site } from '../data/site';
 interface Props {
   title: string;
   description: string;
+  /* drobčeková navigácia pre Google (BreadcrumbList) — bez domovskej stránky, tá sa pridá sama */
+  breadcrumbs?: { name: string; path: string }[];
+  /* stránky, ktoré nemajú byť v indexe (napr. ďakovacia) */
+  noindex?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, breadcrumbs, noindex = false } = Astro.props;
 // build.format 'file' dáva pathname s príponou (/kuchyne.html) — kanonická adresa je bez nej
 const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/^\/index$/, '/');
 const canonical = new URL(cleanPath, Astro.site);
 
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'LocalBusiness',
-  name: site.name,
-  legalName: site.legal.name,
-  description: site.tagline,
-  url: site.url,
-  telephone: site.phone,
-  email: site.email,
-  taxID: site.legal.dic,
-  vatID: site.legal.icDph,
-  identifier: { '@type': 'PropertyValue', propertyID: 'IČO', value: site.legal.ico.replace(/\s/g, '') },
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: site.address.street,
-    addressLocality: site.address.locality,
-    postalCode: site.address.postalCode,
-    addressCountry: 'SK',
+const orgId = `${site.url}/#spolocnost`;
+const businessId = `${site.url}/#studio`;
+const graph: Record<string, unknown>[] = [
+  // obchodná spoločnosť — sídlo zapísané v obchodnom registri
+  {
+    '@type': 'Organization',
+    '@id': orgId,
+    name: site.legal.name,
+    legalName: site.legal.name,
+    url: site.url,
+    logo: new URL('/favicon.png', site.url).href,
+    taxID: site.legal.dic,
+    vatID: site.legal.icDph,
+    identifier: { '@type': 'PropertyValue', propertyID: 'IČO', value: site.legal.ico.replace(/\s/g, '') },
+    foundingDate: String(site.foundedYear),
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: site.legal.seatAddress.street,
+      addressLocality: site.legal.seatAddress.locality,
+      postalCode: site.legal.seatAddress.postalCode,
+      addressCountry: 'SK',
+    },
+    sameAs: [site.social.facebook, site.social.instagram],
   },
-  openingHoursSpecification: site.openingHoursSpec.map((h) => ({
-    '@type': 'OpeningHoursSpecification',
-    dayOfWeek: h.days,
-    opens: h.opens,
-    closes: h.closes,
-  })),
-  sameAs: [site.social.facebook, site.social.instagram],
-};
+  // štúdio — miesto, kam chodia zákazníci
+  {
+    '@type': 'LocalBusiness',
+    '@id': businessId,
+    name: site.name,
+    description: 'Kompletné zariadenie interiéru od jedného dodávateľa — kuchyne, skrine a nábytok na mieru, dvere, podlahy a obklady.',
+    url: site.url,
+    image: new URL('/og.jpg', site.url).href,
+    telephone: site.phone,
+    email: site.email,
+    parentOrganization: { '@id': orgId },
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: site.address.street,
+      addressLocality: site.address.locality,
+      postalCode: site.address.postalCode,
+      addressCountry: 'SK',
+    },
+    areaServed: site.serviceArea.map((name) => ({ '@type': 'City', name })),
+    openingHoursSpecification: site.openingHoursSpec.map((h) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: h.days,
+      opens: h.opens,
+      closes: h.closes,
+    })),
+    sameAs: [site.social.facebook, site.social.instagram],
+  },
+];
+if (breadcrumbs?.length) {
+  graph.push({
+    '@type': 'BreadcrumbList',
+    itemListElement: [{ name: 'Domov', path: '/' }, ...breadcrumbs].map((b, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: b.name,
+      item: new URL(b.path, site.url).href,
+    })),
+  });
+}
+const structuredData = { '@context': 'https://schema.org', '@graph': graph };
 ---
 
 <!doctype html>
@@ -54,6 +95,7 @@ const structuredData = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <meta property="og:title" content={title} />

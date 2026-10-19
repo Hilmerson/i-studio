@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import { site } from '../data/site';
 ---
 
-<Base title="Ďakujeme za dopyt — i-studio" description="Váš dopyt sme prijali a čoskoro sa vám ozveme.">
+<Base title="Ďakujeme za dopyt — i-studio" description="Váš dopyt sme prijali a čoskoro sa vám ozveme." noindex>
   <section class="section">
     <div class="container wrap">
       <svg class="check" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -12,10 +12,10 @@ import { site } from '../data/site';
       </svg>
       <h1>Ďakujeme za váš dopyt</h1>
       <p class="lead">
-        Správa bola úspešne odoslaná. Ozveme sa vám čo najskôr — zvyčajne do jedného pracovného dňa.
+        Správa bola úspešne odoslaná. Prejdeme si ju a ozveme sa vám čo najskôr.
       </p>
       <p class="alt">
-        Ponáhľate sa? Zavolajte nám na <a href={`tel:${site.phoneHref}`}>{site.phone}</a>.
+        Ponáhľate sa? Zavolajte nám na <a href={`tel:${site.phoneHref}`} data-umami-event="telefon" data-umami-event-miesto="dakujeme">{site.phone}</a>.
       </p>
       <a class="btn btn--primary" href="/">Späť na úvod</a>
     </div>
@@ -38,3 +38,28 @@ import { site } from '../data/site';
   .alt { color: var(--muted); margin-block: var(--space-2) var(--space-4); }
   .alt a { font-weight: 600; text-decoration-color: var(--yellow); }
 </style>
+
+<script>
+  // anonymná štatistika: odoslaný dopyt + typ projektu (žiadne meno, e-mail ani obsah správy).
+  // Server presmeruje sem len po úspešnom odoslaní a pridá ?typ=…&rezim=… (pevné kľúče).
+  // Nič sa neukladá do zariadenia návštevníka.
+  document.addEventListener('astro:page-load', () => {
+    const params = new URLSearchParams(location.search);
+    const typ = params.get('typ');
+    if (!typ) return;
+    const event = {
+      projekt: /^[a-z]{1,20}$/.test(typ) ? typ : 'neuvedeny',
+      rezim: params.get('rezim') === 'kratky' ? 'kratky' : 'podrobny',
+    };
+    // obnovenie stránky nemá počítať druhýkrát
+    history.replaceState(history.state, '', location.pathname);
+    // Umami sa načítava s defer — chvíľu počkať, kým je k dispozícii
+    let tries = 0;
+    const send = () => {
+      const umami = (window as any).umami;
+      if (umami?.track) umami.track('dopyt-odoslany', event);
+      else if (++tries < 20) setTimeout(send, 250);
+    };
+    send();
+  });
+</script>

@@ -1,0 +1,39 @@
+---
+/* tmavý pás s nadpisom stránky — spoločný pre podstránky */
+interface Props {
+  kicker: string;
+  title: string;
+  tagline?: string;
+}
+const { kicker, title, tagline } = Astro.props;
+---
+
+<section class="page-head">
+  <div class="container">
+    <p class="kicker">{kicker}</p>
+    <h1 class="page-head__title">{title}</h1>
+    {tagline && <p class="page-head__tagline">{tagline}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-head {
+    background: var(--ink);
+    color: var(--paper);
+    padding-block: var(--space-5);
+  }
+  .page-head :global(.kicker) { color: color-mix(in srgb, var(--paper) 70%, transparent); }
+  .page-head__title {
+    font-size: var(--step-4);
+    color: #fff;
+    line-height: 1;
+  }
+  .page-head__tagline {
+    margin-top: var(--space-2);
+    font-size: var(--step-1);
+    color: var(--yellow);
+    font-family: var(--font-display);
+    font-style: italic;
+  }
+</style>

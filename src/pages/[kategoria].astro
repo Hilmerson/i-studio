@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
 import Gallery from '../components/Gallery.astro';
 import { categories, site } from '../data/site';
 
@@ -8,34 +9,49 @@ export function getStaticPaths() {
 }
 
 const { category } = Astro.props;
+// dopyt z kategórie má vopred označenú danú oblasť; kuchyňa aj typ projektu
+const kontaktHref =
+  `/kontakt?oblast=${category.slug}` + (category.slug === 'kuchyne' ? '&projekt=kuchyna' : '');
+const ostatne = categories.filter((c) => c.slug !== category.slug);
 ---
 
-<Base title={`${category.title} — i-studio Stupava`} description={category.metaDescription}>
-  <section class="page-head">
-    <div class="container">
-      <p class="kicker">Sortiment</p>
-      <h1 class="page-head__title">{category.title}</h1>
-      <p class="page-head__tagline">{category.tagline}</p>
-    </div>
-  </section>
+<Base
+  title={`${category.seoTitle} | i-studio Stupava`}
+  description={category.metaDescription}
+  breadcrumbs={[{ name: category.title, path: `/${category.slug}` }]}
+>
+  <PageHead kicker="Sortiment" title={category.title} tagline={category.tagline} />
 
   <section class="section--tight">
     <div class="container intro">
       <div class="prose">
         {category.intro.map((p) => <p>{p}</p>)}
       </div>
-      {
-        category.brands && (
-          <aside class="brands" aria-label="Značky, s ktorými pracujeme">
-            <h2>Pracujeme so značkami</h2>
-            <ul>
-              {category.brands.map((b) => (
-                <li>{b}</li>
-              ))}
-            </ul>
-          </aside>
-        )
-      }
+      <aside class="side">
+        {
+          category.brands && (
+            <div class="brands" aria-label="Značky, s ktorými pracujeme">
+              <h2>Pracujeme so značkami</h2>
+              <ul>
+                {category.brands.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+        <div class="whole">
+          <h2>Zariaďujete celý byt alebo dom?</h2>
+          <p>
+            Dodáme aj ostatné časti interiéru — {ostatne.map((c) => c.title.toLowerCase()).join(', ')}.
+            Jeden návrh, jedna cenová ponuka a montáž od jedného dodávateľa.
+          </p>
+          <a href="/kompletne-interiery" data-umami-event="kompletne-kategoria" data-umami-event-kategoria={category.slug}>
+            Kompletné interiéry
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </aside>
     </div>
   </section>
 
@@ -51,32 +67,14 @@ const { category } = Astro.props;
     <div class="container cta-row">
       <p>Zaujala vás niektorá realizácia? Radi pripravíme podobné riešenie aj pre vás.</p>
       <div class="cta-row__actions">
-        <a class="btn btn--primary" href="/kontakt">Nezáväzný dopyt</a>
-        <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+        <a class="btn btn--primary" href={kontaktHref} data-umami-event="cta-kategoria" data-umami-event-kategoria={category.slug}>Nezáväzný dopyt</a>
+        <a class="btn btn--ghost" href={`tel:${site.phoneHref}`} data-umami-event="telefon" data-umami-event-miesto={`kategoria-${category.slug}`}>{site.phone}</a>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .page-head {
-    background: var(--ink);
-    color: var(--paper);
-    padding-block: var(--space-5);
-  }
-  .page-head :global(.kicker) { color: color-mix(in srgb, var(--paper) 70%, transparent); }
-  .page-head__title {
-    font-size: var(--step-4);
-    color: #fff;
-    line-height: 1;
-  }
-  .page-head__tagline {
-    margin-top: var(--space-2);
-    font-size: var(--step-1);
-    color: var(--yellow);
-    font-family: var(--font-display);
-    font-style: italic;
-  }
   .intro {
     display: grid;
     grid-template-columns: 1.6fr 1fr;
@@ -84,7 +82,9 @@ const { category } = Astro.props;
     align-items: start;
     padding-top: var(--space-5);
   }
-  .brands {
+  .side { display: grid; gap: var(--space-2); }
+  .brands,
+  .whole {
     border: 1px solid var(--line);
     background: var(--surface);
     border-radius: var(--radius);
@@ -114,6 +114,25 @@ const { category } = Astro.props;
     font-size: 0.9rem;
     font-weight: 500;
   }
+  .whole { border-left: 3px solid var(--yellow); }
+  .whole h2 {
+    font-size: var(--step-1);
+    margin-bottom: 0.5rem;
+  }
+  .whole p { font-size: 0.95rem; color: var(--ink-soft); }
+  .whole a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: var(--space-2);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--yellow);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+  }
+  .whole a svg { transition: transform 200ms var(--ease); }
+  .whole a:hover svg { transform: translateX(3px); }
   .gallery-title {
     font-size: var(--step-3);
     margin-bottom: var(--space-4);

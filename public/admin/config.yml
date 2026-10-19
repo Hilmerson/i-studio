@@ -113,3 +113,49 @@ collections:
                 widget: image
                 media_folder: '/src/photos/obklady'
                 public_folder: '/src/photos/obklady'
+
+  # Projekty = prípadové štúdie (viac fotiek z jednej zákazky + popis). Na web sa dostane len
+  # projekt so zapnutým „Zobraziť na webe", názvom a aspoň 3 fotkami. Popis polí: src/data/projekty/README.md
+  - name: projekty
+    label: Projekty
+    label_singular: projekt
+    description: 'Celé zákazky — viac fotiek z jedného bytu či domu spolu s popisom. Do jedného projektu dávajte len fotky, ktoré určite patria k tej istej zákazke. Kým nie je projekt hotový, nechajte „Zobraziť na webe" vypnuté. Vyplňte len to, čo naozaj viete — prázdne polia sa na webe nezobrazia.'
+    folder: src/data/projekty
+    extension: json
+    format: json
+    create: true
+    slug: '{{slug}}'
+    identifier_field: nazov
+    summary: '{{nazov}}'
+    media_folder: '/src/photos/projekty'
+    public_folder: '/src/photos/projekty'
+    fields:
+      - { label: 'Názov projektu', name: nazov, widget: string, hint: 'napr. Rodinný dom — kuchyňa, skrine a dvere' }
+      - { label: 'Zobraziť na webe', name: publikovat, widget: boolean, default: false }
+      - { label: 'Zobraziť na domovskej stránke', name: vybrany, widget: boolean, default: false, required: false }
+      - { label: 'Poradie', name: poradie, widget: number, value_type: int, default: 100, required: false, hint: 'nižšie číslo = vyššie v zozname' }
+      - { label: 'Typ priestoru', name: typ, widget: select, required: false, options: ['Byt', 'Rodinný dom', 'Chata / chalupa', 'Kancelária / prevádzka'] }
+      - { label: 'Lokalita', name: lokalita, widget: string, required: false, hint: 'len so súhlasom zákazníka, stačí obec' }
+      - { label: 'Rok realizácie', name: rok, widget: string, required: false }
+      - label: 'Čo sme dodali'
+        name: rozsah
+        widget: select
+        multiple: true
+        required: false
+        options:
+          - { label: 'Podlahy', value: podlahy }
+          - { label: 'Dvere', value: dvere }
+          - { label: 'Skrine', value: skrine }
+          - { label: 'Kuchyne', value: kuchyne }
+          - { label: 'Nábytok', value: nabytok }
+          - { label: 'Obklady', value: obklady }
+      - { label: 'Materiály a značky', name: materialy, widget: string, required: false, hint: 'napr. dekor Egger dub, kovanie Blum' }
+      - { label: 'Popis', name: popis, widget: text, required: false, hint: '2–5 viet: čo zákazník potreboval a čo sme dodali' }
+      - { label: 'Hlavná fotka', name: titulna, widget: image, required: false, hint: 'ak ju nevyberiete, použije sa prvá fotka' }
+      - label: Fotografie
+        name: fotky
+        widget: list
+        label_singular: fotografiu
+        summary: '{{fields.image}}'
+        fields:
+          - { label: Fotka, name: image, widget: image }

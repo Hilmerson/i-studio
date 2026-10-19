@@ -3,8 +3,9 @@ import { Image } from 'astro:assets';
 import logo from '../assets/i_studio.png';
 import { categories } from '../data/site';
 const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+// domov vedie logo; prvé miesto v menu patrí hlavnej službe
 const links = [
-  { href: '/', label: 'Domov' },
+  { href: '/kompletne-interiery', label: 'Kompletné interiéry' },
   ...categories.map((c) => ({ href: `/${c.slug}`, label: c.navLabel })),
   { href: '/realizacie', label: 'Realizácie' },
 ];
@@ -35,7 +36,7 @@ const isActive = (href: string) =>
           ))
         }
         <li>
-          <a class="nav__cta" href="/kontakt">Kontakt</a>
+          <a class="nav__cta" href="/kontakt" data-umami-event="kontakt-menu">Kontakt</a>
         </li>
       </ul>
     </nav>
@@ -85,6 +86,7 @@ const isActive = (href: string) =>
     font-weight: 500;
     text-decoration: none;
     color: var(--ink-soft);
+    white-space: nowrap;
     border-radius: var(--radius);
     transition: color 180ms var(--ease);
     position: relative;

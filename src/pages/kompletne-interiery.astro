@@ -1,0 +1,416 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import CtaBand from '../components/CtaBand.astro';
+import WorkCards from '../components/WorkCards.astro';
+import { site, categories, yearsOfExperience } from '../data/site';
+import { ukazkyInterierov } from '../data/vyber';
+import { projekty } from '../lib/projekty';
+import { photo } from '../lib/photos';
+
+const kontaktHref = '/kontakt?projekt=kompletny';
+const uvodnaFotka = photo('/src/photos/kuchyne/img41.jpg');
+
+const vyhody = [
+  {
+    title: 'Jeden kontakt namiesto viacerých firiem',
+    text: 'Nemusíte zháňať a koordinovať kuchynské štúdio, stolára, predajcu dverí a podlahára. Celý interiér riešite s nami.',
+  },
+  {
+    title: 'Materiály a farby, ktoré ladia',
+    text: 'Dekory kuchyne, skríň, dverí aj podláh vyberáme spolu, takže výsledok pôsobí ako jeden premyslený celok.',
+  },
+  {
+    title: 'Nadväzujúce zameranie a montáž',
+    text: 'Jednotlivé časti interiéru plánujeme spolu, aby na seba nadväzovali termínmi aj rozmermi — od podláh cez dvere až po skrine a kuchyňu.',
+  },
+  {
+    title: 'Jedna prehľadná cenová ponuka',
+    text: 'Dostanete ponuku na celý interiér pohromade, nie niekoľko rôznych ponúk, ktoré sa ťažko porovnávajú.',
+  },
+];
+
+const preKoho = [
+  { title: 'Byt v novostavbe', text: 'Zariadenie od podláh a dverí až po kuchyňu a vstavané skrine.' },
+  { title: 'Rodinný dom', text: 'Viac miestností, ktoré majú pôsobiť jednotne — vrátane kúpeľne.' },
+  { title: 'Byt po rekonštrukcii', text: 'Nová kuchyňa, skrine a dvere do pripraveného priestoru.' },
+  { title: 'Jedna celá miestnosť', text: 'Obývačka, spálňa, detská izba alebo predsieň zariadená naraz.' },
+];
+
+const faq = [
+  {
+    q: 'Musím si u vás objednať celý interiér?',
+    a: 'Nie. Môžete začať jednou miestnosťou alebo kuchyňou a ďalšie časti doplniť neskôr. Výhodou spoločného návrhu je, že materiály a farby od začiatku ladia.',
+  },
+  {
+    q: 'Koľko stojí kompletné zariadenie interiéru?',
+    a: 'Cena závisí od rozsahu, zvolených materiálov a vybavenia. Presnú cenovú ponuku pripravíme po konzultácii a zameraní, keď poznáme vaše predstavy aj priestor. Konzultácia je nezáväzná.',
+  },
+  {
+    q: 'Ako dlho trvá zariadenie bytu alebo domu?',
+    a: 'Závisí od rozsahu a od dodacích lehôt materiálov. Termíny výroby, dodania a montáže s vami dohodneme spolu s cenovou ponukou.',
+  },
+  {
+    q: 'Čo si mám pripraviť na prvú konzultáciu?',
+    a: 'Stačí pôdorys alebo niekoľko fotiek priestoru, prípadne inšpirácie, ktoré sa vám páčia. Môžete ich priložiť priamo k dopytu na stránke Kontakt.',
+  },
+  {
+    q: 'Máme už návrh od architekta. Pripravíte ponuku podľa neho?',
+    a: 'Áno, pošlite nám ho spolu s dopytom. Ak návrh nemáte, pripravíme riešenie s vami — na konzultácii preberieme, ako budete priestor používať.',
+  },
+  {
+    q: 'Kde pôsobíte?',
+    a: `Štúdio máme v Stupave (${site.address.street}). Interiéry zariaďujeme v ${site.serviceAreaText}.`,
+  },
+];
+---
+
+<Base
+  title="Kompletné zariadenie interiéru bytu a domu | i-studio Stupava"
+  description="Zariadenie bytu, domu alebo celej miestnosti od jedného dodávateľa — kuchyne, skrine a nábytok na mieru, dvere aj podlahy. Stupava, Bratislava, Malacky."
+  breadcrumbs={[{ name: 'Kompletné interiéry', path: '/kompletne-interiery' }]}
+>
+  <PageHead kicker="Kompletné interiéry" title="Celý interiér. Jeden dodávateľ." tagline="Zariadenie bytu, domu alebo celej miestnosti — od podláh po posledný detail." />
+
+  <!-- ÚVOD -->
+  <section class="section">
+    <div class="container lead">
+      <div class="lead__copy">
+        <h2 class="lead__title">Zariadime váš byt alebo dom ako jeden celok</h2>
+        <div class="prose">
+          <p>
+            Kuchyňa od jednej firmy, skrine od druhej, dvere a podlahy od ďalších — a vy medzi nimi koordinujete
+            termíny, rozmery a farby. S nami to robiť nemusíte. Celý interiér navrhneme, zameriame, dodáme
+            a namontujeme ako jeden dodávateľ.
+          </p>
+          <p>
+            Za {yearsOfExperience} rokov sme zariadili byty a domy v {site.serviceAreaText}. Poradíme s výberom
+            materiálov, pripravíme riešenie na mieru a postaráme sa o to, aby jednotlivé časti do seba zapadli.
+          </p>
+        </div>
+        <div class="lead__actions">
+          <a class="btn btn--primary" href={kontaktHref} data-umami-event="cta-kompletne-uvod">Nezáväzne konzultovať interiér</a>
+          <a class="btn btn--ghost" href={`tel:${site.phoneHref}`} data-umami-event="telefon" data-umami-event-miesto="kompletne-uvod">{site.phone}</a>
+        </div>
+      </div>
+      {
+        uvodnaFotka && (
+          <figure class="lead__photo reveal">
+            <span class="media-reveal">
+              <Image
+                src={uvodnaFotka}
+                widths={[640, 1100]}
+                sizes="(max-width: 60rem) 100vw, 45vw"
+                format="webp"
+                quality={76}
+                alt="Kuchyňa s jedálenským kútom — realizácia i-studio"
+                loading="eager"
+              />
+            </span>
+            <figcaption>Kuchyňa s jedálenským kútom — naša realizácia</figcaption>
+          </figure>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- ČO ZARIADIME -->
+  <section class="section section--tight" aria-labelledby="co-title">
+    <div class="container">
+      <p class="kicker">Čo všetko zariadime</p>
+      <h2 id="co-title" class="section-title">Všetky časti interiéru pod jednou strechou</h2>
+      <ul class="parts">
+        {
+          categories.map((c, i) => (
+            <li class="parts__item reveal" style={`transition-delay: ${(i % 3) * 80}ms`}>
+              <a href={`/${c.slug}`}>
+                <span class="parts__name">{c.title}</span>
+                <span class="parts__tag">{c.tagline}</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- VÝHODY -->
+  <section class="section benefits" aria-labelledby="vyhody-title">
+    <div class="container">
+      <p class="kicker">Prečo jeden dodávateľ</p>
+      <h2 id="vyhody-title" class="section-title">Menej starostí, lepší výsledok</h2>
+      <ul class="benefits__list">
+        {
+          vyhody.map((v, i) => (
+            <li class="benefits__item reveal" style={`transition-delay: ${i * 90}ms`}>
+              <span class="benefits__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{v.title}</h3>
+              <p>{v.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- PRE KOHO -->
+  <section class="section section--tight" aria-labelledby="pre-koho-title">
+    <div class="container">
+      <p class="kicker">Pre koho</p>
+      <h2 id="pre-koho-title" class="section-title">Pre koho je kompletné zariadenie</h2>
+      <ul class="who">
+        {
+          preKoho.map((k) => (
+            <li class="who__item">
+              <h3>{k.title}</h3>
+              <p>{k.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- UKÁŽKY -->
+  <section class="section section--tight" aria-labelledby="ukazky-title">
+    <div class="container">
+      <div class="head-row">
+        <div>
+          <p class="kicker">Naše práce</p>
+          <h2 id="ukazky-title" class="section-title">Ukážky z realizácií</h2>
+        </div>
+        <a class="head-row__link" href="/realizacie">
+          Všetky realizácie
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+      <WorkCards projekty={projekty} fotky={ukazkyInterierov} limit={projekty.length ? 4 : 6} />
+    </div>
+  </section>
+
+  <ProcessSteps title="Ako prebieha zariadenie interiéru" />
+
+  <!-- FAQ -->
+  <section class="section" aria-labelledby="faq-title">
+    <div class="container faq">
+      <div>
+        <p class="kicker">Časté otázky</p>
+        <h2 id="faq-title" class="section-title">Na čo sa nás pýtate</h2>
+        <p class="faq__aside">
+          Nenašli ste odpoveď? Zavolajte na
+          <a href={`tel:${site.phoneHref}`} data-umami-event="telefon" data-umami-event-miesto="kompletne-faq">{site.phone}</a>
+          alebo nám <a href={kontaktHref}>pošlite dopyt</a>.
+        </p>
+      </div>
+      <div class="faq__list">
+        {
+          faq.map((f) => (
+            <details class="faq__item">
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Plánujete zariadiť byt, dom alebo celú miestnosť?"
+    emphasis="Začnime konzultáciou."
+    text="Pošlite nám pôdorys alebo pár fotiek priestoru. Preberieme vaše predstavy a pripravíme návrh s cenovou ponukou na celý interiér."
+    href={kontaktHref}
+    event="cta-kompletne"
+  />
+</Base>
+
+<style>
+  .section-title {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .lead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-5);
+    align-items: center;
+  }
+  .lead__title {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-3);
+  }
+  .lead__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+  }
+  .lead__photo { margin: 0; }
+  .lead__photo .media-reveal {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--line);
+  }
+  .lead__photo img { width: 100%; height: 100%; object-fit: cover; }
+  .lead__photo figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .parts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+  .parts a {
+    position: relative;
+    display: grid;
+    gap: 0.3rem;
+    height: 100%;
+    padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms var(--ease), transform 200ms var(--ease);
+  }
+  .parts a:hover { border-color: var(--ink); }
+  .parts__name {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 560;
+    line-height: 1.1;
+  }
+  .parts__tag { font-size: 0.95rem; color: var(--muted); }
+  .parts svg {
+    position: absolute;
+    right: var(--space-3);
+    top: var(--space-3);
+    color: var(--yellow-deep);
+    transition: transform 200ms var(--ease);
+  }
+  .parts a:hover svg { transform: translateX(4px); }
+
+  .benefits { background: var(--surface); border-block: 1px solid var(--line); }
+  .benefits__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-5);
+  }
+  .benefits__item {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 0.4rem var(--space-2);
+  }
+  .benefits__num {
+    grid-row: span 2;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--yellow-deep);
+    line-height: 1.2;
+  }
+  .benefits__item h3 { font-size: var(--step-1); }
+  .benefits__item p { color: var(--muted); }
+
+  .who {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+  .who__item {
+    padding-top: var(--space-2);
+    border-top: 2px solid var(--yellow);
+  }
+  .who__item h3 { font-size: var(--step-1); margin-bottom: 0.4rem; }
+  .who__item p { font-size: 0.97rem; color: var(--muted); }
+
+  .head-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .head-row .section-title { margin-bottom: 0; }
+  .head-row__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ink-soft);
+  }
+  .head-row__link:hover { color: var(--ink); }
+
+  .faq {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: var(--space-5);
+    align-items: start;
+  }
+  .faq__aside { color: var(--muted); }
+  .faq__aside a { color: var(--ink); font-weight: 600; text-decoration-color: var(--yellow); white-space: nowrap; }
+  .faq__list { border-top: 1px solid var(--line); }
+  .faq__item { border-bottom: 1px solid var(--line); }
+  .faq__item summary {
+    position: relative;
+    list-style: none;
+    cursor: pointer;
+    padding: var(--space-3) 2.5rem var(--space-3) 0;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 560;
+    line-height: 1.3;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary::after {
+    content: '+';
+    position: absolute;
+    right: 0.25rem;
+    top: 50%;
+    translate: 0 -50%;
+    font-family: var(--font-body);
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--yellow-deep);
+    transition: rotate 200ms var(--ease);
+  }
+  .faq__item[open] summary::after { rotate: 45deg; }
+  .faq__item p {
+    padding: 0 0 var(--space-3);
+    color: var(--ink-soft);
+    max-width: 62ch;
+  }
+
+  @media (max-width: 64rem) {
+    .parts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .who { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 60rem) {
+    .lead, .faq { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+    .benefits__list { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 40rem) {
+    .parts, .who { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
