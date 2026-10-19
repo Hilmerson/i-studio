@@ -158,6 +158,8 @@ if ($rl !== false) {
 }
 
 // ---- polia sprievodcu ----
+// typ projektu — musí sedieť s `inquiryProjects` v src/data/site.ts
+$PROJEKTY  = ['Kompletný interiér bytu alebo domu', 'Zariadenie celej miestnosti', 'Kuchyňa na mieru', 'Viacero prvkov interiéru', 'Samostatný produkt'];
 $KATEGORIE = ['Podlahy', 'Dvere', 'Skrine', 'Kuchyňa', 'Nábytok', 'Obklady a sanita'];
 $TYPY      = ['Byt', 'Rodinný dom', 'Chata / chalupa', 'Kancelária / prevádzka'];
 $STAVY     = ['Novostavba', 'Rekonštrukcia', 'Obývaný, len dozariadiť'];
@@ -170,6 +172,7 @@ $co    = is_array($coRaw)
     ? array_values(array_intersect($KATEGORIE, array_map(fn($v) => trim((string)$v), $coRaw)))
     : [];
 
+$projekt = volba('projekt', $PROJEKTY);
 $typ     = volba('typ', $TYPY);
 $stav    = volba('stav', $STAVY);
 $termin  = volba('termin', $TERMINY);
@@ -189,9 +192,9 @@ if ($meno === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         400
     );
 }
-if ($co === [] && $sprava === '') {
+if ($co === [] && $projekt === '' && $sprava === '') {
     odmietni(
-        'Dopyt je prázdny — nevybrali ste, čo zariaďujete, ani ste nenapísali správu.',
+        'Dopyt je prázdny — nevybrali ste, čo plánujete, ani ste nenapísali správu.',
         '<strong>Vráťte sa tlačidlom Späť</strong>, v prvom kroku vyberte aspoň jednu oblasť alebo napíšte pár slov v treťom kroku.',
         400
     );
@@ -321,6 +324,7 @@ $riadky = [
     'Telefón:     ' . ($telefon !== '' ? $telefon : '—'),
     'Kontaktovať: ' . ($kanal !== '' ? $kanal : '—'),
     '',
+    'Projekt:     ' . ($projekt !== '' ? $projekt : '—'),
     'Zariaďuje:   ' . ($co !== [] ? implode(', ', $co) : '—'),
     'Priestor:    ' . ($typ !== '' ? $typ : '—'),
     'Stav:        ' . ($stav !== '' ? $stav : '—'),
@@ -345,7 +349,9 @@ if ($podozrenia !== []) {
 $telo = implode("\n", $riadky) . "\n";
 
 $predmetText = ($podozrenia !== [] ? '[možný spam] ' : '')
-    . 'Dopyt z webu i-studio.sk' . ($co !== [] ? ' – ' . implode(', ', $co) : '');
+    . 'Dopyt z webu i-studio.sk'
+    . ($projekt !== '' ? ' – ' . $projekt : '')
+    . ($co !== [] ? ($projekt !== '' ? ' (' . implode(', ', $co) . ')' : ' – ' . implode(', ', $co)) : '');
 $predmet     = '=?UTF-8?B?' . base64_encode($predmetText) . '?=';
 
 $hlavicky = [
@@ -393,5 +399,13 @@ if (!$ok) {
     error_log('i-studio form: mail() failed from ' . ip());
 }
 
-header('Location: ' . ($ok ? '/dakujeme' : '/kontakt?odoslane=0'));
+// typ projektu a režim idú do adresy ďakovacej stránky len pre anonymnú štatistiku (Umami) —
+// žiadne osobné údaje, len pevné kľúče
+$KLUCE = array_combine($PROJEKTY, ['kompletny', 'miestnost', 'kuchyna', 'viac', 'produkt']);
+$rezim = volba('rezim', ['kratky', 'podrobny']);
+$ciel  = '/dakujeme?' . http_build_query([
+    'typ'   => $projekt !== '' ? $KLUCE[$projekt] : 'neuvedeny',
+    'rezim' => $rezim !== '' ? $rezim : 'podrobny',
+]);
+header('Location: ' . ($ok ? $ciel : '/kontakt?odoslane=0'));
 exit;

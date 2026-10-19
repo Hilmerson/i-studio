@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site } from '../data/site';
+import PageHead from '../components/PageHead.astro';
+import { site, inquiryProjects } from '../data/site';
 
 // Netlify build (testovacie nasadenie) posiela formulár cez Netlify Forms;
 // na Websupporte (produkcia) ho spracuje /api/contact.php
@@ -8,32 +9,28 @@ const isNetlify = Boolean(process.env.NETLIFY);
 const formAction = isNetlify ? '/dakujeme' : '/api/contact.php';
 
 // Hodnoty musia sedieť so zoznamami v public/api/contact.php — čokoľvek iné server zahodí.
+// slug = kategória webu, podľa neho sa dlaždica vopred označí z odkazu /kontakt?oblast=kuchyne
 const oblasti = [
-  { value: 'Podlahy', hint: 'drevené, laminát, vinyl', icon: 'M3 5h18v14H3zM3 10h18M3 15h18M9 5v5M15 10v5M9 15v4' },
-  { value: 'Dvere', hint: 'interiérové, so zárubňou', icon: 'M6 21V3h12v18M6 21h12M14 12h1' },
-  { value: 'Skrine', hint: 'vstavané, šatníky', icon: 'M4 3h16v18H4zM12 3v18M9 11v2M15 11v2' },
-  { value: 'Kuchyňa', hint: 'na mieru, so spotrebičmi', icon: 'M3 11h18v9H3zM3 11V5h7v6M8 15h1M14 15h1M6 5V3M14 8h4' },
-  { value: 'Nábytok', hint: 'obývačka, spálňa, kancelária', icon: 'M3 12h18v7H3zM5 12V8h14v4M5 19v2M19 19v2' },
-  { value: 'Obklady a sanita', hint: 'kúpeľňa, WC', icon: 'M3 3h18v18H3zM3 9h18M3 15h18M9 3v6M15 9v6M9 15v6' },
+  { slug: 'podlahy', value: 'Podlahy', hint: 'drevené, laminát, vinyl', icon: 'M3 5h18v14H3zM3 10h18M3 15h18M9 5v5M15 10v5M9 15v4' },
+  { slug: 'dvere', value: 'Dvere', hint: 'interiérové, so zárubňou', icon: 'M6 21V3h12v18M6 21h12M14 12h1' },
+  { slug: 'skrine', value: 'Skrine', hint: 'vstavané, šatníky', icon: 'M4 3h16v18H4zM12 3v18M9 11v2M15 11v2' },
+  { slug: 'kuchyne', value: 'Kuchyňa', hint: 'na mieru, so spotrebičmi', icon: 'M3 11h18v9H3zM3 11V5h7v6M8 15h1M14 15h1M6 5V3M14 8h4' },
+  { slug: 'nabytok', value: 'Nábytok', hint: 'obývačka, spálňa, kancelária', icon: 'M3 12h18v7H3zM5 12V8h14v4M5 19v2M19 19v2' },
+  { slug: 'obklady', value: 'Obklady a sanita', hint: 'kúpeľňa, WC', icon: 'M3 3h18v18H3zM3 9h18M3 15h18M9 3v6M15 9v6M9 15v6' },
 ];
 const typy = ['Byt', 'Rodinný dom', 'Chata / chalupa', 'Kancelária / prevádzka'];
 const stavy = ['Novostavba', 'Rekonštrukcia', 'Obývaný, len dozariadiť'];
 const terminy = ['Čo najskôr', 'Do 3 mesiacov', 'Neskôr, zatiaľ zisťujem'];
 const rozpocty = ['do 3 000 €', '3 000 – 8 000 €', '8 000 – 15 000 €', 'nad 15 000 €'];
-const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
+const kroky = ['Projekt', 'Priestor a termín', 'Detaily', 'Kontakt'];
 ---
 
 <Base
   title="Kontakt — i-studio Stupava"
-  description={`Kontaktujte interiérové štúdio i-studio: ${site.address.street}, ${site.address.city}. Tel. ${site.phone}, ${site.email}.`}
+  description={`Nezáväzný dopyt na kuchyňu, celú miestnosť alebo kompletný interiér. Štúdio i-studio: ${site.address.street}, ${site.address.city}. Tel. ${site.phone}.`}
+  breadcrumbs={[{ name: 'Kontakt', path: '/kontakt' }]}
 >
-  <section class="page-head">
-    <div class="container">
-      <p class="kicker">Kontakt</p>
-      <h1 class="page-head__title">Ozvite sa nám</h1>
-      <p class="page-head__tagline">Poradíme, zameriame, pripravíme ponuku — nezáväzne.</p>
-    </div>
-  </section>
+  <PageHead kicker="Kontakt" title="Ozvite sa nám" tagline="Poradíme, zameriame, pripravíme ponuku — nezáväzne." />
 
   <section class="section--tight">
     <div class="container contact">
@@ -53,7 +50,13 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
 
         <div class="form__head">
           <h2>Nezáväzný dopyt</h2>
-          <p class="form__lead">Štyri krátke kroky. Povinné sú len meno a e-mail v poslednom.</p>
+          <p class="form__lead not-quick">Štyri krátke kroky. Povinné sú len meno a e-mail v poslednom.</p>
+          <p class="form__quick not-quick">
+            Ponáhľate sa?
+            <button class="btn-inline" type="button" data-quick>Pošlite krátky dopyt</button>
+            — stačí meno, e-mail a pár slov.
+          </p>
+          <p class="form__lead quick-only">Krátky dopyt — napíšte nám pár slov a ozveme sa vám. Fotky a podrobnosti môžete doplniť neskôr.</p>
         </div>
 
         <p class="form__status form__status--err" data-status-err hidden>
@@ -72,12 +75,25 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
 
         <!-- KROK 1 -->
         <fieldset class="step is-active" data-step="1">
-          <legend class="step__title">Čo zariaďujete?</legend>
-          <p class="step__hint">Vyberte všetko, čo prichádza do úvahy — aj keď si ešte nie ste istí.</p>
+          <legend class="step__title">Aký projekt plánujete?</legend>
+          <p class="step__hint">Pomôže nám pripraviť sa na prvý rozhovor. Nič z toho nie je povinné.</p>
+          <div class="projects" role="radiogroup" aria-label="Typ projektu" data-summary="projekt">
+            {inquiryProjects.map((pr) => (
+              <label class:list={['project', { 'project--featured': 'featured' in pr && pr.featured }]}>
+                <input type="radio" name="projekt" value={pr.value} data-key={pr.key} />
+                <span class="project__body">
+                  <strong>{pr.value}</strong>
+                  <small>{pr.hint}</small>
+                </span>
+              </label>
+            ))}
+          </div>
+
+          <p class="group__label tiles__label">Čo všetko k tomu patrí? <span class="opt">(vyberte všetko, čo prichádza do úvahy)</span></p>
           <div class="tiles" data-summary="co">
             {oblasti.map((o) => (
               <label class="tile">
-                <input type="checkbox" name="co[]" value={o.value} />
+                <input type="checkbox" name="co[]" value={o.value} data-slug={o.slug} />
                 <span class="tile__body">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d={o.icon} /></svg>
                   <strong>{o.value}</strong>
@@ -191,7 +207,20 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
         <!-- KROK 4 -->
         <fieldset class="step" data-step="4">
           <legend class="step__title">Kam sa máme ozvať?</legend>
-          <p class="step__hint">Ozveme sa do jedného pracovného dňa — telefonicky alebo e-mailom, ako uprednostníte.</p>
+          <p class="step__hint">Ozveme sa vám telefonicky alebo e-mailom — podľa toho, čo uprednostníte.</p>
+
+          <!-- len pri krátkom dopyte; inak je vypnuté a neodosiela sa (správa je v kroku 3) -->
+          <div class="form__row quick-only">
+            <label for="f-sprava-rychla">Čo plánujete? <span class="req" aria-hidden="true">*</span></label>
+            <textarea
+              id="f-sprava-rychla"
+              name="sprava"
+              rows="4"
+              maxlength="5000"
+              disabled
+              placeholder="napr. Zariaďujeme byt v novostavbe — kuchyňa, vstavané skrine a dvere."
+            ></textarea>
+          </div>
 
           <div class="form__row">
             <label for="f-meno">Meno a priezvisko <span class="req" aria-hidden="true">*</span></label>
@@ -222,9 +251,12 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
           </div>
           <!-- anti-spam: vyplní JavaScript pri načítaní stránky; boti POSTujúci priamo ho nemajú -->
           <input type="hidden" name="cas" id="f-cas" value="" />
+          <!-- podrobný / krátky dopyt — len pre anonymnú štatistiku na ďakovacej stránke -->
+          <input type="hidden" name="rezim" id="f-rezim" value="podrobny" />
 
           <div class="step__nav">
-            <button class="btn-link" type="button" data-prev>← Späť</button>
+            <button class="btn-link not-quick" type="button" data-prev>← Späť</button>
+            <button class="btn-link quick-only" type="button" data-unquick>← Podrobný dopyt</button>
             <button class="btn btn--primary" type="submit" data-submit>Odoslať dopyt</button>
           </div>
           <p class="form__gdpr">
@@ -238,6 +270,7 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
         <div class="card summary" data-summary-card>
           <h2>Váš dopyt</h2>
           <ul>
+            <li class="is-empty"><span>Projekt</span><span data-out="projekt">—</span></li>
             <li class="is-empty"><span>Zariaďujete</span><span data-out="co">—</span></li>
             <li class="is-empty"><span>Priestor</span><span data-out="typ">—</span></li>
             <li class="is-empty"><span>Stav</span><span data-out="stav">—</span></li>
@@ -258,10 +291,10 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
           <h2>Radšej zavoláte?</h2>
           <ul>
             <li>
-              <a class="phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+              <a class="phone" href={`tel:${site.phoneHref}`} data-umami-event="telefon" data-umami-event-miesto="kontakt">{site.phone}</a>
             </li>
             <li>
-              <button class="copy-email" type="button" data-copy={site.email} title="Kliknutím skopírujete adresu">
+              <button class="copy-email" type="button" data-copy={site.email} title="Kliknutím skopírujete adresu" data-umami-event="email" data-umami-event-miesto="kontakt">
                 <span class="copy-email__address">{site.email}</span>
                 <svg class="copy-email__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
                 <span class="copy-email__done" data-copy-done hidden>skopírované ✓</span>
@@ -303,21 +336,6 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
 </Base>
 
 <style>
-  .page-head {
-    background: var(--ink);
-    color: var(--paper);
-    padding-block: var(--space-5);
-  }
-  .page-head :global(.kicker) { color: color-mix(in srgb, var(--paper) 70%, transparent); }
-  .page-head__title { font-size: var(--step-4); color: #fff; line-height: 1; }
-  .page-head__tagline {
-    margin-top: var(--space-2);
-    font-size: var(--step-1);
-    color: var(--yellow);
-    font-family: var(--font-display);
-    font-style: italic;
-  }
-
   .contact {
     display: grid;
     grid-template-columns: minmax(0, 1.6fr) minmax(16rem, 1fr);
@@ -508,6 +526,71 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
     transition: color 160ms var(--ease);
   }
   .btn-link:hover { color: var(--ink); }
+
+  /* typ projektu (krok 1) — kompletný interiér a celá miestnosť sú väčšie a prvé */
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-bottom: var(--space-3);
+  }
+  .project { position: relative; cursor: pointer; display: block; grid-column: span 2; }
+  .project--featured { grid-column: span 3; }
+  .project input { position: absolute; inset: 0; opacity: 0; margin: 0; }
+  .project__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    height: 100%;
+    padding: 0.9rem 2.2rem 0.9rem 0.95rem;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper);
+    transition: border-color 180ms var(--ease), background 180ms var(--ease), box-shadow 180ms var(--ease);
+  }
+  .project--featured .project__body { padding-block: 1.15rem; border-left: 3px solid var(--yellow); }
+  .project--featured strong { font-family: var(--font-display); font-size: 1.15rem; font-weight: 560; }
+  .project strong { font-weight: 600; line-height: 1.25; }
+  .project small { color: var(--muted); font-size: 0.8rem; line-height: 1.4; }
+  .project:hover .project__body { border-color: #b8b4aa; }
+  .project--featured:hover .project__body { border-left-color: var(--yellow); }
+  .project input:focus-visible + .project__body { outline: 3px solid var(--yellow); outline-offset: 2px; }
+  .project input:checked + .project__body {
+    border-color: var(--ink);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+  .project input:checked + .project__body::after {
+    content: '';
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: var(--yellow) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2314130f' stroke-width='3'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center / 65% no-repeat;
+  }
+  .tiles__label { margin-top: var(--space-2); }
+
+  /* krátky dopyt */
+  .form__quick { margin-top: 0.4rem; font-size: 0.92rem; color: var(--muted); }
+  .btn-inline {
+    border: 0;
+    background: none;
+    padding: 0;
+    font: inherit;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--yellow);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  :global(html:not(.js)) .form__quick { display: none; }
+  .quick-only { display: none; }
+  .form.is-quick .quick-only { display: block; }
+  .form.is-quick .not-quick,
+  .form.is-quick .steps { display: none; }
 
   /* dlaždice (krok 1) — všetky rovnako vysoké */
   .tiles {
@@ -705,6 +788,10 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
   .map { margin-top: var(--space-5); }
   .map iframe { display: block; filter: grayscale(0.4); }
 
+  @media (max-width: 60rem) and (min-width: 40.01rem) {
+    .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .project, .project--featured { grid-column: auto; }
+  }
   @media (max-width: 60rem) {
     .contact { grid-template-columns: minmax(0, 1fr); }
     .contact__info { position: static; }
@@ -720,6 +807,8 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
     .steps li.is-active .steps__name { display: block; }
     .steps__num { font-size: 0.6rem; }
     .tiles { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+    .projects { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+    .project, .project--featured { grid-column: auto; }
     .step__nav { flex-wrap: wrap; }
     .step__nav .btn { width: 100%; justify-content: center; }
   }
@@ -806,8 +895,40 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
       const t = e.target as HTMLElement;
       if (t.matches('input[data-summary]')) refreshGroup(t);
     });
+    // predvyplnenie z odkazu: /kontakt?projekt=kompletny&oblast=kuchyne (oblast môže byť viackrát)
+    const params = new URLSearchParams(location.search);
+    const projektKey = params.get('projekt');
+    if (projektKey) {
+      const radio = form.querySelector<HTMLInputElement>(`input[name="projekt"][data-key="${CSS.escape(projektKey)}"]`);
+      if (radio) radio.checked = true;
+    }
+    for (const slug of params.getAll('oblast')) {
+      const box = form.querySelector<HTMLInputElement>(`input[name="co[]"][data-slug="${CSS.escape(slug)}"]`);
+      if (box) box.checked = true;
+    }
+
     // po návrate tlačidlom Späť prehliadač obnoví hodnoty — súhrn nech im zodpovedá
     form.querySelectorAll<HTMLElement>('[data-summary]').forEach(refreshGroup);
+
+    // ---- krátky dopyt: len kontakt + správa, bez krokov ----
+    const longMsg = form.querySelector<HTMLTextAreaElement>('#f-sprava');
+    const quickMsg = form.querySelector<HTMLTextAreaElement>('#f-sprava-rychla');
+    const setQuick = (on: boolean) => {
+      form.classList.toggle('is-quick', on);
+      // odosiela sa vždy len jedno pole „sprava" — vypnuté pole prehliadač neposiela
+      if (longMsg) longMsg.disabled = on;
+      const rezim = form.querySelector<HTMLInputElement>('#f-rezim');
+      if (rezim) rezim.value = on ? 'kratky' : 'podrobny';
+      if (quickMsg) {
+        quickMsg.disabled = !on;
+        quickMsg.required = on;
+        if (on && longMsg?.value && !quickMsg.value) quickMsg.value = longMsg.value;
+      }
+      go(on ? 4 : 1);
+      if (on) quickMsg?.focus({ preventScroll: true });
+    };
+    form.querySelector('[data-quick]')?.addEventListener('click', () => setQuick(true));
+    form.querySelector('[data-unquick]')?.addEventListener('click', () => setQuick(false));
 
     // ---- prílohy ----
     const MAX_FILES = 5;
@@ -940,7 +1061,9 @@ const kroky = ['Čo zariaďujete', 'Priestor a termín', 'Detaily', 'Kontakt'];
     form.addEventListener('submit', (e) => {
       if (busy > 0) { e.preventDefault(); return; }
       // s novalidate si overenie robíme sami, aby chyba v skrytom kroku neostala neviditeľná
-      const invalid = [...form.querySelectorAll<HTMLInputElement>('input[required], input[type="email"]')].find((i) => !i.checkValidity());
+      const invalid = [
+        ...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[required], textarea[required], input[type="email"]'),
+      ].find((i) => !i.checkValidity());
       if (invalid) {
         e.preventDefault();
         const step = invalid.closest<HTMLFieldSetElement>('[data-step]');

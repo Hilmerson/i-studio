@@ -1,0 +1,129 @@
+---
+/* „Ako to prebieha" — 4 kroky ako riadky cez celú šírku; žlté linky sa nakreslia pri scrollnutí */
+import { processSteps } from '../data/site';
+
+interface Props {
+  title?: string;
+  kicker?: string;
+}
+const { title = 'Od návrhu po hotový interiér', kicker = 'Ako to prebieha' } = Astro.props;
+---
+
+<section class="section process" aria-labelledby="proces-title" data-process>
+  <div class="container">
+    <p class="kicker">{kicker}</p>
+    <h2 id="proces-title" class="process__title">{title}</h2>
+    <ol class="process__list">
+      {
+        processSteps.map((step, i) => (
+          <li class="process__step reveal" style={`transition-delay: ${i * 80}ms`}>
+            <span class="process__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process { background: var(--surface); border-block: 1px solid var(--line); }
+  .process__title {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-4);
+  }
+  .process__list {
+    list-style: none;
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    position: relative;
+  }
+  .process__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: var(--space-3);
+    align-items: start;
+    padding: var(--space-3) 0;
+  }
+  /* jediný typ deliacej čiary: žltá, nakreslí sa zľava — nad každým riadkom a pod posledným */
+  .process__step::before,
+  .process__list::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--yellow);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 900ms var(--ease);
+  }
+  .process__list::after { top: auto; bottom: 0; }
+  .process.is-drawn .process__step::before,
+  .process.is-drawn .process__list::after { transform: scaleX(1); }
+  .process.is-drawn .process__step:nth-child(2)::before { transition-delay: 160ms; }
+  .process.is-drawn .process__step:nth-child(3)::before { transition-delay: 320ms; }
+  .process.is-drawn .process__step:nth-child(4)::before { transition-delay: 480ms; }
+  .process.is-drawn .process__list::after { transition-delay: 640ms; }
+  /* číslo, názov aj text majú rovnakú výšku riadku -> horné hrany písma sedia na jednej linke */
+  .process__num {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--yellow-deep);
+    line-height: 1.1;
+    padding-top: 0.2rem;
+  }
+  .process__step h3 {
+    font-size: var(--step-2);
+    font-weight: 560;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    transition: transform 320ms var(--ease);
+  }
+  .process__step:hover h3 { transform: translateX(0.5rem); }
+  .process__step p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 44ch;
+    padding-top: 0.05rem;
+  }
+  @media (max-width: 40rem) {
+    .process__step {
+      grid-template-columns: 3rem minmax(0, 1fr);
+      gap: 0.4rem var(--space-2);
+      padding: var(--space-2) 0;
+    }
+    .process__step p { grid-column: 2; }
+    .process__step:hover h3 { transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .process__step::before,
+    .process__list::after { transform: none; }
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-process]').forEach((process) => {
+      if (!('IntersectionObserver' in window)) {
+        process.classList.add('is-drawn');
+        return;
+      }
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            process.classList.add('is-drawn');
+            io.disconnect();
+          }
+        },
+        { threshold: 0.25 }
+      );
+      io.observe(process);
+    });
+  });
+</script>

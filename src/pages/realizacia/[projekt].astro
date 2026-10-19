@@ -1,0 +1,151 @@
+---
+/* Detail projektu (prípadová štúdia). Generuje sa len pre publikované projekty zo src/data/projekty/.
+   Pozn.: cesta je /realizacia/<slug> (jednotné číslo) — /realizacie/ ako priečinok by na Apache
+   prebil stránku realizacie.html. */
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Gallery from '../../components/Gallery.astro';
+import WorkCards from '../../components/WorkCards.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { projekty, suvisiace, type Projekt } from '../../lib/projekty';
+
+export function getStaticPaths() {
+  return projekty.map((p) => ({ params: { projekt: p.slug }, props: { projekt: p } }));
+}
+
+const { projekt } = Astro.props as { projekt: Projekt };
+const podobne = suvisiace(projekt);
+
+const fakty = [
+  { label: 'Typ', value: projekt.typ },
+  { label: 'Lokalita', value: projekt.lokalita },
+  { label: 'Rok', value: projekt.rok },
+  { label: 'Rozsah', value: projekt.rozsah.map((r) => r.title).join(', ') || undefined },
+  { label: 'Materiály', value: projekt.materialy },
+].filter((f) => f.value);
+
+// odstavce popisu (prázdny riadok = nový odstavec) — regex mimo šablóny, Astro parser nemá rád {} v JSX
+const odstavce = projekt.popis ? projekt.popis.split(/\n\s*\n/).map((t) => t.trim()).filter(Boolean) : [];
+const popisVeta = projekt.popis?.split(/(?<=[.!?])\s/)[0];
+const description = (popisVeta ?? `${projekt.nazov} — realizácia interiéru od i-studio Stupava.`).slice(0, 160);
+// dopyt na podobný projekt: označí kategórie z rozsahu projektu
+const kontaktHref =
+  '/kontakt?' +
+  new URLSearchParams([
+    ['projekt', projekt.rozsah.length > 1 ? 'viac' : projekt.rozsah[0]?.slug === 'kuchyne' ? 'kuchyna' : 'miestnost'],
+    ...projekt.rozsah.map((r) => ['oblast', r.slug]),
+  ]).toString();
+---
+
+<Base
+  title={`${projekt.nazov} — realizácia | i-studio Stupava`}
+  description={description}
+  breadcrumbs={[
+    { name: 'Realizácie', path: '/realizacie' },
+    { name: projekt.nazov, path: projekt.url },
+  ]}
+>
+  <PageHead kicker="Realizácia" title={projekt.nazov} tagline={[projekt.typ, projekt.lokalita].filter(Boolean).join(' · ') || undefined} />
+
+  <section class="section--tight">
+    <div class="container detail">
+      <figure class="detail__cover">
+        <Image
+          src={projekt.titulna}
+          widths={[720, 1200, 1600]}
+          sizes="(max-width: 60rem) 100vw, 60vw"
+          format="webp"
+          quality={78}
+          alt={projekt.nazov}
+          loading="eager"
+        />
+      </figure>
+      <div class="detail__info">
+        {
+          fakty.length > 0 && (
+            <dl class="facts">
+              {fakty.map((f) => (
+                <div>
+                  <dt>{f.label}</dt>
+                  <dd>{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )
+        }
+        {odstavce.length > 0 && <div class="prose">{odstavce.map((p) => <p>{p}</p>)}</div>}
+        <a class="btn btn--primary" href={kontaktHref} data-umami-event="cta-projekt" data-umami-event-projekt={projekt.slug}>
+          Chcem podobné riešenie
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" aria-labelledby="fotky-title">
+    <div class="container">
+      <h2 id="fotky-title" class="section-title">Fotografie</h2>
+      <Gallery category={`projekt-${projekt.slug}`} images={projekt.fotky} title={projekt.nazov} />
+    </div>
+  </section>
+
+  {
+    podobne.length > 0 && (
+      <section class="section--tight" aria-labelledby="podobne-title">
+        <div class="container">
+          <h2 id="podobne-title" class="section-title">Podobné realizácie</h2>
+          <WorkCards projekty={podobne} limit={3} />
+        </div>
+      </section>
+    )
+  }
+
+  <CtaBand
+    title="Páči sa vám toto riešenie?"
+    emphasis="Pripravíme podobné aj pre vás."
+    text="Pošlite nám pôdorys alebo fotky priestoru a preberieme, čo by u vás fungovalo."
+    href={kontaktHref}
+    label="Chcem podobné riešenie"
+    event="cta-projekt-koniec"
+  />
+</Base>
+
+<style>
+  .detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: var(--space-5);
+    align-items: start;
+    padding-top: var(--space-5);
+  }
+  .detail__cover { margin: 0; }
+  .detail__cover img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+  .detail__info { display: grid; gap: var(--space-3); justify-items: start; }
+  .facts {
+    margin: 0;
+    width: 100%;
+    display: grid;
+    gap: 0.6rem;
+    border-top: 2px solid var(--yellow);
+    padding-top: var(--space-2);
+  }
+  .facts div {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+  .facts dt { color: var(--muted); font-size: 0.92rem; }
+  .facts dd { margin: 0; font-weight: 500; }
+  .section-title {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-4);
+  }
+  @media (max-width: 60rem) {
+    .detail { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  }
+</style>

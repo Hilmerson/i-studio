@@ -34,6 +34,7 @@ const year = new Date().getFullYear();
     <nav class="footer__col" aria-label="Informácie">
       <h2>Informácie</h2>
       <ul>
+        <li><a href="/kompletne-interiery">Kompletné interiéry</a></li>
         <li><a href="/realizacie">Realizácie</a></li>
         <li><a href="/kontakt">Kontakt</a></li>
         <li><a href="/gdpr">Ochrana osobných údajov</a></li>
@@ -45,8 +46,8 @@ const year = new Date().getFullYear();
       <h2>Kontakt</h2>
       <ul>
         <li>{site.address.street}<br />{site.address.city}</li>
-        <li><a href={`tel:${site.phoneHref}`}>{site.phone}</a></li>
-        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><a href={`tel:${site.phoneHref}`} data-umami-event="telefon" data-umami-event-miesto="paticka">{site.phone}</a></li>
+        <li><a href={`mailto:${site.email}`} data-umami-event="email" data-umami-event-miesto="paticka">{site.email}</a></li>
       </ul>
     </div>
   </div>

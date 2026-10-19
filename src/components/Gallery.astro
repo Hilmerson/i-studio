@@ -3,7 +3,10 @@ import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
 interface Props {
+  /** kategória → fotky z manifestu src/data/galerie/<category>.json */
   category: string;
+  /** hotový zoznam fotiek (napr. projekt) — ak je zadaný, manifest kategórie sa nepoužije */
+  images?: ImageMetadata[];
   /** limit number of photos shown (e.g. homepage teaser) */
   limit?: number;
   /** initial batch size; the rest reveals via "Zobraziť ďalšie" (0 = all at once) */
@@ -11,7 +14,7 @@ interface Props {
   title?: string;
 }
 
-const { category, limit, pageSize = 12, title = 'galéria' } = Astro.props;
+const { category, images, limit, pageSize = 12, title = 'galéria' } = Astro.props;
 const BATCH = 24;
 
 const all = import.meta.glob<{ default: ImageMetadata }>(
@@ -27,7 +30,9 @@ const manifests = import.meta.glob<{ photos?: { image: string }[] }>('/src/data/
 const manifest = manifests[`/src/data/galerie/${category}.json`];
 
 let photos: ImageMetadata[];
-if (manifest) {
+if (images) {
+  photos = [...images];
+} else if (manifest) {
   // manifest existuje → je autoritatívny (aj prázdny znamená „žiadne fotky")
   photos = [];
   for (const entry of manifest.photos ?? []) {
@@ -66,7 +71,6 @@ const fullSizes = await Promise.all(
             data-lightbox-index={i}
             hidden={pageSize > 0 && i >= pageSize}
             style={`transition-delay: ${(i % 12) * 70}ms`}
-            aria-label={`Fotografia ${i + 1} — ${title}`}
           >
             <span class="gallery__media media-reveal">
               <Image
@@ -75,7 +79,7 @@ const fullSizes = await Promise.all(
                 sizes="(max-width: 40rem) 100vw, (max-width: 64rem) 50vw, 33vw"
                 format="webp"
                 quality={78}
-                alt=""
+                alt={`${title} — realizácia i-studio, fotografia ${i + 1}`}
                 loading="lazy"
               />
             </span>
